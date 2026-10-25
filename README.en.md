@@ -9,6 +9,7 @@
 Minecraft is not the point — it is only the cheap, observable, reproducible physics sandbox we test in.
 
 [中文版见 `README.md`](README.md) · Chinese version: [`README.md`](README.md)
+[Full English legal pack](LEGAL/en/LEGAL-HANDBOOK.md) · not legal advice
 
 ---
 

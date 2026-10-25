@@ -7,6 +7,10 @@
 Cyberdyne Bridge / CBAP 是一个研究性项目。文件的目标不是“用免责声明逃避责任”，
 而是把**能力边界、滥用边界、第三方许可和用户责任**写清楚。
 
+## English
+
+Complete English legal pack: [`en/README.md`](en/README.md) · [`en/LEGAL-HANDBOOK.md`](en/LEGAL-HANDBOOK.md). The Chinese texts remain the source.
+
 ## 文件
 
 | 文件 | 用途 |

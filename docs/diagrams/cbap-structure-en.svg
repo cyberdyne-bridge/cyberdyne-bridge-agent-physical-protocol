@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-label="CBAP architecture: agents, CBAP-U, Kernel, CBAP-D, drivers, bodies and server facts">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070a0f"/>
+      <stop offset="1" stop-color="#0c171d"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#172830" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5eead4"/>
+    </marker>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f3c969"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <rect width="1400" height="900" fill="url(#grid)"/>
+
+  <text x="48" y="54" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="15" letter-spacing="4">CBAP v1 / REFERENCE ARCHITECTURE</text>
+  <text x="48" y="92" fill="#e8f0f2" font-family="DejaVu Sans, sans-serif" font-size="30" font-weight="700">Agent above. Facts below.</text>
+  <text x="48" y="118" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="16">One protocol between heterogeneous agents and physical bodies. Completion is verified from server facts, not result.ok.</text>
+
+  <!-- Agents -->
+  <text x="48" y="168" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">01 / AGENTS</text>
+  <g font-family="DejaVu Sans, sans-serif">
+    <rect x="48" y="184" width="250" height="66" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="66" y="211" fill="#e8f0f2" font-size="17" font-weight="700">Cyberdyne</text>
+    <text x="66" y="233" fill="#8aa0a8" font-size="13">legacy brain + adapter</text>
+
+    <rect x="318" y="184" width="250" height="66" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="336" y="211" fill="#e8f0f2" font-size="17" font-weight="700">MCP Mineflayer</text>
+    <text x="336" y="233" fill="#8aa0a8" font-size="13">tools / body</text>
+
+    <rect x="588" y="184" width="250" height="66" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="606" y="211" fill="#e8f0f2" font-size="17" font-weight="700">Mindcraft</text>
+    <text x="606" y="233" fill="#8aa0a8" font-size="13">autonomous planner</text>
+
+    <rect x="858" y="184" width="250" height="66" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="876" y="211" fill="#e8f0f2" font-size="17" font-weight="700">Voyager bridge</text>
+    <text x="876" y="233" fill="#8aa0a8" font-size="13">state / exec / stop</text>
+  </g>
+
+  <!-- CBAP-U -->
+  <line x1="700" y1="250" x2="700" y2="282" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="420" y="286" width="560" height="50" rx="3" fill="#0a2926" stroke="#2e8b7d"/>
+  <text x="700" y="309" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CBAP-U / UNIX SOCKET · NDJSON · ONE JSON PER LINE</text>
+  <text x="700" y="327" text-anchor="middle" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">identity · open · lease · read · write · cancel · release · estop</text>
+
+  <!-- Kernel -->
+  <line x1="700" y1="336" x2="700" y2="368" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="270" y="372" width="860" height="166" rx="4" fill="#0a1117" stroke="#2e8b7d" stroke-width="2"/>
+  <text x="294" y="400" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">02 / CBAP KERNEL · CONTROL PLANE</text>
+  <g font-family="DejaVu Sans, sans-serif" font-size="14" fill="#d7e2e6">
+    <text x="294" y="430">identity / tokens</text>
+    <text x="294" y="454">leases · FIFO · fencing</text>
+    <text x="294" y="478">policy · approvals</text>
+    <text x="530" y="430">audit hash chain</text>
+    <text x="530" y="454">idempotency · cancel</text>
+    <text x="530" y="478">estop · explicit resume</text>
+    <text x="778" y="430">quotas · rate limits</text>
+    <text x="778" y="454">device contracts</text>
+    <text x="778" y="478">facts / verification</text>
+  </g>
+  <text x="294" y="512" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="13">The Kernel does not trust an agent's self-declared safety.</text>
+
+  <!-- CBAP-D -->
+  <line x1="700" y1="538" x2="700" y2="570" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="420" y="574" width="560" height="50" rx="3" fill="#0a2926" stroke="#2e8b7d"/>
+  <text x="700" y="597" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CBAP-D / DRIVER ADAPTERS</text>
+  <text x="700" y="615" text-anchor="middle" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">one adapter per body · no agent planning inside the Kernel</text>
+
+  <!-- Drivers -->
+  <text x="48" y="660" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">03 / DRIVERS + BODIES</text>
+  <g font-family="DejaVu Sans, sans-serif">
+    <rect x="48" y="676" width="300" height="76" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="66" y="703" fill="#e8f0f2" font-size="17" font-weight="700">Minecraft hand</text>
+    <text x="66" y="725" fill="#8aa0a8" font-size="13">Mineflayer · 1.21.1 target</text>
+
+    <rect x="368" y="676" width="300" height="76" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="386" y="703" fill="#e8f0f2" font-size="17" font-weight="700">MCP device</text>
+    <text x="386" y="725" fill="#8aa0a8" font-size="13">stdio · pinned definitions</text>
+
+    <rect x="688" y="676" width="300" height="76" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="706" y="703" fill="#e8f0f2" font-size="17" font-weight="700">Host devices</text>
+    <text x="706" y="725" fill="#8aa0a8" font-size="13">fs · display · input (gated)</text>
+
+    <rect x="1008" y="676" width="300" height="76" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="1026" y="703" fill="#e8f0f2" font-size="17" font-weight="700">Dataflow / other</text>
+    <text x="1026" y="725" fill="#8aa0a8" font-size="13">external agent body</text>
+  </g>
+
+  <!-- Facts / bodies -->
+  <line x1="700" y1="752" x2="700" y2="784" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="200" y="790" width="1000" height="60" rx="3" fill="#0a2926" stroke="#2e8b7d"/>
+  <text x="700" y="815" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">SERVER / DEVICE FACTS · POSITION · INVENTORY · BLOCKS · TERMINAL STATE</text>
+  <text x="700" y="835" text-anchor="middle" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">result.ok is a receipt; facts are the completion criterion</text>
+
+  <!-- Legend -->
+  <line x1="48" y1="864" x2="90" y2="864" stroke="#5eead4" stroke-width="2"/>
+  <text x="100" y="869" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">control / facts flow</text>
+  <line x1="260" y1="864" x2="302" y2="864" stroke="#f3c969" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="312" y="869" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">legacy / partial path</text>
+  <text x="1100" y="869" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="11">UNOFFICIAL · AS IS</text>
+</svg>
