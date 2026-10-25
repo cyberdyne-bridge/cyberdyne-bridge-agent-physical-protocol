@@ -201,10 +201,13 @@ class BridgeEnv:
         payload = res.get("payload") or {}
         on_chat = payload.get("onChat") or []
         after = self.state()
+        obs = self._observe(after)
         events = []
         for msg in on_chat:
-            events.append(["onChat", {"onChat": msg}])
-        events.append(["observe", self._observe(after)])
+            # Voyager's EventRecorder expects every event to carry the full
+            # status/inventory snapshot, not only the chat payload.
+            events.append(["onChat", {**obs, "onChat": msg}])
+        events.append(["observe", obs])
         self.last_events = events
         return events, after
 
@@ -221,9 +224,11 @@ class BridgeEnv:
                 "biome": s.get("biome"),
                 "timeOfDay": s.get("timeOfDay"),
                 "entities": s.get("entities") or {},
+                "elapsedTime": s.get("elapsedTime") or 0,
                 "name": s.get("bot", "bot"),
             },
             "voxels": s.get("voxels") or [],
+            "blockRecords": s.get("blockRecords") or [],
             "inventory": s.get("items") or {},
             "nearbyChests": {},
         }

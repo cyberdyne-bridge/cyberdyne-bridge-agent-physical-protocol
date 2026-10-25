@@ -27,4 +27,5 @@ does not include the upstream VoyagerEnv benchmark or full mining/crafting
 coverage. See
 [`docs/VOYAGER-1.21.1.md`](../../docs/VOYAGER-1.21.1.md) and
 [`docs/VOYAGER-LOCAL-QWEN.md`](../../docs/VOYAGER-LOCAL-QWEN.md) and
-[`docs/VOYAGER-AUTONOMY.md`](../../docs/VOYAGER-AUTONOMY.md).
+[`docs/VOYAGER-AUTONOMY.md`](../../docs/VOYAGER-AUTONOMY.md) and
+[`docs/VOYAGER-UPSTREAM-BENCH.md`](../../docs/VOYAGER-UPSTREAM-BENCH.md).

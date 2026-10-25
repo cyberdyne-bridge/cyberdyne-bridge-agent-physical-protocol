@@ -102,6 +102,7 @@ docs/VOYAGER-STATUS.md         Voyager bridge 评估
 docs/VOYAGER-1.21.1.md         Voyager 1.21.1 bridge 实测
 docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
 docs/VOYAGER-AUTONOMY.md       Voyager-style 3/3 自治循环
+docs/VOYAGER-UPSTREAM-BENCH.md 上游 Voyager agents + CBAP 2/2
 poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
 tools/mcp_official_matrix.py   官方 server 矩阵 runner
 ```
