@@ -1,8 +1,8 @@
 # Voyager-style autonomy loop
 
-**Date:** 2026-10-25  
-**Result:** 3/3 iterations completed on real Minecraft 1.21.1 through CBAP  
-**Model:** local Qwen3-4B, no GPT-4 / paid API  
+**Date:** 2026-10-25
+**Result:** 3/3 iterations completed on real Minecraft 1.21.1 through CBAP
+**Model:** local Qwen3-4B, no GPT-4 / paid API
 **Boundary:** this is a complete autonomy control loop, not the upstream
 `VoyagerEnv` benchmark and not mining/crafting autonomy.
 
