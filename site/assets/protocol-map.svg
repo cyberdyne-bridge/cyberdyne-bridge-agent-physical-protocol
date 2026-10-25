@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-label="Agent protocol layers: model, runtime, interop, device control, evidence">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070a0f"/>
+      <stop offset="1" stop-color="#0d1a20"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1b2c33" stroke-width="1" opacity=".55"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="520" fill="url(#bg)"/>
+  <rect width="1200" height="520" fill="url(#grid)"/>
+  <text x="54" y="56" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="15" letter-spacing="4">AGENT PROTOCOL LANDSCAPE</text>
+  <text x="54" y="92" fill="#e8f0f2" font-family="DejaVu Sans, sans-serif" font-size="26" font-weight="700">CBAP is not the whole stack.</text>
+
+  <g font-family="DejaVu Sans, sans-serif" font-size="15">
+    <rect x="54" y="126" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="74" y="150" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L1 / MODEL + RUNTIME</text>
+    <text x="74" y="170" fill="#d7e2e6">Responses API · Agents SDK · AgentKit · Qwen · Mindcraft</text>
+    <text x="980" y="164" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">NOT CBAP</text>
+
+    <rect x="54" y="194" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="74" y="218" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L2 / TOOL + CONTEXT</text>
+    <text x="74" y="238" fill="#d7e2e6">MCP · tool discovery · schemas · resources</text>
+    <text x="980" y="232" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">CONSUME</text>
+
+    <rect x="54" y="262" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="74" y="286" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L3 / AGENT ↔ AGENT</text>
+    <text x="74" y="306" fill="#d7e2e6">A2A · task handoff · delegation</text>
+    <text x="980" y="300" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">ADAPTER</text>
+
+    <rect x="54" y="330" width="1092" height="54" rx="3" fill="#0a2926" stroke="#2e8b7d" stroke-width="2"/>
+    <text x="74" y="354" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">L4 / DEVICE CONTROL</text>
+    <text x="74" y="374" fill="#e8f0f2">CBAP · device contract · lease · cancellation · policy · estop · facts</text>
+    <text x="980" y="368" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">CORE</text>
+
+    <rect x="54" y="398" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
+    <text x="74" y="422" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L5 / EVIDENCE + IDENTITY</text>
+    <text x="74" y="442" fill="#d7e2e6">audit · OpenTelemetry GenAI · OAuth / OIDC · attestation hooks</text>
+    <text x="980" y="436" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">INTEGRATE</text>
+  </g>
+
+  <text x="54" y="492" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="13">RULE: add an adapter before adding a core primitive. Do not duplicate MCP, A2A, or AG-UI.</text>
+</svg>

@@ -28,6 +28,7 @@
       <a href="#principles">协议</a>
       <a href="#security">安全</a>
       <a href="#mcp-status">MCP 状态</a>
+      <a href="#protocol-map">协议地图</a>
       <a href="#os">CBAP OS</a>
       <a href="#agents">Agent 子仓</a>
       <a class="nav-cta" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
@@ -251,6 +252,43 @@
       <div class="arch-note">
         <strong>等待官方修复，不在上游重复开 issue。</strong> 本地保留测试、PoC 和 3D 边界记录。
         <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/MCP-UPSTREAM-STATUS.md" target="_blank" rel="noopener">读 MCP 状态说明 ↗</a>
+      </div>
+    </section>
+
+    <section class="section section-arch" id="protocol-map">
+      <div class="section-head">
+        <p class="kicker">PROTOCOL / LONG-TERM</p>
+        <div>
+          <h2>CBAP 不是全栈<br>Agent 协议。</h2>
+          <p class="section-lede">模型调用、工具发现、Agent 间任务、UI 渲染都有各自的标准。CBAP 只守住设备控制、授权、事实和证据这一层；其他层先做 adapter，不复制。</p>
+        </div>
+      </div>
+
+      <figure class="status-figure">
+        <img src="./assets/protocol-map.svg" alt="Agent 协议分层：模型/运行时、工具/上下文、Agent 间、CBAP 设备控制、证据/身份" loading="lazy">
+      </figure>
+
+      <div class="cards cards-six">
+        <article class="card card-small card-accent">
+          <span class="card-num">L4 / CORE</span>
+          <h3>设备控制面</h3>
+          <p>CBAP 的核心：device contract、lease、cancel、estop、policy、facts、audit。其他层不塞进 Kernel。</p>
+        </article>
+        <article class="card card-small">
+          <span class="card-num">ADAPTER</span>
+          <h3>MCP / A2A / OpenAI</h3>
+          <p>MCP 做工具发现，A2A 做 Agent 间任务，OpenAI Responses / Agents SDK 做模型调用；CBAP 通过 adapter 接，不重写。</p>
+        </article>
+        <article class="card card-small">
+          <span class="card-num">LONG TERM</span>
+          <h3>H1 → H3</h3>
+          <p>H1 钉边界和互操作；H2 做 async / signed envelope / OTel；H3 做 attestation hook、多租户和 certification。</p>
+        </article>
+      </div>
+
+      <div class="arch-note">
+        <strong>规则：先 adapter，后 core。</strong> 不复制 MCP、A2A、AG-UI；CBAP 的护城河是设备控制与证据，不是协议数量。
+        <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">读长期路线 ↗</a>
       </div>
     </section>
 

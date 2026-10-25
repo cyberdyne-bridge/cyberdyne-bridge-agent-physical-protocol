@@ -343,6 +343,22 @@ CBAP v1.7.5      local definition pin mitigation
 我们不等同于官方修复，也不在 #3452 重复开 issue。
 完整边界和链接见 [`docs/MCP-UPSTREAM-STATUS.md`](docs/MCP-UPSTREAM-STATUS.md)。
 
+## 协议地图与长期安排
+
+CBAP 不是“通用 Agent 协议”，也不准备复制 OpenAI / MCP / A2A / AG-UI。
+
+![Agent protocol layers](docs/diagrams/protocol-map.svg)
+
+```text
+L1 模型/运行时    OpenAI Responses / Agents SDK / Qwen / Mindcraft  不碰
+L2 工具/上下文    MCP                                               adapter
+L3 Agent ↔ Agent  A2A / task handoff                                adapter
+L4 设备控制       CBAP                                              core
+L5 证据/身份      audit / OTel / OAuth / attestation                integrate
+```
+
+路线与边界见 [`docs/AGENT-PROTOCOL-ROADMAP.md`](docs/AGENT-PROTOCOL-ROADMAP.md)。
+
 ## 发行版
 
 当前源码发行版：

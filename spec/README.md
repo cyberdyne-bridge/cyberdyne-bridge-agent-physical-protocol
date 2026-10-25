@@ -12,6 +12,7 @@
 5. [`examples/`](examples/) —— MC / 机械臂描述符、MC 映射、一次完整会话。
 6. [`conformance-v1.md`](conformance-v1.md) —— 129 条一致性用例。
 7. [`implementation-matrix.md`](implementation-matrix.md) —— implemented / planned / removed 矩阵。
+8. [`../docs/AGENT-PROTOCOL-ROADMAP.md`](../docs/AGENT-PROTOCOL-ROADMAP.md) —— 协议分层、长期边界、非目标。
 
 ## 已验证
 
