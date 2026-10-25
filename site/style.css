@@ -697,3 +697,18 @@ main, .site-footer {
   width: 100%;
   height: auto;
 }
+
+.lang-switch {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  padding: .35rem .55rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lang-switch:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
