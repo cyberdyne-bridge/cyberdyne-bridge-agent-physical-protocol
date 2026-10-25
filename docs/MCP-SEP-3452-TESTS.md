@@ -57,7 +57,8 @@ session token swap / replay     -> 403
 ## 3. 测试文件
 
 ```text
-tests/mcp/http_auth_fixture.py
+poc/mcp_auth_fixture.py               控制夹具
+poc/mcp_scope_fork_poc.py             独立 PoC
 tests/mcp/test_http_scope_integrity.py
 ```
 
@@ -112,10 +113,40 @@ tools/list -> 按 scope 返回
    -> HTTP 403
 ```
 
-运行：
+运行测试：
 
 ```bash
 python3 -m unittest -v tests.mcp.test_http_scope_integrity
+```
+
+运行独立 PoC：
+
+```bash
+python3 poc/mcp_scope_fork_poc.py
+```
+
+PoC 会打印四组对照：
+
+```text
+1. same read scope, two sessions
+   -> full digest 相同
+
+2. read vs admin scope
+   -> tools / full digest 不同，属于合法差异
+
+3. same read scope, forked view
+   -> full digest 不同，检出
+
+4. instructions-only change
+   -> 四字段 digest 相同
+   -> full digest 不同，检出
+```
+
+本机实测结尾：
+
+```text
+PoC PASS: same-scope fork and instructions-only drift are visible
+to a full digest; legitimate scope differences are preserved.
 ```
 
 结果：

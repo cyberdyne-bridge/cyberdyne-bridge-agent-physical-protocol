@@ -95,6 +95,7 @@ docs/MC-BODY-API.md        Body API v0
 sdk/python/mc_body_client.py
 tests/body/                SDK 测试
 docs/MCP-SEP-3452-TESTS.md MCP 授权范围 / instructions digest 测试
+poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
 ```
 
 ```bash
@@ -107,6 +108,7 @@ MCP #3452 的认证 HTTP / scope 测试：
 
 ```bash
 python3 -m unittest -v tests.mcp.test_http_scope_integrity
+python3 poc/mcp_scope_fork_poc.py
 ```
 
 ## 30 秒读懂定位

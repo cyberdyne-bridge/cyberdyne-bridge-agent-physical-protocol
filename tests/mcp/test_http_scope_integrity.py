@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import unittest
 
-from tests.mcp.http_auth_fixture import (
+from poc.mcp_auth_fixture import (
     MCPHTTPClient, MCPHTTPFixture, digest, four_field_digest, snapshot,
 )
 
