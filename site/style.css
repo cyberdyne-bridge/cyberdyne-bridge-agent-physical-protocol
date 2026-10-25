@@ -685,3 +685,15 @@ main, .site-footer {
   letter-spacing: .12em;
   line-height: 1.4;
 }
+
+.status-figure {
+  margin: 0 0 1.4rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  overflow: hidden;
+}
+.status-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

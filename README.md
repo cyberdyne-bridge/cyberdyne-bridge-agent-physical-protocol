@@ -97,6 +97,8 @@ tests/body/                SDK 测试
 docs/MCP-SEP-3452-TESTS.md MCP 授权范围 / instructions digest 测试
 docs/MCP-OFFICIAL-MATRIX.md    7 台官方 reference × 5 次矩阵
 docs/MCP-3D-TESTS.md           MCP 执行授权 / 定义 pin 修复测试
+docs/MCP-UPSTREAM-STATUS.md    MCP 上游状态 / 等待官方修复
+docs/VOYAGER-STATUS.md         Voyager bridge 评估
 poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
 tools/mcp_official_matrix.py   官方 server 矩阵 runner
 ```
@@ -327,6 +329,19 @@ Host device surface    5 个 device_id / 输入默认关闭
 ```
 
 旧套件已移到 `archive/legacy-bridge/跑全部.sh`，不再属于主 CI；旧直连路径已冻结，默认脑入口是 CBAP wrapper。详见 [`docs/REPO_LAYOUT.md`](docs/REPO_LAYOUT.md) 和 [`docs/M4-Legacy-Decision.md`](docs/M4-Legacy-Decision.md)。
+
+## MCP 上游状态
+
+```text
+SEP #3452        OPEN
+CBAP v1.7.5      local definition pin mitigation
+3D authority     not solved
+```
+
+![MCP upstream status](docs/diagrams/mcp-upstream-status.svg)
+
+我们不等同于官方修复，也不在 #3452 重复开 issue。
+完整边界和链接见 [`docs/MCP-UPSTREAM-STATUS.md`](docs/MCP-UPSTREAM-STATUS.md)。
 
 ## 发行版
 
