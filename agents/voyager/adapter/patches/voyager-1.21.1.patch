@@ -1,0 +1,106 @@
+--- a/voyager/env/mineflayer/index.js	2026-10-26 01:13:55.592370535 +0800
++++ b/voyager/env/mineflayer/index.js	2026-10-26 01:06:13.281966860 +0800
+@@ -13,7 +13,6 @@
+ const Inventory = require("./lib/observation/inventory");
+ const OnSave = require("./lib/observation/onSave");
+ const Chests = require("./lib/observation/chests");
+-const { plugin: tool } = require("mineflayer-tool");
+ 
+ let bot = null;
+ 
+@@ -95,19 +94,23 @@
+             bot.iron_pickaxe = true;
+         }
+ 
+-        const { pathfinder } = require("mineflayer-pathfinder");
+-        const tool = require("mineflayer-tool").plugin;
+-        const collectBlock = require("mineflayer-collectblock").plugin;
+-        const pvp = require("mineflayer-pvp").plugin;
+-        let minecraftHawkEye = null;
+-try { minecraftHawkEye = require("minecrafthawkeye"); } catch (e) {
+-    console.log("minecrafthawkeye missing; bow aiming disabled");
+-}
+-        bot.loadPlugin(pathfinder);
+-        bot.loadPlugin(tool);
+-        bot.loadPlugin(collectBlock);
+-        bot.loadPlugin(pvp);
+-        if (minecraftHawkEye) bot.loadPlugin(minecraftHawkEye);
++        // Optional plugins.  The 1.21.1 bridge only needs observe/chat/step;
++        // an incompatible optional plugin must not kill the whole bridge.
++        for (const [name, mod] of [
++            ["pathfinder", "mineflayer-pathfinder"],
++            ["tool", "mineflayer-tool"],
++            ["collectBlock", "mineflayer-collectblock"],
++            ["pvp", "mineflayer-pvp"],
++        ]) {
++            try {
++                const exported = require(mod);
++                const plugin = exported.plugin || exported;
++                if (typeof plugin === "function") bot.loadPlugin(plugin);
++                console.log("optional plugin loaded:", name);
++            } catch (e) {
++                console.log("optional plugin skipped:", name, String(e.message || e));
++            }
++        }
+ 
+         // bot.collectBlock.movements.digCost = 0;
+         // bot.collectBlock.movements.placeCost = 0;
+@@ -133,8 +136,9 @@
+         res.json(bot.observe());
+ 
+         initCounter(bot);
+-        bot.chat("/gamerule keepInventory true");
+-        bot.chat("/gamerule doDaylightCycle false");
++        // Do not send setup commands by default: on a vanilla 1.21.1 server
++        // these count as chat/command spam and can kick the bot before the
++        // first action. The body bridge does not need them.
+     });
+ 
+     function onConnectionFailed(e) {
+@@ -301,41 +305,11 @@
+     }
+ 
+     function returnItems() {
+-        bot.chat("/gamerule doTileDrops false");
+-        const crafting_table = bot.findBlock({
+-            matching: mcData.blocksByName.crafting_table.id,
+-            maxDistance: 128,
+-        });
+-        if (crafting_table) {
+-            bot.chat(
+-                `/setblock ${crafting_table.position.x} ${crafting_table.position.y} ${crafting_table.position.z} air destroy`
+-            );
+-            bot.chat("/give @s crafting_table");
+-        }
+-        const furnace = bot.findBlock({
+-            matching: mcData.blocksByName.furnace.id,
+-            maxDistance: 128,
+-        });
+-        if (furnace) {
+-            bot.chat(
+-                `/setblock ${furnace.position.x} ${furnace.position.y} ${furnace.position.z} air destroy`
+-            );
+-            bot.chat("/give @s furnace");
+-        }
+-        if (bot.inventoryUsed() >= 32) {
+-            // if chest is not in bot's inventory
+-            if (!bot.inventory.items().find((item) => item.name === "chest")) {
+-                bot.chat("/give @s chest");
+-            }
+-        }
+-        // if iron_pickaxe not in bot's inventory and bot.iron_pickaxe
+-        if (
+-            bot.iron_pickaxe &&
+-            !bot.inventory.items().find((item) => item.name === "iron_pickaxe")
+-        ) {
+-            bot.chat("/give @s iron_pickaxe");
+-        }
+-        bot.chat("/gamerule doTileDrops true");
++        // The upstream bridge sends several /gamerule and /give commands
++        // after every step. On a vanilla 1.21.1 server that trips the
++        // chat-spam kick before the next action. The body bridge does not
++        // need inventory cleanup; leave it to the operator.
++        return;
+     }
+ 
+     function handleError(err) {

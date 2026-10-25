@@ -99,6 +99,8 @@ docs/MCP-OFFICIAL-MATRIX.md    7 台官方 reference × 5 次矩阵
 docs/MCP-3D-TESTS.md           MCP 执行授权 / 定义 pin 修复测试
 docs/MCP-UPSTREAM-STATUS.md    MCP 上游状态 / 等待官方修复
 docs/VOYAGER-STATUS.md         Voyager bridge 评估
+docs/VOYAGER-1.21.1.md         Voyager 1.21.1 bridge 实测
+docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
 poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
 tools/mcp_official_matrix.py   官方 server 矩阵 runner
 ```

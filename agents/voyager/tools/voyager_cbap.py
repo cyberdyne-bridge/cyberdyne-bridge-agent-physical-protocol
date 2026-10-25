@@ -65,6 +65,12 @@ def main() -> int:
         step("read state", bool(before), before)
         step("lease", client.lease(fd).get("ok"))
 
+        # Deterministic smoke: face +Z so a blocked spawn heading does not
+        # turn a working bridge into a false negative.
+        client.write(fd, {"channel": "body", "op": "exec",
+                          "args": {"code": "await bot.look(0, 0, true);"}},
+                     deadline_ms=30000, timeout=30)
+
         _, _, rf = client.write(fd, {"channel": "body", "op": "forward",
                                      "args": {}}, deadline_ms=30000, timeout=30)
         step("forward under lease", rf.get("ok"), rf.get("payload") or rf.get("error"))

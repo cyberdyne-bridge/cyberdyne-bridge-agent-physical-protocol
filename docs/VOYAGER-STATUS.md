@@ -1,6 +1,6 @@
 # Voyager 评估（2026-10-25）
 
-**结论：** 保留为 bridge / 历史参考；不作为第一版 1.21.1 外部 brain。
+**结论：** 1.21.1 bridge 已打通，本地 Qwen 单步 action 已跑通；完整 Voyager 自治脑（VoyagerEnv / curriculum / skill library / critic）仍未接，不作为第一版 brain。
 
 ---
 
@@ -101,7 +101,7 @@ adapter node --check pass
 ```text
 Voyager 是 2023 年的 research code
 不是本地 Qwen-ready 的 planner
-不是 1.21.1 的 body
+上游默认不是 1.21.1 的 body；我们用兼容补丁验证了 1.21.1 bridge
 没有测试套件
 ```
 
@@ -161,7 +161,7 @@ OK  offline after estop
 没有 skill library
 没有 critic
 没有 GPT-4
-没有 1.21.1
+没有完整 1.21.1 自治 agent
 ```
 
 `external/Voyager` / `external/voyager-mc` 仍不在仓库内；测试环境在 `/tmp`，
@@ -176,31 +176,34 @@ python3 agents/voyager/tools/voyager_fake_smoke.py
 
 ---
 
-## 3. 和当前目标的冲突
+## 3. A/B 结果（2026-10-25）
 
-当前 MC 计划固定：
-
-```text
-Minecraft 1.21.1
-```
-
-Voyager 文档和历史测试是：
+### A. 1.21.1 bridge
 
 ```text
-Minecraft 1.19.2
+mineflayer       4.39.0
+minecraft-data   3.117.0
+patch            voyager-state.patch + voyager-1.21.1.patch
+result           8/8
+position         z -41.3 -> -42.7
 ```
 
-这不是“改个端口”就能忽略的差异：
+完整步骤：[`VOYAGER-1.21.1.md`](VOYAGER-1.21.1.md)。
+
+### B. 本地 Qwen action planner
 
 ```text
-protocol / packet ids
-Mineflayer version
-bridge API
-item/block data
-pathfinder behavior
+model            Qwen3-4B-Instruct-2507-Q4_K_M.gguf @ 127.0.0.1:8099
+prompt           Voyager action_template.txt + response format
+embeddings       local hashing fallback, not OpenAIEmbeddings
+execution        CBAP -> Voyager adapter -> 1.21.1 bridge
+result           Qwen-generated JS ran; server logged "qwen voyager 121"
 ```
 
-要接 1.21.1，需要重新验证 Voyager bridge 和 Mineflayer，不是直接复用。
+完整边界：[`VOYAGER-LOCAL-QWEN.md`](VOYAGER-LOCAL-QWEN.md)。
+
+这不是完整 VoyagerEnv/curriculum/skill library/critic。
+1.21.1 也只验证了 state / forward / say / estop，不是 mining/crafting 全覆盖。
 
 ---
 
@@ -226,9 +229,9 @@ pathfinder behavior
 ### 现在的优先级
 
 ```text
-1. Qwen 本地 planner
-2. Mindcraft 作为外部 brain 对照
-3. Voyager 只在 1.21.1 bridge 重新验证后再考虑
+1. 保留 1.21.1 Voyager bridge
+2. 本地 Qwen planner 作为可替换脑
+3. 完整 VoyagerEnv/curriculum 另立项目，不混进 CBAP core
 ```
 
 ---
@@ -238,12 +241,14 @@ pathfinder behavior
 最小验收：
 
 ```text
-[ ] 1.21.1 server + 对应 Mineflayer bridge
-[ ] bridge /state 可读
-[ ] adapter 能 forward / say / stop
-[ ] CBAP device mc://voyager/bot 可见
-[ ] lease + estop + facts
-[ ] 8/8 重跑，不引用旧 1.19.2 结果
+[x] 1.21.1 server + Mineflayer bridge
+[x] bridge /state 可读
+[x] adapter 能 forward / say / stop
+[x] CBAP device mc://voyager/bot 可见
+[x] lease + estop + facts
+[x] 8/8 重跑
+[ ] VoyagerEnv / curriculum / skill library / critic
+[ ] 1.21.1 mining/crafting/furnace 全覆盖
 ```
 
 上游：

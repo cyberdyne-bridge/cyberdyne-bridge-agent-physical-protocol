@@ -20,8 +20,9 @@ The state endpoint patch is kept at `adapter/patches/voyager-state.patch`.
 Local smoke: `python3 agents/voyager/smoke.py`
 Tools: `agents/voyager/tools/`.
 
-**2026-10-25 audit:** bridge-only; upstream Voyager agent/curriculum/skill
-library are not wired. A real MC 1.19.2 bridge test now passes 8/8 with the
-adapter, but it still does not include VoyagerEnv, GPT-4, or 1.21.1. The
-1.2G node_modules / server live outside the repo. See
-[`docs/VOYAGER-STATUS.md`](../../docs/VOYAGER-STATUS.md).
+**2026-10-25 audit:** bridge-only. A real **1.21.1** bridge test now passes
+CBAP 8/8, and a local-Qwen Voyager-prompt action test executes through the
+bridge. It still does not include VoyagerEnv, curriculum, skill library,
+critic, GPT-4, or full 1.21.1 action coverage. See
+[`docs/VOYAGER-1.21.1.md`](../../docs/VOYAGER-1.21.1.md) and
+[`docs/VOYAGER-LOCAL-QWEN.md`](../../docs/VOYAGER-LOCAL-QWEN.md).
