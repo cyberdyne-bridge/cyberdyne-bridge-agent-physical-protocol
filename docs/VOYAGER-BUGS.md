@@ -1,9 +1,9 @@
 # Voyager bugs / minimal reproductions / PoCs
 
-**Date:** 2026-10-25  
-**Upstream:** MineDojo/Voyager `55e45a880755d0c8c66ca7fb5fe7962ac8974f89` (2023-07-27)  
-**Tested with:** Node 22.14, Mineflayer 4.39, Minecraft 1.21.1, Python 3.10  
-**Status:** reliability / compatibility report, not a security advisory  
+**Date:** 2026-10-25
+**Upstream:** MineDojo/Voyager `55e45a880755d0c8c66ca7fb5fe7962ac8974f89` (2023-07-27)
+**Tested with:** Node 22.14, Mineflayer 4.39, Minecraft 1.21.1, Python 3.10
+**Status:** reliability / compatibility report, not a security advisory
 **Not legal advice.**
 
 ---
