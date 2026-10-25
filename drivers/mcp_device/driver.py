@@ -50,6 +50,10 @@ from pathlib import Path
 from typing import Any
 
 from drivers.mcp_client import MCPError, MCPStdioClient
+from drivers.mcp_device.definition import (
+    DIGEST_VERSION, definition_digest, definition_sha256,
+    instructions_sha256,
+)
 from drivers.mcp_device.sandbox import SandboxUnavailable, wrap_command
 from kernel.legacy_runtime.secrets import SecretError, get_secret
 
@@ -142,6 +146,8 @@ class MCPDeviceDriver:
         self._last_error: str | None = None
         self._tool_digest: str | None = None
         self._instructions_digest: str | None = None
+        self._definition_digest: str | None = None
+        self._definition_sha256: str | None = None
         self._estop_verified: bool | None = None
         self._lock = threading.RLock()
         # Kernel-compatible callback hooks.  The Kernel replaces these on
@@ -164,8 +170,10 @@ class MCPDeviceDriver:
         except OSError as e:
             raise MCPDeviceError("E_SAFETY", f"cannot read pin file: {e}")
         data = {
-            "tools_sha256": self._tool_digest,
-            "instructions_sha256": self._instructions_digest,
+            "digest_version": DIGEST_VERSION,
+            "definition_sha256": self._definition_sha256,
+            "server_name": str((self.server_info or {}).get("name") or ""),
+            "server_version": str((self.server_info or {}).get("version") or ""),
         }
         flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
         if hasattr(os, "O_NOFOLLOW"):
@@ -180,6 +188,44 @@ class MCPDeviceDriver:
         except OSError as e:
             raise MCPDeviceError("E_SAFETY", f"cannot write pin file: {e}")
         return data
+
+    def _check_definition_pin(self) -> None:
+        """Validate the complete definition profile, or fail closed.
+
+        Legacy pins covered only four tool fields and a separate instructions
+        hash.  They cannot be trusted for the full profile; require a re-pin.
+        """
+        pin = self.manifest.get("pin_tools") or {}
+        if not pin:
+            pin = self._load_or_create_pin()
+        if "definition_sha256" not in pin:
+            raise MCPDeviceError(
+                "E_SAFETY",
+                "legacy tool pin lacks complete definition_sha256; "
+                "delete the pin and re-approve the definition",
+            )
+        want = str(pin.get("definition_sha256") or "")
+        if not want or not hmac.compare_digest(
+                want, str(self._definition_sha256 or "")):
+            raise MCPDeviceError(
+                "E_SAFETY",
+                "complete tool definition digest mismatch",
+            )
+
+    def _revalidate_definition(self) -> None:
+        """Detect a same-connection tools/list change before an action."""
+        latest = self.client.request("tools/list", {}, timeout=self.connect_timeout)
+        tools = list((latest or {}).get("tools") or [])
+        self.advertised_tools = {
+            str(t.get("name")) for t in tools if isinstance(t, dict)
+        }
+        current = definition_sha256(self.server_info, tools)
+        if not hmac.compare_digest(str(current), str(self._definition_sha256 or "")):
+            self.connected = False
+            raise MCPDeviceError(
+                "E_SAFETY",
+                "tool definition changed after connect",
+            )
 
     def _verify_manifest_signature(self) -> None:
         sig = self.manifest.get("signature")
@@ -219,28 +265,16 @@ class MCPDeviceDriver:
                     "E_NOTSUP",
                     f"{self.device_id}: advertised server is missing tools: {missing}",
                 )
-            tools = [
-                {"name": t.get("name"), "description": t.get("description"),
-                 "inputSchema": t.get("inputSchema"),
-                 "annotations": t.get("annotations")}
-                for t in (self.client.tools or []) if isinstance(t, dict)
-            ]
-            self._tool_digest = hashlib.sha256(
-                _canonical(tools).encode("utf-8")).hexdigest()
-            instr = (self.server_info or {}).get("instructions") or ""
-            self._instructions_digest = hashlib.sha256(
-                str(instr).encode("utf-8")).hexdigest()
-            pin = self.manifest.get("pin_tools") or {}
-            if not pin:
-                pin = self._load_or_create_pin()
-            if pin.get("tools_sha256") and not hmac.compare_digest(
-                    str(pin["tools_sha256"]), self._tool_digest):
+            tools = [t for t in (self.client.tools or []) if isinstance(t, dict)]
+            self._definition_sha256 = definition_sha256(self.server_info, tools)
+            self._definition_digest = definition_digest(self.server_info, tools)
+            self._tool_digest = self._definition_sha256
+            self._instructions_digest = instructions_sha256(self.server_info)
+            try:
+                self._check_definition_pin()
+            except Exception:
                 self.client.close()
-                raise MCPDeviceError("E_SAFETY", "tool definition digest mismatch")
-            if pin.get("instructions_sha256") and not hmac.compare_digest(
-                    str(pin["instructions_sha256"]), self._instructions_digest):
-                self.client.close()
-                raise MCPDeviceError("E_SAFETY", "server instructions digest mismatch")
+                raise
             self.connected = True
             self._last_error = None
             self.refresh()
@@ -451,6 +485,12 @@ class MCPDeviceDriver:
             if not self.connected:
                 self._last_error = "not connected"
                 return False
+            try:
+                self._revalidate_definition()
+            except Exception as e:
+                self._last_error = str(e)
+                self._emit_result("definition", False, f"definition changed: {e}")
+                return False
             op = str(command.get("op") or command.get("action") or "")
             if op in {"read", "state", "facts"}:
                 try:
@@ -497,6 +537,11 @@ class MCPDeviceDriver:
     def estop(self) -> bool:
         with self._lock:
             if not self.connected:
+                return False
+            try:
+                self._revalidate_definition()
+            except Exception as e:
+                self._last_error = str(e)
                 return False
             if not self.estop_spec:
                 self._last_error = "E_SAFETY: no estop tool declared"
@@ -572,6 +617,7 @@ class MCPDeviceDriver:
             "facts": bool(self.facts_spec),
             "facts_independent": bool(self.facts_spec.get("independent", False)),
             "tool_digest": self._tool_digest,
+            "definition_digest": self._definition_digest,
             "instructions_digest": self._instructions_digest,
             "estop": bool(self.estop_spec),
             "contract": "cbap-device-v1",
@@ -615,6 +661,7 @@ class MCPDeviceDriver:
             "server": self.server_info,
             "advertised_tools": sorted(self.advertised_tools),
             "tool_digest": self._tool_digest,
+            "definition_digest": self._definition_digest,
             "instructions_digest": self._instructions_digest,
             "estop_verified": self._estop_verified,
         }

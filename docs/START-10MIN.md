@@ -1,11 +1,11 @@
 # 10 分钟跑通 CBAP
 
-**实测范围：** 干净 clone → 118/118 conformance → host allowlist 文件写入  
-**实测主机：** Linux / Python 3.13 / 无 Minecraft / 无 Node / 无 LLM / 无 root  
-**实测耗时：** clone 7s + conformance 118s + host demo <2s  
+**实测范围：** 干净 clone → 129/129 conformance → host allowlist 文件写入
+**实测主机：** Linux / Python 3.13 / 无 Minecraft / 无 Node / 无 LLM / 无 root
+**实测耗时：** clone 7s + conformance 118s + host demo <2s
 **10 分钟预算：** 约 2.5 分钟执行，其余时间用来看架构和安全边界。
 
-> 这条 10 分钟路径只验证 **协议 + Kernel + host allowlist**。  
+> 这条 10 分钟路径只验证 **协议 + Kernel + host allowlist**。
 > 完整的 CBAP OS / QEMU / ISO / 桌面虚拟机是另一条路径，通常 15–30 分钟。
 
 ---
@@ -37,7 +37,7 @@ git clone --depth 1 \
 cd cyberdyne-bridge-agent-physical-protocol
 ```
 
-## 2. 跑 118 条 conformance（约 2 分钟）
+## 2. 跑 129 条 conformance（约 2 分钟）
 
 ```bash
 python3 tools/cbap_conformance.py --target fake
@@ -46,12 +46,12 @@ python3 tools/cbap_conformance.py --target fake
 期望结尾：
 
 ```text
-Ran 118 tests
+Ran 129 tests
 OK
-CBAP v1 conformance · target=fake · cases=118
+CBAP v1 conformance · target=fake · cases=129
 ```
 
-这一步不需要 Minecraft，也不需要任何外部依赖。  
+这一步不需要 Minecraft，也不需要任何外部依赖。
 它覆盖 Kernel、租约、fencing、cancel、estop、policy、MCP、host device 等路径。
 
 ## 3. 跑 host allowlist demo（约 2 秒）
@@ -134,7 +134,7 @@ python3 tools/cbap_conformance.py --target fake
 
 ### `Address already in use`
 
-10 分钟脚本默认使用 Unix socket + `--no-tcp`，不会占用 8765/18765。  
+10 分钟脚本默认使用 Unix socket + `--no-tcp`，不会占用 8765/18765。
 如果仍冲突，检查是否已有旧的 host bridge：
 
 ```bash
@@ -149,7 +149,7 @@ pgrep -af cbap_host_bridge
 
 ```text
 [ ] clean clone 成功
-[ ] conformance 118/118
+[ ] conformance 129/129
 [ ] host://fs 写入成功
 [ ] sha256 返回
 [ ] stat 返回 true

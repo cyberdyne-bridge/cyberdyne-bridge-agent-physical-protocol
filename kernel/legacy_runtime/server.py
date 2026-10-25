@@ -42,7 +42,9 @@ from .secrets import get_secret
 from .device_contract import (ContractError, contract_summary,
                               normalize_contract)
 from . import registry as registry_mod
-from drivers.mcp_device.driver import MCPDeviceDriver
+# MCPDeviceDriver is imported lazily where a manifest is loaded.  Importing it
+# at module load time creates a cycle through kernel.legacy_runtime.__init__
+# -> server -> drivers.mcp_device -> kernel.legacy_runtime.secrets.
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DEFAULT_CBAP_SOCKET = os.path.join(ROOT, "cbap.sock")
@@ -414,6 +416,7 @@ class KernelServer:
                 if dev in self._registry_drivers:
                     continue
                 try:
+                    from drivers.mcp_device.driver import MCPDeviceDriver
                     d = MCPDeviceDriver(path)
                     d.connect()
                     self._wire_driver(d)

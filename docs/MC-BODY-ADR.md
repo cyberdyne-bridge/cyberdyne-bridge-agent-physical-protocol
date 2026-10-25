@@ -124,5 +124,5 @@ body/ 有独立 README 和 API v0
 Python SDK 能连 fake body
 真实 Mineflayer hand 可在 1.21.1 本地服务器跑
 旧 hand 不被删除，只标记 legacy/reference
-CBAP 118 条测试不回归
+CBAP 129 条测试不回归
 ```

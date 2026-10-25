@@ -115,17 +115,20 @@ rejects unsigned manifests.
 
 ### Tool / instruction pinning
 
-On connect the driver hashes the advertised tool definitions and
-`server/discover.instructions`. Optional pins:
+On connect the driver hashes the **complete** advertised tool objects plus
+`serverInfo.name`, `serverInfo.version` and `serverInfo.instructions` using
+RFC 8785 JCS. Optional pins:
 
 ```json
 "pin_tools": {
-  "tools_sha256": "<hex>",
-  "instructions_sha256": "<hex>"
+  "definition_sha256": "<64 hex chars>"
 }
 ```
 
-A mismatch refuses to connect.
+A mismatch refuses to connect. Old four-field pins (`tools_sha256`) are
+rejected as legacy; delete the pin and re-approve the complete definition.
+Before every action the driver re-fetches `tools/list`; a same-connection
+definition change is rejected with `E_SAFETY`.
 
 ### Estop evidence
 

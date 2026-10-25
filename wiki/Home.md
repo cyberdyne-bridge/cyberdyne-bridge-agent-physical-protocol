@@ -22,8 +22,8 @@
 ## 当前状态
 
 ```text
-CBAP conformance: 118/118
-最新源码发行版: v1.7.4
+CBAP conformance: 129/129
+最新源码发行版: v1.7.5
 协议版本: CBAP v1
 主传输: Unix socket NDJSON
 可选: TCP / TLS / mTLS
