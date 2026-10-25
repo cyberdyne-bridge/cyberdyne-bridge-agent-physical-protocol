@@ -1,7 +1,7 @@
 # Voyager bridge on Minecraft 1.21.1
 
-**Date:** 2026-10-25  
-**Result:** real 1.21.1 bridge, CBAP 8/8 through `mc://voyager/bot`  
+**Date:** 2026-10-25
+**Result:** real 1.21.1 bridge, CBAP 8/8 through `mc://voyager/bot`
 **Scope:** Mineflayer bridge only; not VoyagerEnv, curriculum, skill library, or GPT-4.
 
 ---

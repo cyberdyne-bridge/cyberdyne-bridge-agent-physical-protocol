@@ -5,13 +5,13 @@
  const OnSave = require("./lib/observation/onSave");
  const Chests = require("./lib/observation/chests");
 -const { plugin: tool } = require("mineflayer-tool");
- 
+
  let bot = null;
- 
+
 @@ -95,19 +94,23 @@
              bot.iron_pickaxe = true;
          }
- 
+
 -        const { pathfinder } = require("mineflayer-pathfinder");
 -        const tool = require("mineflayer-tool").plugin;
 -        const collectBlock = require("mineflayer-collectblock").plugin;
@@ -42,12 +42,12 @@
 +                console.log("optional plugin skipped:", name, String(e.message || e));
 +            }
 +        }
- 
+
          // bot.collectBlock.movements.digCost = 0;
          // bot.collectBlock.movements.placeCost = 0;
 @@ -133,8 +136,9 @@
          res.json(bot.observe());
- 
+
          initCounter(bot);
 -        bot.chat("/gamerule keepInventory true");
 -        bot.chat("/gamerule doDaylightCycle false");
@@ -55,11 +55,11 @@
 +        // these count as chat/command spam and can kick the bot before the
 +        // first action. The body bridge does not need them.
      });
- 
+
      function onConnectionFailed(e) {
 @@ -301,41 +305,11 @@
      }
- 
+
      function returnItems() {
 -        bot.chat("/gamerule doTileDrops false");
 -        const crafting_table = bot.findBlock({
@@ -102,5 +102,5 @@
 +        // need inventory cleanup; leave it to the operator.
 +        return;
      }
- 
+
      function handleError(err) {

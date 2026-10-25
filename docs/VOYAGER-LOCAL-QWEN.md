@@ -1,9 +1,9 @@
 # Voyager-style local Qwen planner
 
-**Date:** 2026-10-25  
+**Date:** 2026-10-25
 **Result:** local Qwen generated executable JavaScript; CBAP executed it; the
 Minecraft server logged the requested chat. No GPT-4, OpenAI API, or
-OpenAIEmbeddings were used.  
+OpenAIEmbeddings were used.
 **Scope:** one action-planner step, not full VoyagerEnv/curriculum.
 
 ---
