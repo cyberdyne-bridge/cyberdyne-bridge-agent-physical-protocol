@@ -34,6 +34,77 @@ critic
 Voyager 自己的 autonomous Python agent
 ```
 
+
+---
+
+## 1.5 上游事实（2026-10-25 静态审计）
+
+从 `MineDojo/Voyager` 拉取的当前 `main`：
+
+```text
+repo          MineDojo/Voyager
+license       MIT
+stars         7,287
+last code     55e45a8 / 2023-07-27
+open issues   7
+Python LOC    2,809
+tests         无
+```
+
+它不是“最近还在活跃开发”的框架。
+`pushed_at` 看起来较新，但最后一次代码 commit 是 2023-07-27。
+
+依赖/运行方式：
+
+```text
+Python >= 3.9（README 写 3.9）
+Minecraft 1.19
+Fabric  0.14.18-1.19
+Java 17
+5 个 Fabric mods
+Node >= 16
+mineflayer 4.8.1
+```
+
+模型不是本地 Qwen：
+
+```text
+GPT-4
+GPT-3.5-turbo
+OpenAIEmbeddings
+tiktoken
+chromadb==0.3.29
+```
+
+`requirements.txt` 没有 lock，且 `chromadb` 是老版本；
+在 Python 3.14 下直接安装不是一个合理的第一选择。
+
+```text
+Python compileall   pass
+adapter node --check pass
+端到端 MC 测试      没有
+```
+
+上游 bridge 暴露：
+
+```text
+/start
+/step
+/stop
+/pause
+```
+
+`/state` 是我们 adapter 的 patch 加的，不是上游默认接口。
+
+### 这意味着
+
+```text
+Voyager 是 2023 年的 research code
+不是本地 Qwen-ready 的 planner
+不是 1.21.1 的 body
+没有测试套件
+```
+
 ---
 
 ## 2. 本地验证
@@ -129,6 +200,13 @@ pathfinder behavior
 [ ] CBAP device mc://voyager/bot 可见
 [ ] lease + estop + facts
 [ ] 8/8 重跑，不引用旧 1.19.2 结果
+```
+
+上游：
+
+```text
+https://github.com/MineDojo/Voyager
+commit 55e45a880755d0c8c66ca7fb5fe7962ac8974f89
 ```
 
 一句话：
