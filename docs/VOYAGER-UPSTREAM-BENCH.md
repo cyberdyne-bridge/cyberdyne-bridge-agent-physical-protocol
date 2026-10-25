@@ -1,8 +1,8 @@
 # Upstream Voyager agents on a CBAP-constrained body
 
-**Date:** 2026-10-25  
+**Date:** 2026-10-25
 **Result:** upstream `Voyager.learn()` completed **2/2** tasks on real Minecraft
-1.21.1; local Qwen; **no GPT-4 / OpenAIEmbeddings**  
+1.21.1; local Qwen; **no GPT-4 / OpenAIEmbeddings**
 **Fallback decision:** upstream `VoyagerEnv` was replaced by a CBAP-backed env,
 as requested.
 
