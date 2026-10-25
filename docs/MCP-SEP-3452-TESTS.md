@@ -57,8 +57,10 @@ session token swap / replay     -> 403
 ## 3. 测试文件
 
 ```text
-poc/mcp_auth_fixture.py               控制夹具
+jcs.py                                RFC 8785 JCS serializer
+poc/mcp_auth_fixture.py               控制夹具 / definition profile
 poc/mcp_scope_fork_poc.py             独立 PoC
+tests/mcp/test_jcs.py                 JCS + digest profile 测试
 tests/mcp/test_http_scope_integrity.py
 ```
 
@@ -160,15 +162,37 @@ OK
 
 ## 5. Digest 口径
 
-Full snapshot：
+**Canonicalization 是 RFC 8785 JCS，不是 `json.dumps(sort_keys=True)`。**
 
-```text
-serverInfo
-instructions
-tools（完整定义）
+Canonical object：
+
+```json
+{
+  "digestVersion": "mcp-tool-definition/v1",
+  "server": {
+    "name": "<serverInfo.name>",
+    "version": "<serverInfo.version>"
+  },
+  "instructions": "<instructions, absent -> empty string>",
+  "tools": ["<complete tool objects, sorted by name>"]
+}
 ```
 
-Four-field digest：
+规则：
+
+```text
+serverInfo.title       excluded
+tool.title             included
+tool order             sorted by name
+instructions           absent and empty string are equivalent
+scope                  comparison context, not digest input
+canonicalization       RFC 8785 JCS
+hash                   SHA-256, lowercase hex
+domain separator       "mcp-tool-definition/v1\0"
+output                 sha256:<64 hex chars>
+```
+
+Four-field digest 仅用于演示缺口：
 
 ```text
 name
@@ -182,19 +206,34 @@ annotations
 ```text
 只改 instructions 时：
   four_field_digest 不变
-  full digest 变
+  full definition digest 变
 ```
 
-这和 thread 里 Sultan 的数据方向一致：
+JCS test：
+
+```bash
+python3 -m unittest -v tests.mcp.test_jcs
+```
+
+包括：
+
+```text
+RFC 8785 官方 example vector
+number edge cases（1e-6 / 1e-7 / 1e21 / -0）
+tool 顺序归一化
+serverInfo.title 不进 digest
+tool.title 变化会检出
+instructions 缺失 = 空串
+server version 变化会检出
+```
+
+历史人口级数字来自 Sultan 的数据，不是这组本地测试生产的：
 
 ```text
 23,533 台 server，58% 有 instructions
 2,691 对读取中，instructions 变化 1,236
 其中 574 对 tools 完全没变
-四字段 digest 会漏掉其中一部分
 ```
-
-这些人口级数字来自 Sultan 的数据，不是这组本地测试生产的。
 
 ---
 

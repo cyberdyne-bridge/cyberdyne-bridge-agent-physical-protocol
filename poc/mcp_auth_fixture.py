@@ -21,6 +21,11 @@ import threading
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+try:
+    import jcs
+except ImportError:  # package-relative fallback
+    from . import jcs
+
 TOKENS = {
     "reader-a": "read",
     "reader-b": "read",
@@ -265,13 +270,35 @@ class MCPHTTPClient:
         return self._post("tools/list", {})["result"]["tools"]
 
 
+DIGEST_VERSION = "mcp-tool-definition/v1"
+_DOMAIN = b"mcp-tool-definition/v1\x00"
+
+
 def canonical(value) -> str:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True,
-                      separators=(",", ":"))
+    """RFC 8785 JCS, not just sorted-key JSON."""
+    return jcs.dumps(value)
 
 
-def digest(value) -> str:
-    return hashlib.sha256(canonical(value).encode("utf-8")).hexdigest()[:16]
+def definition_payload(value: dict) -> dict:
+    server = value.get("serverInfo") or {}
+    tools = sorted(
+        list(value.get("tools") or []),
+        key=lambda t: str(t.get("name") or ""),
+    )
+    return {
+        "digestVersion": DIGEST_VERSION,
+        "server": {
+            "name": str(server.get("name") or ""),
+            "version": str(server.get("version") or ""),
+        },
+        "instructions": str(value.get("instructions") or ""),
+        "tools": tools,
+    }
+
+
+def digest(value: dict) -> str:
+    data = canonical(definition_payload(value)).encode("utf-8")
+    return "sha256:" + hashlib.sha256(_DOMAIN + data).hexdigest()
 
 
 def snapshot(client: MCPHTTPClient) -> dict:
@@ -284,7 +311,13 @@ def snapshot(client: MCPHTTPClient) -> dict:
 
 
 def four_field_digest(tools: list[dict]) -> str:
-    fields = [{k: t.get(k) for k in
-               ("name", "description", "inputSchema", "annotations")}
-              for t in tools]
-    return digest(fields)
+    """Deliberately incomplete profile, used to demonstrate the gap."""
+    fields = sorted(
+        [{k: t.get(k) for k in
+          ("name", "description", "inputSchema", "annotations")}
+         for t in tools],
+        key=lambda t: str(t.get("name") or ""),
+    )
+    domain = b"mcp-tool-definition/four-field/v1\x00"
+    data = canonical(fields).encode("utf-8")
+    return "sha256:" + hashlib.sha256(domain + data).hexdigest()

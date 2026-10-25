@@ -109,7 +109,7 @@ python3 -m unittest -q tests.body.test_mc_body_sdk
 MCP #3452 的认证 HTTP / scope 测试：
 
 ```bash
-python3 -m unittest -v tests.mcp.test_http_scope_integrity
+python3 -m unittest -v tests.mcp.test_jcs tests.mcp.test_http_scope_integrity
 python3 poc/mcp_scope_fork_poc.py
 
 # 7 台官方 reference × 5 次（需要本地 Node/Python 依赖）
