@@ -94,6 +94,7 @@ docs/MC-BODY-ADR.md        决策记录
 docs/MC-BODY-API.md        Body API v0
 sdk/python/mc_body_client.py
 tests/body/                SDK 测试
+docs/MCP-SEP-3452-TESTS.md MCP 授权范围 / instructions digest 测试
 ```
 
 ```bash
@@ -101,6 +102,12 @@ python3 -m unittest -q tests.body.test_mc_body_sdk
 ```
 
 真实 Mineflayer hand 还需要 Node 20+ 和本地 1.21.1 服务器。
+
+MCP #3452 的认证 HTTP / scope 测试：
+
+```bash
+python3 -m unittest -v tests.mcp.test_http_scope_integrity
+```
 
 ## 30 秒读懂定位
 
