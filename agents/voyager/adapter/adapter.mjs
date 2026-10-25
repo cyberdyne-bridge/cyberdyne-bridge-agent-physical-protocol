@@ -47,6 +47,10 @@ async function state() {
       hp: Number(st.health ?? 20), food: Number(st.food ?? 20),
       onGround: !!st.onGround, held: st.equipment?.[4] || null,
       items: d.inventory || {}, chat: [],
+      voxels: d.voxels || [], biome: st.biome || null,
+      timeOfDay: st.timeOfDay || null, entities: st.entities || {},
+      inventoryUsed: st.inventoryUsed ?? null,
+      equipment: st.equipment || [],
       acting: null, bot: st.name || 'bot'
     };
   } catch (e) { return null; }

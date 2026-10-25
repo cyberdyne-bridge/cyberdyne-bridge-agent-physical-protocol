@@ -22,7 +22,9 @@ Tools: `agents/voyager/tools/`.
 
 **2026-10-25 audit:** bridge-only. A real **1.21.1** bridge test now passes
 CBAP 8/8, and a local-Qwen Voyager-prompt action test executes through the
-bridge. It still does not include VoyagerEnv, curriculum, skill library,
-critic, GPT-4, or full 1.21.1 action coverage. See
+bridge, and the local-Qwen autonomy loop completes 3/3 iterations. It still
+does not include the upstream VoyagerEnv benchmark or full mining/crafting
+coverage. See
 [`docs/VOYAGER-1.21.1.md`](../../docs/VOYAGER-1.21.1.md) and
-[`docs/VOYAGER-LOCAL-QWEN.md`](../../docs/VOYAGER-LOCAL-QWEN.md).
+[`docs/VOYAGER-LOCAL-QWEN.md`](../../docs/VOYAGER-LOCAL-QWEN.md) and
+[`docs/VOYAGER-AUTONOMY.md`](../../docs/VOYAGER-AUTONOMY.md).

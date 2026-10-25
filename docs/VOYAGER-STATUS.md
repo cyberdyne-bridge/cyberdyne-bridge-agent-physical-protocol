@@ -205,6 +205,24 @@ result           Qwen-generated JS ran; server logged "qwen voyager 121"
 这不是完整 VoyagerEnv/curriculum/skill library/critic。
 1.21.1 也只验证了 state / forward / say / estop，不是 mining/crafting 全覆盖。
 
+### C. 3/3 autonomy loop
+
+```text
+docs/VOYAGER-AUTONOMY.md
+agents/voyager/autonomy/loop.py
+```
+
+真实 1.21.1 + 本地 Qwen 跑完 3 个迭代：
+
+```text
+Say 'voyager autonomy online'   OK
+Say 'curriculum online'         OK
+Say 'skill memory online'       OK
+```
+
+循环包含 curriculum -> action -> CBAP env -> critic -> skill library。
+仍是 Voyager-style 实现，不是上游 VoyagerEnv benchmark。
+
 ---
 
 ## 4. 结论

@@ -201,8 +201,8 @@ the task. Use moveForward(bot) and say(bot, text) where useful.
                     {"role": "user", "content": human},
                 ], model=args.model)
                 code, call = extract_code(text)
-                # Ensure a local chat is observed before /step returns.
-                code = re.sub(r"(?<!await )\bsay\(", "await say(", code)
+                # Do not rewrite function definitions. Calls may be awaited;
+                # the bridge's onChat and the server log are checked separately.
                 step(f"Qwen code attempt {attempt}", True, text[:500])
                 _, _, res = client.write(
                     fd,
