@@ -82,7 +82,7 @@ chromadb==0.3.29
 ```text
 Python compileall   pass
 adapter node --check pass
-端到端 MC 测试      没有
+端到端 bridge 测试  8/8（2026-10-25 复现，见下）
 ```
 
 上游 bridge 暴露：
@@ -119,16 +119,60 @@ node --check agents/voyager/adapter/adapter.mjs
 
 注意：smoke 只检查文件存在和 JSON 可解析，**不是端到端 MC 测试**。
 
-历史文档记录过 2026-10-23 的 1.19.2 bridge 8/8 实测，但当前：
+2026-10-25 已用真实环境复现 bridge-only 的 8/8：
 
 ```text
-external/Voyager        不在当前 checkout
-external/voyager-mc     不在当前 checkout
-Minecraft 1.19.2 server 未运行
-bridge                  未运行
+JDK              Corretto 17.0.21
+Minecraft        1.19.2 vanilla, offline-mode, port 25566
+Node             22.14.0
+Voyager bridge   /tmp/voyager-audit, patched /state
+CBAP adapter     agents/voyager/adapter/adapter.mjs
+Kernel          explicit test policy (read/write/lease/estop)
+test            agents/voyager/tools/voyager_cbap.py
+result          8/8
 ```
 
-所以那组 8/8 **现在不能当场复现**，只能作为历史证据引用。
+复现结果：
+
+```text
+OK  Voyager device visible
+OK  read state             [15.5, 65, -30.089...]
+OK  lease
+OK  forward under lease
+OK  position changed       z -30.089 -> -26.210
+OK  say under lease
+OK  estop
+OK  offline after estop
+```
+
+两个实测修正：
+
+```text
+1. 上游 /state 需要 adapter patch；上游默认没有这个 endpoint。
+2. forward 不能用 bot.waitForTicks(20)：1.19.2 server 暂停/慢 tick 时会
+   抛 "Timeout waiting for 10 ticks"; 改为 1000ms wall-clock pulse。
+```
+
+这仍然只是 **bridge body** 的 8/8：
+
+```text
+没有 VoyagerEnv
+没有 curriculum
+没有 skill library
+没有 critic
+没有 GPT-4
+没有 1.21.1
+```
+
+`external/Voyager` / `external/voyager-mc` 仍不在仓库内；测试环境在 `/tmp`，
+不会把 1.2G node_modules 或 1.9G server 提交进主仓。
+
+另外提供了无 Minecraft 的 fake bridge 测试：
+
+```bash
+python3 agents/voyager/tools/voyager_fake_smoke.py
+# 8/8, 不证明真实 Mineflayer
+```
 
 ---
 

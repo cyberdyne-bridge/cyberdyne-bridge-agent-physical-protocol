@@ -47,8 +47,12 @@ def main() -> int:
                           mapping_path=os.path.join(ROOT, "agents/voyager/adapter/mapping.json"),
                           connect_timeout=5, reconnect=True)
         driver.connect()
+        policy = {"default": {"devices": ["*"],
+                              "capabilities": ["read", "write", "lease", "estop"]},
+                  "agents": {}}
         kernel = KernelServer(drivers=[driver], socket_path=sock,
-                              audit_path=os.path.join(tmp, "audit.jsonl"))
+                              audit_path=os.path.join(tmp, "audit.jsonl"),
+                              policy=policy)
         if not kernel.start():
             raise RuntimeError("kernel did not start")
         client = CBAPClient(sock, agent_id="voyager-probe")

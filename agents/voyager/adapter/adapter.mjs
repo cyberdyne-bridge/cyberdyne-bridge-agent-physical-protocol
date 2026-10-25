@@ -103,7 +103,9 @@ const server = net.createServer((sock) => {
                      why:r.status===200?undefined:`HTTP ${r.status}`, onChat:chats(r)});
           const st = await state(); if (st) broadcast(st);
         } else if (cmd === 'forward') {
-          const code = "bot.setControlState('forward', true); await bot.waitForTicks(20); bot.setControlState('forward', false);";
+          // Use a wall-clock pulse instead of bot.waitForTicks(): the
+          // upstream 1.19 bridge can stop ticking while the server is paused.
+          const code = "bot.setControlState('forward', true); await new Promise(r => setTimeout(r, 1000)); bot.setControlState('forward', false);";
           const r = await runCode(code);
           send(sock, {type:'event', kind:'cmdResult', cmd:'forward', ok:r.status===200,
                      why:r.status===200?undefined:`HTTP ${r.status}`, onChat:chats(r)});
