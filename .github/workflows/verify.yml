@@ -22,6 +22,10 @@ jobs:
         env:
           PYTHONPATH: .
         run: python -m unittest discover -s tests/cbap -p 'test_*.py'
+      - name: Native task guards
+        env:
+          PYTHONPATH: .
+        run: python -m unittest discover -s tests/native -p 'test_*.py'
 
   node-syntax:
     runs-on: ubuntu-latest
