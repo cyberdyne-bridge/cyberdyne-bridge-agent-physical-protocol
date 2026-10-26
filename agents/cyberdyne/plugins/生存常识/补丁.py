@@ -2304,10 +2304,28 @@ def 安排一趟探索(目标方块, 状态, 缺的方块名, 背包=None):
     if not 记.get("起点"):
         记["起点"] = list(我)
 
-    # 从「下一趟该走的方向」开始，顺时针找一个**路上没有危险**的
+    # ★ 2026-10-26：先把“内陆”定义出来。
+    #   水在身体哪一侧，陆地就在相反方向；水边的树通常在内陆，
+    #   所以优先朝“远离水”的方向走，而不是按数组顺序乱转。
     总 = len(方位表)
-    for 偏移 in range(总):
-        号 = (记["试过"] + 偏移) % 总
+    水们 = []
+    for w in (扫.get("水") or []):
+        p = w.get("p") if isinstance(w, dict) else None
+        if isinstance(p, (list, tuple)) and len(p) >= 3:
+            水们.append((float(p[0]), float(p[2])))
+    内陆 = None
+    if 水们:
+        vx = sum(p[0] - 我[0] for p in 水们) / len(水们)
+        vz = sum(p[1] - 我[2] for p in 水们) / len(水们)
+        长 = (vx * vx + vz * vz) ** 0.5
+        if 长 > 0.1:
+            内陆 = (-vx / 长, -vz / 长)
+    候选方向 = list(range(总))
+    if 内陆 is not None:
+        候选方向.sort(key=lambda i: -(方位表[i][0] * 内陆[0] + 方位表[i][1] * 内陆[1]))
+    else:
+        候选方向 = [(记["试过"] + i) % 总 for i in range(总)]
+    for 号 in 候选方向:
         dx, dz, 名 = 方位表[号]
         终点 = [起[0] + dx * 每趟走多远, 起[1], 起[2] + dz * 每趟走多远]
         挡路 = [x for (x, z, n) in 险

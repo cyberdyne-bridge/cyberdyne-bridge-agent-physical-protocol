@@ -2156,7 +2156,22 @@ class 任务栈:
             return False
         方向 = [(5, 0), (0, 5), (-5, 0), (0, -5),
                 (5, 5), (-5, 5), (-5, -5), (5, -5)]
-        i = int(任.get("探索段") or 0) % len(方向)
+        扫 = (s or {}).get("scan") or {}
+        水们 = []
+        for w in (扫.get("水") or []):
+            p = w.get("p") if isinstance(w, dict) else None
+            if isinstance(p, (list, tuple)) and len(p) >= 3:
+                水们.append((float(p[0]), float(p[2])))
+        序 = list(range(len(方向)))
+        if 水们:
+            vx = sum(p[0] - 我[0] for p in 水们) / len(水们)
+            vz = sum(p[1] - 我[2] for p in 水们) / len(水们)
+            长 = (vx * vx + vz * vz) ** 0.5
+            if 长 > 0.1:
+                内陆 = (-vx / 长, -vz / 长)
+                序.sort(key=lambda j: -(方向[j][0] * 内陆[0] + 方向[j][1] * 内陆[1]))
+        i0 = int(任.get("探索段") or 0)
+        i = 序[i0 % len(序)]
         dx, dz = 方向[i]
         任["探索段"] = i + 1
         位 = [round(我[0] + dx), round(我[1]), round(我[2] + dz)]

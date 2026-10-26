@@ -619,7 +619,7 @@ function 扫环境(半径, 步长, 要找, 找半径) {
     出.脚下 = 脚下 ? 脚下.name : null;
 
     // 方块统计（抽样）
-    const 计 = {}, 有意思 = [], 险 = [];
+    const 计 = {}, 有意思 = [], 险 = [], 水们 = [];
     const 地面计 = {};
     // ★★ 2026-10-07：石头类**不在**「兴趣方块」名单里，所以它站在草地上
     //   就找不到石头的坐标，求解器只好去挑「黑石」（下界的东西，实例里压根没有）。
@@ -642,6 +642,9 @@ function 扫环境(半径, 步长, 要找, 找半径) {
           计[b.name] = (计[b.name] || 0) + 1;
           if (危险方块.has(b.name) && 险.length < 4) {
             险.push({ name: b.name, p: [Math.floor(p.x + dx), Math.floor(p.y + dy), Math.floor(p.z + dz)] });
+          }
+          if (b.name === 'water' && 水们.length < 12) {
+            水们.push({ name: 'water', p: [Math.floor(p.x + dx), Math.floor(p.y + dy), Math.floor(p.z + dz)] });
           }
           if (石头家.has(b.name)) {
             const d2 = dx * dx + dz * dz;
