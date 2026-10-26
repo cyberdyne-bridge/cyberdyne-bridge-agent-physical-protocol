@@ -539,6 +539,19 @@ let 上次扫描 = 0;
  *   规矩：**刚变没的坐标要上报**（带时间戳，过期就丢）。
  */
 const 最近没了 = [];
+const 扫描记忆 = new Map();   // (x,y,z) -> {name, t}；仿生雷达“记住了”的视觉事实
+const 扫描记忆上限 = 4000;
+function 记扫描(条) {
+  try {
+    if (!条 || !Array.isArray(条.p) || 条.p.length < 3) return;
+    const k = Math.floor(条.p[0]) + ',' + Math.floor(条.p[1]) + ',' + Math.floor(条.p[2]);
+    扫描记忆.set(k, { name: 条.name || null, p: [Math.floor(条.p[0]), Math.floor(条.p[1]), Math.floor(条.p[2])], t: Date.now() });
+    if (扫描记忆.size > 扫描记忆上限) {
+      const 最老 = 扫描记忆.keys().next().value;
+      扫描记忆.delete(最老);
+    }
+  } catch (e) {}
+}
 /* ★★★ 2026-10-10 主人要求③：「**重启预热：监工拉起脑的时候，必须先向手侧拉取一份
  *   "过去 5 分钟的方块变化记录"**，而不是直接空白开局。」✓
  *   ⇒ 这份记录就是下面的 `最近没了` ✓ —— 原来只留 **80 条 / 1 分钟** ✗ 不够 5 分钟 ✗
@@ -585,9 +598,11 @@ function 扫环境(半径, 步长, 要找, 找半径) {
   const 出 = { t: Date.now() };
   try {
     const p = bot.entity.position;
-    半径 = Math.min(Math.max(Number(半径) || 12, 4), 24);
+    // 近场统计仍用 12~24 格；远场视野用 8 个区块（128 格）的视锥射线。
+    const 近半径 = Math.min(Math.max(Number(半径) || 12, 4), 24);
+    const 远半径 = 128;
     步长 = Math.min(Math.max(Number(步长) || 2, 1), 4);
-    出.半径 = 半径; 出.步长 = 步长;
+    出.半径 = 近半径; 出.远半径 = 远半径; 出.步长 = 步长;
 
     // 时间 / 天气（API 已核实：bot.time.timeOfDay、bot.isRaining、bot.thunderState）
     const 刻 = (bot.time && typeof bot.time.timeOfDay === 'number') ? bot.time.timeOfDay : null;
@@ -615,12 +630,12 @@ function 扫环境(半径, 步长, 要找, 找半径) {
     const 石头家 = new Set(['stone', 'cobblestone', 'deepslate', 'cobbled_deepslate',
       'blackstone', 'cobbled_deepslate']);
     let 石头位 = null, 石头距 = Infinity;
-    for (let dx = -半径; dx <= 半径; dx += 步长) {
+    for (let dx = -近半径; dx <= 近半径; dx += 步长) {
       // ⚠ 只看"脚上下这几格"：原来 dy 从 -3 到 5 一路抽，结果整屏都是地下石头，
       // 摘要里除了 stone 什么都看不见（实测）。地面那层（dy=-1）**单独统计**，
       // 免得它把"周围有什么"的名单占满。
       for (let dy = 0; dy <= 2; dy += 1) {
-        for (let dz = -半径; dz <= 半径; dz += 步长) {
+        for (let dz = -近半径; dz <= 近半径; dz += 步长) {
           let b = null;
           try { b = bot.blockAt(p.offset(dx, dy, dz)); } catch (e) { continue; }
           if (!b || b.name === 'air' || b.name === 'cave_air' || b.name === 'void_air') continue;
@@ -718,6 +733,8 @@ function 扫环境(半径, 步长, 要找, 找半径) {
      *   根子在这一句：上面只挑"最近的石头"，**从来没问过它露没露出来**。
      *   ⚠ 只给**中选的那一块**做这个检查（不是每一块都算）—— 开销可以忽略，
      *     而"看遮挡"永远只有身体插件那一份实现，这里不抄第二遍。 */
+    for (const _条 of 有意思) 记扫描(_条);
+    for (const _条 of (出.找 || [])) 记扫描(_条);
     if (石头位) {
       try {
         const 看遮挡 = 身体插件 && 身体插件.看遮挡;
@@ -759,6 +776,48 @@ function 扫环境(半径, 步长, 要找, 找半径) {
 
     /* ★ 把"刚变没的坐标"一起报出去（60 秒内）——
      *   车厢据这把那些陈条目从本地记忆里划掉，这样"刷新坐标"才是真刷新 ✓ */
+    /* ★ 2026-10-26：仿生视锥。
+     *   不是 360° 透视：只沿当前 yaw/pitch 的视锥发射线，射线遇到第一个
+     *   实心方块就停；远处最多 8 个区块（128 格）。局部仍保留近场扫描，
+     *   用于脚下/身边的操作。
+     */
+    try {
+      const 眼 = p.offset(0, Number(bot.entity.eyeHeight) || 1.62, 0);
+      const yaw0 = Number(bot.entity.yaw) || 0;
+      const pitch0 = Number(bot.entity.pitch) || 0;
+      const 视锥 = [];
+      const 见过 = new Set();
+      for (let ay = -0.55; ay <= 0.5501; ay += 0.1) {
+        for (let ap = -0.30; ap <= 0.3001; ap += 0.1) {
+          const yy = yaw0 + ay, pp = Math.max(-1.45, Math.min(1.45, pitch0 + ap));
+          const dir = 眼.offset(
+            -Math.sin(yy) * Math.cos(pp),
+            Math.sin(pp),
+            -Math.cos(yy) * Math.cos(pp),
+          ).minus(眼).normalize();
+          let 块 = null;
+          try { 块 = bot.world.raycast(眼, dir, 远半径); } catch (e) { 块 = null; }
+          if (!块 || !块.position) continue;
+          if (['air', 'cave_air', 'void_air'].includes(块.name)) continue;
+          const key = Math.floor(块.position.x) + ',' + Math.floor(块.position.y) + ',' + Math.floor(块.position.z);
+          if (见过.has(key)) continue;
+          见过.add(key);
+          const 条 = { name: 块.name, p: [Math.floor(块.position.x), Math.floor(块.position.y), Math.floor(块.position.z)],
+                      距: Math.round(眼.distanceTo(块.position) * 10) / 10, 视野: true };
+          视锥.push(条);
+          记扫描(条);
+          if (兴趣方块.has(块.name) && 有意思.length < 10) 有意思.push(条);
+          if (石头家.has(块.name) && !石头位) 石头位 = { name: 块.name, p: 条.p, 视野: true };
+          if (视锥.length >= 24) break;
+        }
+        if (视锥.length >= 24) break;
+      }
+      出.视锥 = 视锥;
+      // 已记住的视野事实也带上（只用于观察/探索，不拿旧坐标替代当前事实）
+      出.已扫过 = 扫描记忆.size;
+      出.记得 = Array.from(扫描记忆.values()).slice(-40);
+    } catch (e) { 出.视锥 = []; }
+
     try {
       const 现在 = Date.now();
       // ★ 主人要求③：预热要的是"过去 **5 分钟**"✓（原来只给 1 分钟 ✗）
