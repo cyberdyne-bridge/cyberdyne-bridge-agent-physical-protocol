@@ -1020,6 +1020,23 @@ function emit(kind, payload) {
 
 let 当前动作 = 'idle';
 let 动作定时器 = null;
+/* ★ 2026-10-26：经过水面时必须保持漂浮。
+ *   只在水里按住 jump；上岸就松开。水下挖掘以后另做开关，当前默认不主动下潜。
+ *   每 100ms 补一次，因为 pathfinder/collectblock 也会改 jump 控制状态。 */
+let 水中漂浮 = false;
+setInterval(() => {
+  try {
+    if (!bot || !bot.entity) return;
+    const 在水 = !!bot.entity.isInWater;
+    if (在水 && !水中漂浮) {
+      水中漂浮 = true;
+      bot.setControlState('jump', true);
+    } else if (!在水 && 水中漂浮) {
+      水中漂浮 = false;
+      bot.setControlState('jump', false);
+    }
+  } catch (e) { /* 状态读不到就下一拍再试 */ }
+}, 100);
 let 重连定时器 = null;
 let 重连次数 = 0;
 let 主动退出 = false;
