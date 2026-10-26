@@ -41,6 +41,10 @@
   - 第十一轮实机尝试 `做个石镐`：CBAP 下已拿到 `cobblestone 4` / `diorite 4`，但任务卡在“前面挡着 diorite”的重复 dig 拒绝；服务端背包仍没有 `stone_pickaxe`，因此不构成成功。
   - 第十二轮去掉 adapter 的伪造状态字段：`look`/`friends`/`deaths`/`respawned` 现在从 CBAP 状态帧读取，不再硬编码 0/空。
   - 第十三轮把 legacy hand 的中文机器字段（`先挖`/`挡着`/`未暴露`/`够不着`/`距`…）在 CBAP wire 上映射为 ASCII，再由 adapter 还原，避免障碍自愈丢失 `先挖`。
+  - 第十四轮修了更根的一层：CBAP 错误结果把机器字段放在 `facts`，adapter 之前只读 `payload`；现在两者都读。
+  - 实机复验：障碍自愈已能读到 `先挖`，现场出现
+    `[障碍自愈] 「diorite」@[848,52,-2] 就在手边 ... 直接挖`
+    并成功挖掉挡路的 diorite。随后又撞到插入步骤的陈坐标，任务失败；石镐仍未拿到。
 
 ---
 
