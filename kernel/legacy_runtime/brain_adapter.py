@@ -57,6 +57,8 @@ class CBAPHandAdapter:
         self._outbox: list[dict] = []
         self._last_error = ""
         self.烂包数 = 0
+        self.lease_ttl_ms = max(1000, int(self.cfg.get("lease_ttl_ms", 30000)))
+        self.lease_until = 0.0
 
     # ── 接线口-compatible API ─────────────────────────────────
 
@@ -74,6 +76,12 @@ class CBAPHandAdapter:
                     raise RuntimeError(f"open failed: {err} {why}")
                 self.client = c
                 self.fd = r["payload"]["fd"]
+                lease = c.lease(self.fd, ttl_ms=self.lease_ttl_ms, timeout=3.0)
+                if not lease.get("ok"):
+                    err = (lease.get("error") or {}).get("code", "?")
+                    why = (lease.get("error") or {}).get("message", "")
+                    raise RuntimeError(f"lease failed: {err} {why}")
+                self.lease_until = time.monotonic() + self.lease_ttl_ms / 1000.0
                 self._last_error = ""
                 self.说(f"[CBAP] 接线口连上了 {self.cbap_socket}（fd={self.fd}）")
                 return True
@@ -129,6 +137,23 @@ class CBAPHandAdapter:
             return [], True
         return out, False
 
+    def _ensure_lease(self) -> bool:
+        """Renew before every CBAP operation; leases are deliberately short."""
+        if not self.client or not self.fd:
+            return False
+        if time.monotonic() < self.lease_until - 5.0:
+            return True
+        try:
+            r = self.client.lease(self.fd, ttl_ms=self.lease_ttl_ms, timeout=3.0)
+            if not r.get("ok"):
+                self._last_error = str((r.get("error") or {}).get("message") or "lease failed")
+                return False
+            self.lease_until = time.monotonic() + self.lease_ttl_ms / 1000.0
+            return True
+        except (OSError, TimeoutError) as e:
+            self._last_error = str(e)
+            return False
+
     def 发(self, obj: dict) -> bool:
         if not isinstance(obj, dict) or not self.client or not self.fd:
             return False
@@ -136,6 +161,13 @@ class CBAPHandAdapter:
         if not isinstance(cmd, str) or not cmd:
             return False
         try:
+            if not self._ensure_lease():
+                self._outbox.append({
+                    "type": "event", "kind": "cmdResult", "cmd": cmd,
+                    "ok": False, "why": "CBAP lease renewal failed: " + self._last_error,
+                    "t": int(time.time() * 1000),
+                })
+                return False
             if cmd == "scan_environment":
                 rid = self.client.request("ioctl", {
                     "fd": self.fd, "request": "scan",
