@@ -147,6 +147,8 @@ def 装上(bridge, 数=None, 日志=None, **kw):
                           f"这一趟不算数，让它失败重规划。", flush=True)
                     if isinstance(任, dict):
                         任["_陈坐标"] = True
+                    if isinstance(步, dict):
+                        步["_陈坐标"] = True
                     return False, None
                 if 好 and isinstance(任, dict) and 任.get(初见) in 空气名:
                     print(f"[挖空守卫] ★ 第 {k} 格**初见即空** —— 这是陈坐标"
@@ -154,12 +156,16 @@ def 装上(bridge, 数=None, 日志=None, **kw):
                           flush=True)
                     if isinstance(任, dict):
                         任["_陈坐标"] = True
+                    if isinstance(步, dict):
+                        步["_陈坐标"] = True
                     return False, None
                 if 好 and not _态(栈类)["发了几次"].get(k):
                     print(f"[挖空守卫] ★ 第 {k} 格判定「挖完了」，可一次 dig 都没发过 —— "
                           f"陈坐标。这一趟不算数。", flush=True)
                     if isinstance(任, dict):
                         任["_陈坐标"] = True
+                    if isinstance(步, dict):
+                        步["_陈坐标"] = True
                     return False, None
             if 好:
                 if k is not None:
