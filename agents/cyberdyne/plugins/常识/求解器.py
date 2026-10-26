@@ -354,6 +354,17 @@ def 求解(目标, 数量=1, 背包=None, 方块在哪=None, 最多深度=None):
         for c in 候:
             if 工作.get(c, 0) > 0:
                 return c
+        # ★ 实景优先：附近真的有的那种木头，优先于配方默认/字母序。
+        #   随机世界里可能是 birch / oak / spruce；不能因为配方缓存里先写
+        #   cherry 就要求 cherry_log。没有实物来源时再走下面的难度排序。
+        def _近处木板源(c):
+            if not str(c).endswith("_planks"):
+                return False
+            木 = str(c)[:-7]
+            return any(x in 近处 for x in (木 + "_log", 木 + "_wood", 木 + "_stem"))
+        _实景 = [c for c in 候 if _近处木板源(c)]
+        if _实景:
+            return sorted(_实景, key=lambda c: (够不着(c), 难度.get(c, 无穷), c))[0]
         # ★★★★ 2026-10-09 主人当场抓包（原话）：
         #   「嗯？怎么日志说要黑石？**傻逼吗？那是石头，挖了就是圆石！**」
         #   **元凶就是这一行** ✗：
