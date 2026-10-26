@@ -183,6 +183,21 @@ class CBAPHandAdapter:
                 })
                 self._pending[rid] = "watch_blocks"
                 return True
+            if cmd == "watch_items":
+                rid = self.client.request("ioctl", {
+                    "fd": self.fd, "request": "watch_items",
+                    "args": {"items": obj.get("list") or ["*"]},
+                })
+                self._pending[rid] = "watch_items"
+                return True
+            if cmd == "furnace_watch":
+                rid = self.client.request("ioctl", {
+                    "fd": self.fd, "request": "furnace_watch",
+                    "args": {"p": obj.get("p"),
+                             "每_ms": obj.get("每_ms", 2000)},
+                })
+                self._pending[rid] = "furnace_watch"
+                return True
             if cmd == "ping":
                 rid = "ping-" + str(int(time.time() * 1000))
                 self.client.send({"v": "1.0", "type": "ping", "id": rid,
