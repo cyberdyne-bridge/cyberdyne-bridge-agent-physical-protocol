@@ -445,7 +445,16 @@ def 扫描表(状态):
     # ★ 2026-10-26：远场视锥看到的方块也要进求解器。
     #   之前只有近场 `可交互`/`找`，所以 128 格视距里明明看见橡木，
     #   求解器仍只看到“附近没有树”，继续出去找。单棵树也是树，不要求森林。
-    for 条 in (扫.get("视锥") or []):
+    # ★ 2026-10-26：手侧单独报的 `scan.木`，不受 6 个可交互名额和朝向限制。
+    #   单棵树/任意树种都直接进方块表，避免“眼睛看见了，求解器没看见”。
+    for 条 in (扫.get("木") or []):
+        if not isinstance(条, dict):
+            continue
+        名, p = 条.get("name"), 条.get("p")
+        if 名 and isinstance(p, (list, tuple)) and len(p) >= 3:
+            表.setdefault(str(名), [int(p[0]), int(p[1]), int(p[2])])
+
+    # ★ 2026-10-26：远场视锥看到的方块也要进求解器。
         if not isinstance(条, dict):
             continue
         名, p = 条.get("name"), 条.get("p")
