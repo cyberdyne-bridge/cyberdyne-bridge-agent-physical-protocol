@@ -603,6 +603,7 @@ function 扫环境(半径, 步长, 要找, 找半径) {
     const 远半径 = 128;
     步长 = Math.min(Math.max(Number(步长) || 2, 1), 4);
     出.半径 = 近半径; 出.远半径 = 远半径; 出.步长 = 步长;
+    出.视距 = 远半径;       // 探索/视觉强制使用 8 个区块的最高视距
 
     // 时间 / 天气（API 已核实：bot.time.timeOfDay、bot.isRaining、bot.thunderState）
     const 刻 = (bot.time && typeof bot.time.timeOfDay === 'number') ? bot.time.timeOfDay : null;
