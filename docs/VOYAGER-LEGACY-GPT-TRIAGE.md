@@ -1,6 +1,6 @@
 # Voyager legacy-GPT bug triage
 
-**Status:** policy + record template  
+**Status:** policy + record template
 **Applies to:** Voyager code that depends on GPT-4-era prompts, OpenAI
 Chat/Embeddings APIs, or the LangChain OpenAI adapters.
 

@@ -20,11 +20,13 @@ The state endpoint patch is kept at `adapter/patches/voyager-state.patch`.
 Local smoke: `python3 agents/voyager/smoke.py`
 Tools: `agents/voyager/tools/`.
 
-**2026-10-25 audit:** bridge-only. A real **1.21.1** bridge test now passes
-CBAP 8/8, and a local-Qwen Voyager-prompt action test executes through the
-bridge, and the local-Qwen autonomy loop completes 3/3 iterations. It still
-does not include the upstream VoyagerEnv benchmark or full mining/crafting
-coverage. See
+**2026-10-26 audit:** bridge-only. A real **1.21.1** bridge passes CBAP 8/8;
+the local-Qwen autonomy loop completes 3/3 iterations; and upstream Voyager
+agents complete a 3-task sequence (mine, craft via a seeded verified skill,
+chat) 3/3. It still does not include the Voyager paper benchmark. GPT-era
+legacy bugs follow
+[`docs/VOYAGER-LEGACY-GPT-TRIAGE.md`](../../docs/VOYAGER-LEGACY-GPT-TRIAGE.md).
+See
 [`docs/VOYAGER-1.21.1.md`](../../docs/VOYAGER-1.21.1.md) and
 [`docs/VOYAGER-LOCAL-QWEN.md`](../../docs/VOYAGER-LOCAL-QWEN.md) and
 [`docs/VOYAGER-AUTONOMY.md`](../../docs/VOYAGER-AUTONOMY.md) and

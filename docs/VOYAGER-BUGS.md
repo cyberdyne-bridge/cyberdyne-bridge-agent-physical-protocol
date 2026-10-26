@@ -6,6 +6,10 @@
 **Status:** reliability / compatibility report, not a security advisory
 **Not legal advice.**
 
+> GPT-era legacy issues must first be checked for an OpenAI/LangChain upstream
+> fix and recorded under
+> [`VOYAGER-LEGACY-GPT-TRIAGE.md`](VOYAGER-LEGACY-GPT-TRIAGE.md).
+
 ---
 
 ## Summary
