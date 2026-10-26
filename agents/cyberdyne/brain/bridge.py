@@ -4516,7 +4516,17 @@ def _跑一轮反射(s, 反射, 叙事, 温度, iface, 只读, 节拍, 指令=No
             任务.记平静(time.time())
             if 任务.冷静够了(time.time()):
                 任务.恢复(s)
-                if 任务.跑(s):      # 任务下发了命令 → 指令层这一拍别抢方向盘
+                # ★ 2026-10-26：静默报错的账已经 5957 条。任务跑失败必须出声，
+                #   不许再让“第一镐没下发”变成一片安静。
+                try:
+                    _任务跑了 = 任务.跑(s)
+                except Exception as _eTR:
+                    import traceback as _tbTR
+                    print("★★ [任务栈.跑] 抛异常，任务动作没有下发："
+                          f"{type(_eTR).__name__}: {_eTR}\n{_tbTR.format_exc()}",
+                          flush=True)
+                    _任务跑了 = False
+                if _任务跑了:      # 任务下发了命令 → 指令层这一拍别抢方向盘
                     return
 
     # 4) ★ 反射层说"我没事干"的时候，才轮到指令层 —— 命令永远压不过保命
