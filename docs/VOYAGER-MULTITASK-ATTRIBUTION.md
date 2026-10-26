@@ -176,3 +176,28 @@ No upstream Voyager issue
 No claim that the body is broken
 No claim that the 5-task suite passed
 ```
+
+
+---
+
+## Follow-up: adapter keep-alive
+
+The adapter was changed locally to support `--keep-alive`: a CBAP close
+sends `stop` to the adapter, but the adapter no longer exits; the next client
+triggers a soft body restart. This keeps the adapter process alive across
+Voyager env resets.
+
+Result of the four-task rerun:
+
+```text
+Mine 1 spruce_log       OK
+Craft 4 oak_planks      FAIL
+Craft 1 crafting_table  FAIL
+Say ...                 OK
+adapter after run       still alive
+```
+
+The keep-alive fix removed the connection-death failure, but craft after
+mine still fails at the action layer. This is not evidence for a GPT-era
+OpenAI bug; the next isolation must compare mine -> craft against craft ->
+craft with a fresh ActionAgent after the mine.

@@ -13,8 +13,10 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((a, x, i, arr) => {
 const BRIDGE = args.bridge || 'http://127.0.0.1:3000';
 const SOCKET = args.socket || '/tmp/voyager-cbap.sock';
 const PORT = Number(args.port || 25565);
+const KEEP_ALIVE = process.argv.includes('--keep-alive');
 
 let seq = 0, latest = null, stopped = false;
+let starting = null;
 const clients = new Set();
 
 function decode(v) {
@@ -76,8 +78,26 @@ const timer = setInterval(async () => {
   if (st) broadcast(st);
 }, 1000);
 
+async function ensureStarted() {
+  if (!KEEP_ALIVE) return;
+  if (!stopped && latest) return;
+  if (!starting) {
+    starting = jpost('/start', {
+      port: PORT, reset: 'soft', inventory: {}, waitTicks: 10,
+    }).then((r) => {
+      stopped = false;
+      latest = null;
+      return r;
+    }).finally(() => { starting = null; });
+  }
+  await starting;
+}
+
 try { fs.unlinkSync(SOCKET); } catch {}
-const server = net.createServer((sock) => {
+const server = net.createServer(async (sock) => {
+  try { await ensureStarted(); } catch (e) {
+    console.log('ensureStarted failed:', String(e.message || e));
+  }
   clients.add(sock);
   if (latest) send(sock, latest);
   let buf = '';
@@ -118,10 +138,13 @@ const server = net.createServer((sock) => {
           const st = await state(); if (st) broadcast(st);
         } else if (cmd === 'stop') {
           stopped = true;
+          latest = null;
           await jpost('/stop', {});
           send(sock, {type:'event', kind:'cmdResult', cmd:'stop', ok:true});
-          setTimeout(() => { for (const c of clients) { try { c.end(); } catch {} } try { server.close(); } catch {} }, 300);
-          setTimeout(() => process.exit(0), 900);
+          if (!KEEP_ALIVE) {
+            setTimeout(() => { for (const c of clients) { try { c.end(); } catch {} } try { server.close(); } catch {} }, 300);
+            setTimeout(() => process.exit(0), 900);
+          }
         } else {
           send(sock, {type:'event', kind:'cmdResult', cmd:cmd || 'unknown', ok:false, why:'unsupported'});
         }
