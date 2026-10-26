@@ -470,7 +470,8 @@ def 装上(bridge, 数=None, 日志=None, **kw):
             if isinstance(步, dict) and 步.get("_陈坐标"):
                 print("[挖空守卫] ★ 陈坐标步骤即刻判失败，结束本任务等待重新规划（不再重试同一坐标）",
                       flush=True)
-                return self._整任务失败("陈坐标，重新规划", failure_code="stale_coordinate")
+                return self._整任务失败("陈坐标，重新规划",
+                                       failure_code="stale_coordinate", s=s)
             return 原失败(self, 步, 原因, s)
         栈类._失败 = _失败
     return {"好": True, "为什么": "雷达看门狗上岗：空气不挥、同格不连发、三次就撒手",
