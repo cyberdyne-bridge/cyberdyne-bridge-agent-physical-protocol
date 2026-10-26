@@ -58,7 +58,7 @@ class 时间源类:
 
 时间源 = 时间源类()
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # ───────────────────────────── 小工具 ─────────────────────────────

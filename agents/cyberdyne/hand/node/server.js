@@ -22,7 +22,7 @@ const mineflayer = require('mineflayer');
 
 /* ─────────────────────────── 配置 ─────────────────────────── */
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 // ★ 2026-10-09：「我身边那 4 格」的工具（抽出来才好单独验 ✓）
 const { 补齐身边四格 } = require(path.join(__dirname, 'plugins', '身边四格.js'));
 const CONFIG_PATH = path.join(ROOT, 'config.json');
