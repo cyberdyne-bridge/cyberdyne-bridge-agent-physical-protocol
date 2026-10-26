@@ -145,15 +145,21 @@ def 装上(bridge, 数=None, 日志=None, **kw):
                           f"可这一格**从没见过它是「{期望}」**（我现在看到的是"
                           f"「{任.get(初见)}」）—— 这是陈坐标，挖了也不是我要的东西。"
                           f"这一趟不算数，让它失败重规划。", flush=True)
+                    if isinstance(任, dict):
+                        任["_陈坐标"] = True
                     return False, None
                 if 好 and isinstance(任, dict) and 任.get(初见) in 空气名:
                     print(f"[挖空守卫] ★ 第 {k} 格**初见即空** —— 这是陈坐标"
                           f"（扫描时它还在，现在已经没了）。这一趟不算数，让它失败重规划。",
                           flush=True)
+                    if isinstance(任, dict):
+                        任["_陈坐标"] = True
                     return False, None
                 if 好 and not _态(栈类)["发了几次"].get(k):
                     print(f"[挖空守卫] ★ 第 {k} 格判定「挖完了」，可一次 dig 都没发过 —— "
                           f"陈坐标。这一趟不算数。", flush=True)
+                    if isinstance(任, dict):
+                        任["_陈坐标"] = True
                     return False, None
             if 好:
                 if k is not None:
@@ -445,6 +451,18 @@ def 装上(bridge, 数=None, 日志=None, **kw):
 
     栈类._挂探针, 栈类._看完成了没 = _挂探针, _看完成了没
     栈类._下发, 栈类._这步超时 = _下发, _这步超时
+    # ★ 2026-10-26：陈坐标不许走“重试两次再超时”的老路。
+    #   标记后由 _失败 直接结束当前任务，留给下一轮重新规划；
+    #   绝不抱着同一个 p 反复 dig 空气。
+    原失败 = getattr(栈类, "_失败", None)
+    if callable(原失败):
+        def _失败(self, 步, 原因, s=None):
+            if isinstance(步, dict) and 步.get("_陈坐标"):
+                print("[挖空守卫] ★ 陈坐标步骤即刻判失败，结束本任务等待重新规划（不再重试同一坐标）",
+                      flush=True)
+                return self._整任务失败("陈坐标，重新规划", failure_code="stale_coordinate")
+            return 原失败(self, 步, 原因, s)
+        栈类._失败 = _失败
     return {"好": True, "为什么": "雷达看门狗上岗：空气不挥、同格不连发、三次就撒手",
             "打了": ["任务栈._挂探针", "任务栈._看完成了没", "任务栈._下发", "任务栈._这步超时"]}
 
