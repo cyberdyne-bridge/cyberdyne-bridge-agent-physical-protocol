@@ -362,24 +362,21 @@ class CBAPHandAdapter:
             "why": None if ok else (err.get("message") or err.get("code") or "CBAP error"),
             "t": msg.get("ts") or int(time.time() * 1000),
         }
+        # Error results carry the hand's machine-readable refusal fields in
+        # `facts`, not `payload` (payload is intentionally None on error).
+        facts = msg.get("facts") or {}
+        if isinstance(facts, dict):
+            out.update(facts)
         payload = msg.get("payload") or {}
         if isinstance(payload, dict):
             out.update(payload)
-            # Restore the legacy hand's Chinese machine-readable fields after
-            # the CBAP wire has used ASCII keys.
-            back = {
-                "pre_dig": "先挖",
-                "blockers": "挡着",
-                "unexposed": "未暴露",
-                "unreachable": "够不着",
-                "distance": "距",
-                "cancel": "取消",
-                "dug": "挖掉",
-                "crafted": "合成",
-                "placed": "放的是",
-                "used": "用了",
-            }
-            for src, dst in back.items():
-                if src in out:
-                    out[dst] = out[src]
+        # Restore the legacy hand's Chinese machine-readable fields after
+        # the CBAP wire has used ASCII keys.
+        for src, dst in {
+            "pre_dig": "先挖", "blockers": "挡着", "unexposed": "未暴露",
+            "unreachable": "够不着", "distance": "距", "cancel": "取消",
+            "dug": "挖掉", "crafted": "合成", "placed": "放的是", "used": "用了",
+        }.items():
+            if src in out:
+                out[dst] = out[src]
         return out
