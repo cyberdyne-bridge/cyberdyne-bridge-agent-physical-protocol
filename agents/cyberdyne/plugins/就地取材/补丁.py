@@ -381,9 +381,11 @@ def 补陈坐标(状态, 任):
             for _条 in ((状态 or {}).get("blocks") or []):
                 if isinstance(_条, dict) and str(_条.get("name") or "").endswith("_log"):
                     _候.append(_条)
-            for _条 in (((状态 or {}).get("scan") or {}).get("可交互") or []):
-                if isinstance(_条, dict) and str(_条.get("name") or "").endswith("_log"):
-                    _候.append(_条)
+            _扫 = (状态 or {}).get("scan") or {}
+            for _键 in ("可交互", "视锥", "找", "记得", "木"):
+                for _条 in (_扫.get(_键) or []):
+                    if isinstance(_条, dict) and str(_条.get("name") or "").endswith("_log"):
+                        _候.append(_条)
             for _条 in _候:
                 _p = _条.get("p")
                 if not (isinstance(_p, (list, tuple)) and len(_p) >= 3):
