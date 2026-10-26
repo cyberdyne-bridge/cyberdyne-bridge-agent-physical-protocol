@@ -360,7 +360,8 @@ def 补陈坐标(状态, 任):
     改 = 0
     说明 = []
     有 = 扫到过(状态)
-    for 步 in (任 or {}).get("步骤") or []:
+    _步骤 = (任 or {}).get("步骤") or []
+    for _i, 步 in enumerate(_步骤):
         if 步.get("动作") != "挖":
             continue
         名 = 步.get("方块")
@@ -371,6 +372,36 @@ def 补陈坐标(状态, 任):
         if 键 in 有:
             continue                       # 还是新鲜的 ✓ 不动
         块 = 挑块(状态, 名)                 # ★ 重新查雷达（这就是"实时"）
+        _替代 = None
+        if not 块 and str(名).endswith("_log"):
+            # 木头是一族：计划里写 birch_log，但眼前只有 oak_log 时，
+            # 不允许因为“名字不同”就把整条木镐/石镐计划作废。
+            _我 = (状态 or {}).get("pos") or [0, 0, 0]
+            _候 = []
+            for _条 in ((状态 or {}).get("blocks") or []):
+                if isinstance(_条, dict) and str(_条.get("name") or "").endswith("_log"):
+                    _候.append(_条)
+            for _条 in (((状态 or {}).get("scan") or {}).get("可交互") or []):
+                if isinstance(_条, dict) and str(_条.get("name") or "").endswith("_log"):
+                    _候.append(_条)
+            for _条 in _候:
+                _p = _条.get("p")
+                if not (isinstance(_p, (list, tuple)) and len(_p) >= 3):
+                    continue
+                _d = ((float(_p[0]) - float(_我[0])) ** 2
+                      + (float(_p[1]) - float(_我[1])) ** 2
+                      + (float(_p[2]) - float(_我[2])) ** 2)
+                if _替代 is None or _d < _替代[0]:
+                    _替代 = (_d, _条)
+            if _替代:
+                块 = {"p": _替代[1].get("p"), "层级": "同族实时"}
+                名 = str(_替代[1].get("name") or 名)
+                步["方块"] = 名
+                # 后续拾取也必须换成同族木头，否则会等一个永远不会掉的旧名字。
+                for _后 in _步骤[_i + 1:]:
+                    if isinstance(_后, dict) and _后.get("动作") == "拾":
+                        if str(_后.get("物品") or "").endswith("_log"):
+                            _后["物品"] = 名
         if 块:
             步["p"] = list(块["p"])
             改 += 1
@@ -379,6 +410,11 @@ def 补陈坐标(状态, 任):
             步["跳过"] = True
             改 += 1
             说明.append(f"{名} 现在扫过的地方都没有 → 这步标作废，不挥空镐")
+            # 没有源方块时，后续同物品拾取不能继续等 60 秒。
+            for _后 in _步骤[_i + 1:]:
+                if (isinstance(_后, dict) and _后.get("动作") == "拾"
+                        and _后.get("物品") == 名):
+                    _后["跳过"] = True
     return 改, "；".join(说明[:3])
 
 
