@@ -3668,6 +3668,8 @@ class 指令层:
             return {"act": "sneak"}
         if self._含(原, "跳一下", "跳一跳", "蹦", "跳"):
             return {"act": "jump"}
+        if self._含(原, "挖石井", "挖竖井", "石头演示", "学我挖石头"):
+            return {"act": "intent_task", "target": "stone_shaft", "text": 原}
         if self._含(原, "挖掉", "挖", "开采", "凿"):
             配 = _re.search(r"(-?\d+)\s+(-?\d+)\s+(-?\d+)", 原)
             if not 配:
