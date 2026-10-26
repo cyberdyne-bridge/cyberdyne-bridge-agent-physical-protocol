@@ -24,7 +24,13 @@
   - 实机 `stone_shaft` 演示任务没有 `目标物品`，因此还不会自动重规划；这是下一步要补的无目标任务路径。
   - 第六轮已让 `stone_shaft` 无目标演示任务也进入有限重规划（最多 2 次）；现场已看到第二次接单。
   - 同时补了“事实完成”闸：计划里有「挖」但 `实际挖 == 0` 时，任务必须失败为 `no_dig`，不能把空动作吹成完成。
-  - 仍未完成：实机仍走 legacy UDS；重规划后的竖井计划仍可能包含空气/爬升不物理的步骤。
+  - 仍未完成：实机默认仍走 legacy UDS；重规划后的竖井计划仍可能包含空气/爬升不物理的步骤。
+  - 第七轮新增 `CYBERDYNE_CBAP=1` 的原生 hook 模式，实机已成功连到 CBAP Kernel（`bridge-legacy`、fd-1）并通过 CBAP 发出 dig。
+  - 同一轮修复了 CBAP adapter 的两处实机断链：
+    1) 不在 `连()` 后申请 lease → 30 秒后全部 `write requires a lease`；
+    2) `dig` 的 `允许挖脚下` 没进 mapping → 手侧反复拒绝“正脚下那块”。
+  - 已实测 CBAP 审计链 `verify() = (True, 'ok')`，`/tmp/cbap-live-audit2.jsonl`。
+  - 仍未完成的 CBAP 兼容项：adapter 明确不支持 `watch_items` / `furnace_watch`；默认启动仍是 legacy，需要显式环境变量。
 
 ---
 
