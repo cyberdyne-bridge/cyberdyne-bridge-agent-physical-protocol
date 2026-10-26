@@ -54,6 +54,10 @@ class CBAPHandAdapter:
         self.client: CBAPClient | None = None
         self.fd: str | None = None
         self._pending: dict[str, str] = {}
+        # rid -> canonical command key.  The legacy task stack intentionally
+        # re-sends the same step while it is still in flight; CBAP's per-device
+        # max_inflight=1 would turn those retries into E_BUSY noise.
+        self._inflight_keys: dict[str, str] = {}
         self._outbox: list[dict] = []
         self._last_error = ""
         self.烂包数 = 0
@@ -124,11 +128,15 @@ class CBAPHandAdapter:
             elif typ == "event":
                 out.append(self._event_to_legacy(msg))
             elif typ in ("result", "error"):
-                cmd = self._pending.pop(str(msg.get("id")), None)
+                rid = str(msg.get("id"))
+                cmd = self._pending.pop(rid, None)
+                self._inflight_keys.pop(rid, None)
                 if cmd:
                     out.append(self._result_to_legacy(msg, cmd))
             elif typ == "pong":
-                cmd = self._pending.pop(str(msg.get("id")), None)
+                rid = str(msg.get("id"))
+                cmd = self._pending.pop(rid, None)
+                self._inflight_keys.pop(rid, None)
                 if cmd:
                     out.append({"type": "event", "kind": "cmdResult",
                                 "cmd": cmd, "ok": True, "why": None,
@@ -154,12 +162,25 @@ class CBAPHandAdapter:
             self._last_error = str(e)
             return False
 
+    @staticmethod
+    def _command_key(cmd: str, obj: dict) -> str:
+        try:
+            body = json.dumps(obj, ensure_ascii=False, sort_keys=True, default=str)
+        except Exception:
+            body = repr(obj)
+        return cmd + "|" + body
+
     def 发(self, obj: dict) -> bool:
         if not isinstance(obj, dict) or not self.client or not self.fd:
             return False
         cmd = obj.get("cmd") or obj.get("act")
         if not isinstance(cmd, str) or not cmd:
             return False
+        key = self._command_key(cmd, obj)
+        # Exactly one in-flight copy per identical command.  Returning True is
+        # truthful for the legacy caller: the command is already on the wire.
+        if key in self._inflight_keys.values():
+            return True
         try:
             if not self._ensure_lease():
                 self._outbox.append({
@@ -175,6 +196,7 @@ class CBAPHandAdapter:
                              "step": obj.get("步长", 2)},
                 })
                 self._pending[rid] = "scan_environment"
+                self._inflight_keys[rid] = key
                 return True
             if cmd == "watch_blocks":
                 rid = self.client.request("ioctl", {
@@ -182,6 +204,7 @@ class CBAPHandAdapter:
                     "args": {"blocks": obj.get("list") or []},
                 })
                 self._pending[rid] = "watch_blocks"
+                self._inflight_keys[rid] = key
                 return True
             if cmd == "watch_items":
                 rid = self.client.request("ioctl", {
@@ -189,6 +212,7 @@ class CBAPHandAdapter:
                     "args": {"items": obj.get("list") or ["*"]},
                 })
                 self._pending[rid] = "watch_items"
+                self._inflight_keys[rid] = key
                 return True
             if cmd == "furnace_watch":
                 rid = self.client.request("ioctl", {
@@ -197,12 +221,14 @@ class CBAPHandAdapter:
                              "每_ms": obj.get("每_ms", 2000)},
                 })
                 self._pending[rid] = "furnace_watch"
+                self._inflight_keys[rid] = key
                 return True
             if cmd == "ping":
                 rid = "ping-" + str(int(time.time() * 1000))
                 self.client.send({"v": "1.0", "type": "ping", "id": rid,
                                   "ts": int(time.time() * 1000)})
                 self._pending[rid] = "ping"
+                self._inflight_keys[rid] = key
                 return True
 
             frame = self._frame_from_legacy(cmd, obj)
@@ -222,6 +248,7 @@ class CBAPHandAdapter:
                 "write", {"fd": self.fd, "frame": frame},
                 deadline_ms=deadline)
             self._pending[rid] = cmd
+            self._inflight_keys[rid] = key
             return True
         except (OSError, TimeoutError) as e:
             self._last_error = str(e)
