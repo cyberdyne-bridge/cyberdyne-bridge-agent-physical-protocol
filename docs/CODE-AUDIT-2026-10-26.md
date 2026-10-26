@@ -1,0 +1,359 @@
+# Cyberdyne Bridge / CBAP 代码审计
+
+- 日期：2026-10-26
+- 审计对象：CBAP `kernel/legacy_runtime`、MC driver、legacy brain、hand/body、插件编组、测试与配置
+- 基线：`b0cb1a7`
+- 方式：静态阅读、运行时日志、异常扫描、逐文件 `unittest`、CBAP 安全路径检查
+- 结论：**不能把当前状态当成“已验收”**。协议骨架和部分安全闸门是好的，但仍有 P0 级控制面绕过、审计链并发风险、任务静默停滞和测试红灯。
+
+---
+
+## 1. 执行摘要
+
+最严重的六件事：
+
+1. **当前实机 DeepSeek 走的是 legacy 直连 UDS，不是 CBAP。**
+   CBAP 的 lease、fencing、审计、estop 都没有覆盖这条实机执行路径。
+2. **静默异常仍然大量存在。**
+   扫描器统计 `725` 处吞异常，其中 `479` 处是纯静默；运行时 `logs/静默.jsonl` 已累计 `5957` 条，几乎全是 `FileNotFoundError`。
+3. **任务第一镐没有下发。**
+   16 步竖井计划已接单，但 hand 侧 `dig` 次数为 0；`任务栈.跑()` 加了 traceback 后也没有异常。说明不是“挖空守卫拦住了”，而是任务调度/暂停/下发前返回。
+4. **CBAP 审计链不是跨进程安全的。**
+   `AuditChain` 只有进程内 `threading.Lock`；kernel 和 legacy bridge 可以同时写 `logs/cbap-audit.jsonl`，会破坏 `seq/hash` 链。
+5. **CBAP 测试不是全绿，整套还会挂住。**
+   逐文件跑：16 个文件通过，3 个失败，1 个 `test_conformance.py` 超时挂起；整套 120 秒也没跑完。
+6. **没有 CI 测试门。**
+   `.github/workflows` 只有 Pages 部署，没有 Python/JS 测试、没有异常扫描、没有安全回归。
+
+## 2. P0 / Blocker
+
+### P0-1 实机执行绕过 CBAP 控制面
+
+证据：
+
+```text
+agents/cyberdyne/README.md:13
+  The brain/hand direct UDS path is legacy and does not go through CBAP.
+
+agents/cyberdyne/brain/bridge.py
+  直接 接线口/Unix socket
+
+agents/cyberdyne/brain/bridge_cbap.py
+  CBAPHandAdapter 已存在，但当前实机进程没有使用它
+```
+
+影响：
+
+```text
+lease / fencing / estop / audit 都没有覆盖当前 DeepSeek 的物理动作
+“服务端事实”有，但“控制面事实”没有
+```
+
+建议：
+
+```text
+实机验收统一从 bridge_cbap.py 启动
+或在 CBAPHandAdapter 路径上补齐实机验证
+legacy 直连只能作为离线调试模式，并在状态中显式标记 legacy=true
+```
+
+### P0-2 静默异常洪水
+
+证据：
+
+```text
+python3 tools/扫吞异常.py
+  合计 725 处吞异常
+  纯静默 479 处
+  有动作不出声 246 处
+  主链 69 处 (旧红线)
+
+logs/静默.jsonl
+  5957 条
+  5956 条 FileNotFoundError
+  主要位置：2035 / 1460 / 1467 / 2912 / 2552 行
+```
+
+影响：
+
+```text
+第一镐没发、任务暂停、记忆没写、箱子账没写，
+都可能表现为“安静地什么都没发生”
+```
+
+已做：
+
+```text
+bridge.py 的 21 个静默写账点已改为 记静默()
+记静默() 现在写 logs/静默.jsonl + logs/cbap-audit.jsonl
+```
+
+仍未做：
+
+```text
+other modules 仍然有大量 except Exception: pass
+FileNotFoundError 的五类根因还没逐条修
+```
+
+### P0-3 任务接了单但没有下发第一镐
+
+实机证据：
+
+```text
+任务：常识：学主人挖石井
+16 步
+首步：{"动作":"挖","p":[844,63,-2],"允许挖脚下":true}
+
+hand logs/手.log: dig 次数 = 0
+任务栈.跑() traceback: 没有异常
+```
+
+结论：
+
+```text
+不是挖空守卫
+不是坐标截断（已修）
+是任务没有真正进入可下发状态，或下发前被暂停/返回 False
+```
+
+下一步必须查：
+
+```text
+任务.暂停 / 恢复 / 冷静够了
+_跑一轮反射 的决策分支
+_下发 之前的坐标/状态闸门
+```
+
+### P0-4 CBAP 审计链跨进程写竞争
+
+证据：
+
+```text
+kernel/legacy_runtime/security.py
+  AuditChain.__init__: self._lock = threading.Lock()
+  append(): with self._lock:
+  # 没有 fcntl / 文件锁
+
+agents/cyberdyne/brain/bridge.py
+  记静默(): 使用 logs/.cbap-audit.lock + flock
+  # 只保护自己的写，不保护 kernel 的写
+```
+
+影响：
+
+```text
+两个进程同时 append 会读到同一个 prev/hash
+seq 可能重复，hash 链可能断裂
+下一次 verify() 会 fail closed，或者审计事实不可信
+```
+
+建议：
+
+```text
+选一个唯一审计写者（推荐 kernel 提供 audit IPC）
+或 AuditChain 全路径统一使用跨进程 flock
+禁止任何第二个进程直接打开 cbap-audit.jsonl
+```
+
+## 3. P1 / High
+
+### P1-1 CBAP 测试红灯与挂起
+
+逐文件结果（`PYTHONPATH=.`）：
+
+```text
+通过 16 个
+test_conformance.py                 超时 (>25s)
+test_device_contract.py             1 failure + 3 errors
+test_mcp_device.py                  1 failure
+test_security.py                    1 failure + 4 errors
+```
+
+典型失败：
+
+```text
+E_PERM: device not allowed: test://security/light-01
+E_PERM: device not allowed: test://parity/light-01
+E_PERM: device not allowed: mcp://lab/light-01
+```
+
+判断：
+
+```text
+默认策略改为 default-deny 本身是对的；
+但测试没有在自己的 KernelServer 上提供对应 policy，
+所以测试和产品语义脱节。
+```
+
+整套 `unittest discover` 120 秒未完成，说明测试缺少强制超时/清理。
+
+### P1-2 无 CI 测试门
+
+证据：
+
+```text
+.github/workflows/pages.yml
+  只部署 site/
+```
+
+影响：
+
+```text
+测试红灯不会阻止合并
+静默异常扫描不会阻止合并
+CBAP 安全回归不会阻止合并
+```
+
+### P1-3 CBAP 请求异常被统一吞成 E_INTERNAL
+
+证据：
+
+```text
+kernel/legacy_runtime/server.py: _handle_request
+  except Exception as e:
+      self._result(... E_INTERNAL ...)
+```
+
+影响：
+
+```text
+真正的 bug 只剩一个 E_INTERNAL，没有 traceback / audit 细节
+```
+
+建议：
+
+```text
+保留客户端 E_INTERNAL
+同时写 kernel_error / request_exception 审计事件
+记录异常类型、栈顶、request id、agent、op
+```
+
+### P1-4 幂等缓存无上限
+
+证据：
+
+```text
+server.py: self._idem: dict[tuple, dict] = {}
+server.py: _finish_pending -> self._idem[p.idem_key] = {...}
+```
+
+没有 TTL、没有容量上限、没有清理策略。长时间运行后可被大量唯一 `idempotency_key` 撑大。
+
+### P1-5 审计远端失败静默
+
+证据：
+
+```text
+kernel/legacy_runtime/security.py: _remote_worker
+  except Exception:
+      self._remote_failures += 1
+```
+
+影响：
+
+```text
+远端审计不可用 / 不 ACK 时，本地只增加一个计数器
+没有审计事件、没有告警、没有状态暴露
+```
+
+### P1-6 brain_adapter 伪造/硬编码关键事实
+
+证据：
+
+```text
+kernel/legacy_runtime/brain_adapter.py: _state_to_legacy
+  "hz": 5
+  "look": {"yaw": 0.0, "pitch": 0.0}
+  "friends": []
+  "deaths": 0
+  "respawned": False
+```
+
+影响：
+
+```text
+legacy brain 会把“未知/不支持”当成“已知的 0”
+这与“服务端事实优先”直接冲突
+```
+
+### P1-7 实机性能与热风险
+
+观察：
+
+```text
+CPU 75°C 触发过热挂起
+FOV 扫描 128 格 + 木头 1 格步长扫描，5Hz
+```
+
+不是协议错误，但会导致任务停摆、扫描过期、测试结论失真。
+
+### P1-8 `allow_from` 语义需要收紧
+
+配置：
+
+```text
+agents/cyberdyne/config.json
+  m5.allow_from: []
+  m6.allow_from: [...]
+```
+
+需要确认 `[]` 的语义是“谁都不听”还是“默认允许”。当前实现若把空数组解释成“不限制”，就是权限放大。
+
+## 4. P2 / Medium
+
+1. `tools/扫吞异常.py` 只报告，不阻断；建议作为 CI gate，至少对新增纯静默报错失败。
+2. 测试文件依赖 `PYTHONPATH`，没有 `pyproject.toml` / `pytest.ini` / `unittest` 统一入口。
+3. `tests/cbap/test_conformance.py` 缺少单测试超时和资源清理。
+4. 根目录存在大量 `.bak-*`、`__pycache__`、历史日志，仓库 2.8G；容易误读/误提交。
+5. `AuditChain.append` 对审计数据行没有 `fsync`，只对 checkpoint 做 `fsync`；崩溃窗口内最后一条审计可能丢失。
+6. `brain_adapter.发` 没有显式传 `fencing_token`；目前靠 `_op_write` 查 lease 兜底，但客户端缺少 fence 语义，迁移时容易误用。
+7. CBAP `TEST_POLICY` 由环境变量 `CBAP_TEST_MODE=1` 触发；需要在生产启动时显式拒绝/告警，防止测试策略误入生产。
+8. native hand/body 仍有大量 `catch {}` 和 `except Exception: pass`，与“不许静默”的项目宪法冲突。
+
+## 5. 正向部分（不是全坏）
+
+以下控制是实际存在的：
+
+```text
+CBAP 默认策略 default-deny
+UDS SO_PEERCRED + token + operator token
+token/audit 文件 0600 + O_NOFOLLOW
+lease + fencing token
+全局/单设备 estop
+resume 需要 admin + reason + confirm=RESUME
+audit hash chain + checkpoint + 可选 HMAC
+TCP 默认只允许 loopback，公网 bind 必须显式 allow_public_bind
+测试中 TLS/transport/registry/gateway 等多数组通过
+```
+
+语法检查：
+
+```text
+Python compileall: 通过
+非 node_modules JS --check: 通过
+```
+
+## 6. 建议修复顺序
+
+```text
+1. 任务第一镐不下发（P0-3）——先让实机能动
+2. CBAP 审计单写者 + 文件锁（P0-4）
+3. 把实机切到 bridge_cbap 或显式标记 legacy（P0-1）
+4. 修 5 类 FileNotFoundError 根因（P0-2）
+5. 修 CBAP 测试 policy/挂起，接入 CI（P1-1/P1-2）
+6. 清理幂等缓存、远端审计告警、E_INTERNAL 审计（P1-3/4/5）
+7. 最后再谈“随机世界完整科技树通过”
+```
+
+## 7. 审计判定
+
+```text
+协议设计：中上
+安全闸门：有，但未覆盖实机路径
+错误可见性：不合格
+测试可信度：不合格（红灯 + 挂起 + 无 CI）
+实机自主性：未通过（第一镐未下发）
+总体：不可验收，可继续修
+```
+
+审计只做了只读检查和报告，没有改动业务逻辑。
