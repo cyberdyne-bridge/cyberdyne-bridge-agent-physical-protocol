@@ -1668,6 +1668,19 @@ class 任务栈:
             "探索目标": list(探索目标 or []),
             "探索段": 0,
         }
+        # ★ 2026-10-26：计划里不能再把“当前已经是空气”的挖点留给执行层。
+        #   事实优先：s 的扫描/方块表说它是 air，就把这一步标记跳过；
+        #   不挖空气、不生成陈坐标、不让 `拾` 去等不存在的掉落物。
+        for _步 in 步骤:
+            try:
+                if _步.get("动作") != "挖" or not isinstance(_步.get("p"), (list, tuple)):
+                    continue
+                _名 = self._方块名(s, _步.get("p"))
+                if _名 in ("air", "cave_air", "void_air"):
+                    _步["跳过"] = True
+                    _步["跳过原因"] = "目标已是空气（事实优先）"
+            except Exception:
+                continue
         self.上次下发 = 0.0        # 新任务的第一步不许被上一件事的节流挡住
         self._挂探针(步骤, s)
         self._记("接单", 名字=self.任务["名字"], 步数=len(步骤),
