@@ -2657,7 +2657,7 @@ def 装上(bridge, 开关=True, 车钩=None, 日志=None, 数=None):
         try:
             if any(x in str(文本 or "") for x in
                    ("挖石井", "挖竖井", "石头演示", "学我挖石头", "stone_shaft")):
-                步, 说 = 安排一趟向下盲挖(s, 背包=None, 层=4)
+                步, 说 = 安排一趟向下盲挖(s, 背包=((s or {}).get("items") or {}), 层=4)
                 if 步:
                     return None, {"名字": "常识：学主人挖石井", "为什么": 说, "步骤": 步}, None
                 return None, None, 说
