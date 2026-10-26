@@ -30,7 +30,10 @@
     1) 不在 `连()` 后申请 lease → 30 秒后全部 `write requires a lease`；
     2) `dig` 的 `允许挖脚下` 没进 mapping → 手侧反复拒绝“正脚下那块”。
   - 已实测 CBAP 审计链 `verify() = (True, 'ok')`，`/tmp/cbap-live-audit2.jsonl`。
-  - 仍未完成的 CBAP 兼容项：adapter 明确不支持 `watch_items` / `furnace_watch`；默认启动仍是 legacy，需要显式环境变量。
+  - 第八轮已把 `watch_items` / `furnace_watch` 接到 CBAP ioctl；实机任务启动时不再出现“不支持”两条。
+  - 实机 CBAP 任务已连续挖掉 [847,62,-2]/[847,61,-2] stone；`/tmp/cbap-live-audit3.jsonl` 仍可 verify。
+  - 观察到的剩余 CBAP 噪声：`device max_inflight reached`，重下命令会撞 kernel 的单请求上限；需要 adapter 侧去重/排队，不能让任务把 E_BUSY 当作动作失败。
+  - 默认启动仍是 legacy，需要显式 `CYBERDYNE_CBAP=1`。
 
 ---
 
