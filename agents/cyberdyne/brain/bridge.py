@@ -1976,7 +1976,10 @@ class 任务栈:
                 _goto["no_dig"] = True
             self.发(_goto)
         elif 动 == "挖":
-            self.发({"cmd": "dig", "p": [float(v) for v in 步.get("p", [])[:3]]})
+            _dig = {"cmd": "dig", "p": [float(v) for v in 步.get("p", [])[:3]]}
+            if 步.get("允许挖脚下"):
+                _dig["允许挖脚下"] = True
+            self.发(_dig)
         elif 动 == "放":
             try:  # ★ 2026-10-16 探针（写文件 ✓ 必出声 ✗）
                 import json as _jF, os as _oF, time as _tF
