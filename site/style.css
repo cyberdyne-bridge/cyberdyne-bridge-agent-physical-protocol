@@ -712,3 +712,26 @@ main, .site-footer {
   color: var(--accent);
   border-color: var(--accent);
 }
+
+
+/* 2026-10-26: code audit in progress; remove after P0/P1 fixes. */
+.audit-banner {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  background: #3b1e0a;
+  color: #ffd7a8;
+  border-bottom: 1px solid #8a4b16;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.audit-banner strong {
+  color: #ffb45c;
+  letter-spacing: .04em;
+}
+.audit-banner span {
+  color: #e8c7a4;
+}
