@@ -444,8 +444,7 @@ class 温度计:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 442, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 442, _e)
             except Exception:
                 pass
         return 路径
@@ -475,8 +474,7 @@ class 温度计:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 467, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 467, _e)
             except Exception:
                 pass
         return None
@@ -493,8 +491,7 @@ class 温度计:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 479, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 479, _e)
             except Exception:
                 pass
         return self.cpu, self.gpu
@@ -1592,8 +1589,7 @@ class 任务栈:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 1460, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 1460, _e)
             except Exception:
                 pass
 
@@ -1605,8 +1601,7 @@ class 任务栈:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 1467, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 1467, _e)
             except Exception:
                 pass
 
@@ -2291,6 +2286,64 @@ class 任务栈:
         return self._下发(步, 任, 现在, s)
 
 
+# ─────────────────── 静默错误 → CBAP 系统日志 ───────────────────
+def 记静默(文件: str, 行: int, 异常) -> None:
+    """把原本只写 logs/静默.jsonl 的吞异常，显式写进 CBAP 审计链。
+
+    这不是替代原日志：原来的本地静默账继续写；CBAP 审计多一条
+    event=silent_error 的不可静默记录。审计写失败时再退回本地并打印，
+    绝不再一次把失败吞掉。
+    """
+    import json as _j, os as _o, time as _t, sys as _sys
+    try:
+        _o.makedirs("logs", exist_ok=True)
+        _条 = {"t": _t.time(), "文件": str(文件), "行": int(行),
+               "异常": repr(异常)[:500]}
+        with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
+            _f.write(_j.dumps(_条, ensure_ascii=False) + "\n")
+    except Exception as _eLocal:
+        print(f"[静默] 连本地静默账都写不进去：{_eLocal!r}", file=_sys.stderr, flush=True)
+    try:
+        # 串行化：审计链是单写者模型，CBAP kernel 和本进程可能共用文件。
+        _o.makedirs("logs", exist_ok=True)
+        _锁路 = "logs/.cbap-audit.lock"
+        with open(_锁路, "a", encoding="utf-8") as _lk:
+            try:
+                import fcntl as _fcntl
+                _fcntl.flock(_lk.fileno(), _fcntl.LOCK_EX)
+            except Exception:
+                pass
+            try:
+                # bridge.py 可能从 agents/cyberdyne/brain 启动；把仓库根加进来，
+                # 不让“找不到 kernel”变成新的静默失败。
+                _根 = _o.path.abspath(_o.path.join(_o.path.dirname(__file__), "..", "..", ".."))
+                if _根 not in _sys.path:
+                    _sys.path.insert(0, _根)
+                from kernel.legacy_runtime.security import AuditChain
+                AuditChain("logs/cbap-audit.jsonl").append(
+                    "silent_error", source=str(文件), line=int(行),
+                    error=repr(异常)[:500], pid=_o.getpid())
+            finally:
+                try:
+                    import fcntl as _fcntl
+                    _fcntl.flock(_lk.fileno(), _fcntl.LOCK_UN)
+                except Exception:
+                    pass
+        print(f"[静默→CBAP] {文件}:{行} {异常!r}", file=_sys.stderr, flush=True)
+    except Exception as _eAudit:
+        # 连 CBAP 审计都失败：出声，并留一条本地审计旁路，绝不静默。
+        try:
+            with open("logs/cbap-audit-fallback.jsonl", "a", encoding="utf-8") as _f:
+                _f.write(_j.dumps({"t": _t.time(), "event": "silent_error",
+                                   "source": str(文件), "line": int(行),
+                                   "error": repr(异常)[:500],
+                                   "audit_error": repr(_eAudit)[:300]},
+                                  ensure_ascii=False) + "\n")
+        except Exception:
+            pass
+        print(f"[静默→CBAP失败] {文件}:{行} {异常!r} / {_eAudit!r}",
+              file=_sys.stderr, flush=True)
+
 # ─────────────────────────── M7 · 记忆 ───────────────────────────
 
 def _多久前(ts):
@@ -2341,8 +2394,7 @@ class 记忆:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 1988, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 1988, _e)
             except Exception:
                 pass
         self._载入()
@@ -2394,8 +2446,7 @@ class 记忆:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2035, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 2035, _e)
             except Exception:
                 pass
 
@@ -2442,8 +2493,7 @@ class 记忆:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2077, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 2077, _e)
             except Exception:
                 pass
         if len(self.卡[类]) > self._容量(类):
@@ -2473,8 +2523,7 @@ class 记忆:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2102, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 2102, _e)
             except Exception:
                 pass
 
@@ -2935,8 +2984,7 @@ class 翻译器:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2552, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 2552, _e)
             except Exception:
                 pass
 
@@ -3084,8 +3132,7 @@ class 翻译器:
                 try:
                     import json as _j, os as _o, time as _t
                     _o.makedirs("logs", exist_ok=True)
-                    with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                        _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2694, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                    记静默("bridge.py", 2694, _e)
                 except Exception:
                     pass
             return None, None, 原因
@@ -3137,8 +3184,7 @@ class 翻译器:
                         try:
                             import json as _j, os as _o, time as _t
                             _o.makedirs("logs", exist_ok=True)
-                            with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                                _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2741, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                            记静默("bridge.py", 2741, _e)
                         except Exception:
                             pass
                     self.连错 = 0
@@ -3314,8 +3360,7 @@ class 心跳:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 2912, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 2912, _e)
             except Exception:
                 pass
 
@@ -3486,8 +3531,7 @@ class 接线口:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3078, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 3078, _e)
             except Exception:
                 pass
         self.s = None
@@ -4055,8 +4099,7 @@ class 大模型层:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3603, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 3603, _e)
             except Exception:
                 pass
         # 退路：从 Cherry Studio 的库里只读取（和配电盘里的终端聊天.py 一个办法）
@@ -4081,8 +4124,7 @@ class 大模型层:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3623, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 3623, _e)
             except Exception:
                 pass
         return None
@@ -4099,8 +4141,7 @@ class 大模型层:
             try:
                 import json as _j, os as _o, time as _t
                 _o.makedirs("logs", exist_ok=True)
-                with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                    _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3635, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                记静默("bridge.py", 3635, _e)
             except Exception:
                 pass
 
@@ -4270,8 +4311,7 @@ def 主():
         try:
             import json as _j, os as _o, time as _t
             _o.makedirs("logs", exist_ok=True)
-            with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3800, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+            记静默("bridge.py", 3800, _e)
         except Exception:
             pass
 
@@ -4383,8 +4423,7 @@ def 主():
                                 try:
                                     import json as _j, os as _o, time as _t
                                     _o.makedirs("logs", exist_ok=True)
-                                    with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                                        _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3903, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                                    记静默("bridge.py", 3903, _e)
                                 except Exception:
                                     pass
                             if not 听懂了 and 大模型.开():
@@ -4429,8 +4468,7 @@ def 主():
                                     try:
                                         import json as _j, os as _o, time as _t
                                         _o.makedirs("logs", exist_ok=True)
-                                        with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                                            _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3943, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                                        记静默("bridge.py", 3943, _e)
                                     except Exception:
                                         pass
                         # ── M7：见过的人建张卡（第一次见到）──
@@ -4441,8 +4479,7 @@ def 主():
                                 try:
                                     import json as _j, os as _o, time as _t
                                     _o.makedirs("logs", exist_ok=True)
-                                    with open("logs/静默.jsonl", "a", encoding="utf-8") as _f:
-                                        _f.write(_j.dumps({"t": _t.time(), "文件": "bridge.py", "行": 3949, "异常": repr(_e)[:160]}, ensure_ascii=False) + "\n")
+                                    记静默("bridge.py", 3949, _e)
                                 except Exception:
                                     pass
                         # ── M5/M6：三觉记空闲 → 心跳看一眼 ──
