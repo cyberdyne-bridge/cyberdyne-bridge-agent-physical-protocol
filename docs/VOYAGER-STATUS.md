@@ -223,22 +223,24 @@ Say 'skill memory online'       OK
 循环包含 curriculum -> action -> CBAP env -> critic -> skill library。
 仍是 Voyager-style 实现，不是上游 VoyagerEnv benchmark。
 
-### D. Upstream agents + CBAP 2/2
+### D. Upstream agents + CBAP 3/3
 
 ```text
 docs/VOYAGER-UPSTREAM-BENCH.md
 agents/voyager/upstream_bench/run.py
 ```
 
-上游 `Voyager.learn()` 在 CBAP 环境上完成 2/2：
+上游 agents 在 CBAP 环境上完成 3 任务序列：
 
 ```text
-Say 'upstream voyager online'   OK
-Say 'upstream skill online'     OK
+Mine 1 spruce_log       OK
+Craft 4 oak_planks      OK   （seeded verified skill）
+Say ...                 OK
 ```
 
 ActionAgent / CriticAgent / SkillManager / CurriculumAgent 来自上游；
 VoyagerEnv 由 CBAPVoyagerEnv 替换；本地 Qwen；无 GPT-4。
+craft 使用 SkillManager 验证技能路由，不是纯 Qwen 自由规划。
 这不是论文 benchmark，是上游 agents + CBAP 的完整控制循环。
 
 ---

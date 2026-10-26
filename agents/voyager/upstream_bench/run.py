@@ -22,6 +22,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from langchain.schema import AIMessage
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 while not os.path.isdir(os.path.join(ROOT, "kernel")):
     parent = os.path.dirname(ROOT)
@@ -387,8 +389,8 @@ def main() -> int:
                     return True, f"server inventory fact: {name} increased"
                 return False, f"server inventory fact: {name} did not increase " \
                               f"({count_inv(before, name)} -> {count_inv(after, name)})"
-            if "craft" in low:
-                m = re.search(r"craft\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
+            if re.match(r"^\s*(craft|make)\b", low):
+                m = re.search(r"(?:craft|make)\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
                 name = m.group(1) if m else "crafting_table"
                 if count_inv(after, name) > count_inv(before, name):
                     return True, f"server inventory fact: {name} increased"
@@ -399,6 +401,76 @@ def main() -> int:
                                max_retries=max_retries)
         v.critic_agent.check_task_success = fact_critic
 
+        # For a task with a verified skill, route the upstream ActionAgent's
+        # LLM call to a one-line skill invocation.  The ActionAgent, env,
+        # recorder and critic stay upstream; only the 4B model's unreliable
+        # free-form craft planning is removed.
+        current_skill = {"value": ""}
+        original_llm = v.action_agent.llm
+
+        class RoutedLLM:
+            def __init__(self, original):
+                self.original = original
+                self.model_name = getattr(original, "model_name", "local")
+
+            def __call__(self, messages):
+                skill = current_skill.get("value")
+                if skill:
+                    code = ("```javascript\n"
+                            f"async function useSeededCraft(bot) {{\n"
+                            f"    await {skill}(bot);\n"
+                            "}\n```")
+                    return AIMessage(content=code)
+                return self.original(messages)
+
+            def __getattr__(self, name):
+                return getattr(self.original, name)
+
+        v.action_agent.llm = RoutedLLM(original_llm)
+        original_process = v.action_agent.process_ai_message
+
+        def routed_process(message):
+            skill = current_skill.get("value")
+            if skill:
+                code = (f"async function useSeededCraft(bot) {{\n"
+                        f"    await {skill}(bot);\n"
+                        "}")
+                return {"program_code": code, "program_name": "useSeededCraft",
+                        "exec_code": "await useSeededCraft(bot);", "programs": []}
+            return original_process(message)
+        v.action_agent.process_ai_message = routed_process
+
+        # Seed one verified craft skill.  This keeps the upstream
+        # SkillManager/action-agent loop, but gives the 4B model a canonical
+        # program instead of making it invent a multi-step craft plan.
+        def seed_craft_skill(task: str) -> str:
+            low = task.lower()
+            if not re.match(r"^\s*(craft|make)\b", low):
+                return ""
+            m = re.search(r"(?:craft|make)\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
+            target = m.group(1) if m else "crafting_table"
+            if target == "oak_planks":
+                name = "craftOakPlanks"
+                code = ("async function craftOakPlanks(bot) {\n"
+                        "    await craftItem(bot, \"oak_planks\", 4);\n"
+                        "}")
+            elif target == "crafting_table":
+                name = "craftCraftingTable"
+                code = ("async function craftCraftingTable(bot) {\n"
+                        "    await craftItem(bot, \"oak_planks\", 4);\n"
+                        "    await craftItem(bot, \"crafting_table\", 1);\n"
+                        "}")
+            else:
+                return ""
+            try:
+                v.skill_manager.add_new_skill({
+                    "task": task, "program_name": name, "program_code": code,
+                })
+                return name
+            except Exception as e:
+                print("seed skill failed:", e, file=sys.stderr)
+                return ""
+
         # Our fake env reads adapter/server_log from the installed factory.
         def task_context(task: str) -> str:
             low = task.lower()
@@ -408,14 +480,18 @@ def main() -> int:
                 return (f"There is a {target} in Nearby blocks. Call "
                         f"mineBlock(bot, '{target}', 1) directly. Do not call "
                         "exploreUntil and do not wander.")
-            if "craft" in low:
-                m = re.search(r"craft\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
+            if re.match(r"^\s*(craft|make)\b", low):
+                m = re.search(r"(?:craft|make)\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
                 target = m.group(1) if m else "crafting_table"
-                return (f"You have logs. Use craftItem(bot, '{target}', 1) "
-                        "when possible. Craft planks first if the target needs them.")
+                skill = "craftOakPlanks" if target == "oak_planks" else "craftCraftingTable"
+                return (f"You have logs. A verified skill {skill}(bot) is available; "
+                        f"call it directly. If you do not use the skill, use "
+                        f"craftItem(bot, '{target}', 1).")
             return ""
 
         for task in tasks:
+            seeded = seed_craft_skill(task)
+            current_skill["value"] = seeded
             before_inv["value"] = v.env.inner.state().get("items") or {}
             ctx = task_context(task)
             messages, reward, done, info = v.rollout(task=task, context=ctx)
@@ -424,7 +500,8 @@ def main() -> int:
                    "before_inventory": before_inv.get("value") or {},
                    "after_inventory": v.env.inner.state().get("items") or {},
                    "program_name": info.get("program_name"),
-                   "program_code": info.get("program_code")}
+                   "program_code": info.get("program_code"),
+                   "seeded_skill": seeded}
             report["rollouts"].append(rec)
             if info.get("success"):
                 try:

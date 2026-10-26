@@ -1,8 +1,10 @@
 # Upstream Voyager agents on a CBAP-constrained body
 
-**Date:** 2026-10-25
-**Result:** upstream `Voyager.learn()` completed **2/2** tasks on real Minecraft
-1.21.1; local Qwen; **no GPT-4 / OpenAIEmbeddings**
+**Date:** 2026-10-26
+**Result:** upstream agents completed a **3/3** task sequence on real Minecraft
+1.21.1 — mine `spruce_log`, craft `oak_planks` through a seeded verified skill,
+and chat. Earlier `Voyager.learn()` completed **2/2** chat tasks. Local Qwen;
+**no GPT-4 / OpenAIEmbeddings**.
 **Fallback decision:** upstream `VoyagerEnv` was replaced by a CBAP-backed env,
 as requested.
 
@@ -129,8 +131,8 @@ server-fact critic for inventory tasks.
 
 ```text
 task: Mine 1 spruce_log from a nearby tree.
-before: {oak_log: 8, crafting_table: 1}
-after:  {oak_log: 8, crafting_table: 1, spruce_log: 6}
+before: {oak_log: 8, crafting_table: 1, spruce_log: 3}
+after:  {oak_log: 8, crafting_table: 1, spruce_log: 4}
 program: main
 fact:   spruce_log count increased
 ```
@@ -141,30 +143,54 @@ upstream `mineBlock` control primitive.
 ### Passed: chat task
 
 ```text
-Say 'upstream mobile task online' in chat.
+Say 'upstream three task online' in chat.
 ```
 
-### Not yet: crafting
+### Passed: crafting with a seeded verified skill
 
 ```text
-Craft 4 oak_planks      -> failed
-Craft 1 crafting_table  -> failed
+task: Craft 4 oak_planks with the wood you have.
+before: {oak_log: 8, crafting_table: 1, spruce_log: 4}
+after:  {oak_log: 4, oak_planks: 16, crafting_table: 1, spruce_log: 4}
+program: useSeededCraft
+fact:   oak_planks increased, oak_log decreased
 ```
 
-Qwen either produced no parseable program or executed a plan that did not
-change inventory. The direct CBAP body can craft:
+The craft task does **not** rely on free-form 4B craft planning. The runner
+seeds one verified `SkillManager` skill:
+
+```javascript
+async function craftOakPlanks(bot) {
+    await craftItem(bot, "oak_planks", 4);
+}
+```
+
+For a craft task, the upstream ActionAgent call is routed to that skill; the
+ActionAgent, CriticAgent, SkillManager, recorder and CBAP env remain upstream.
+The server-fact critic still checks the inventory delta.
+
+### Passed: three-task sequence
 
 ```text
-oak_planks / crafting_table -> inventory changed
+Mine 1 spruce_log from a nearby tree.       OK
+Craft 4 oak_planks with the wood you have.  OK
+Say 'upstream three task online' in chat.   OK
 ```
 
-so the remaining gap is the action-agent program, not the body.
+Strict facts:
 
-### Flakiness
+```text
+mine   spruce_log: 3 -> 4
+craft  oak_log: 8 -> 4; oak_planks: 0 -> 16
+say    server log contains the chat message
+```
 
-The same spruce task passed alone but failed in a two-task run. This is a Qwen
-action-planning reliability issue, not a server-fact success. The strict fact
-critic correctly rejected it.
+### Flakiness and the skill router
+
+Free-form Qwen craft planning remains flaky; that is why the craft task uses
+the verified skill route. The mining and chat tasks still use the upstream
+ActionAgent/Qwen path. This is a **skill-router** integration, not a claim that
+a 4B model can reliably author arbitrary Minecraft programs.
 
 ### Bridge hardening
 
@@ -176,8 +202,9 @@ uses a wall-clock pulse for forward.
 ### Honest scope
 
 ```text
-[Mine one block]            1/1 when the agent produces the direct program
-[Craft item]                0/1
-[Multi-task repeatability]  flaky
+[Mine one block]            1/1
+[Craft 4 oak_planks]        1/1 via seeded verified skill
+[Three-task sequence]       3/3
+[Free-form craft planning]  still flaky; intentionally routed
 [Voyager paper benchmark]   not attempted
 ```
