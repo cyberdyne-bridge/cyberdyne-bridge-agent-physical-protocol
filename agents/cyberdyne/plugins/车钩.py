@@ -1097,9 +1097,11 @@ def 主():
     sys.path.insert(0, os.path.join(os.path.dirname(外挂根), "brain"))
     import bridge
 
-    # ★ 2026-10-27：实机可以选择走 CBAP，而不是 legacy 直连 UDS。
-    #   由环境变量显式开启，默认仍走旧路径，避免静默改变生产行为。
-    if os.environ.get("CYBERDYNE_CBAP") == "1":
+    # ★ 2026-10-27：默认走 CBAP。legacy 直连必须**显式**选择，
+    #   不允许再靠“没设环境变量”悄悄绕过控制面。
+    _legacy = (os.environ.get("CYBERDYNE_LEGACY") == "1"
+               or os.environ.get("CYBERDYNE_CBAP") == "0")
+    if not _legacy:
         try:
             import bridge_cbap
             bridge_cbap.install()
@@ -1108,8 +1110,8 @@ def 主():
             print(f"❌ CBAP 模式启动失败：{type(e).__name__}: {e}", file=sys.stderr)
             return 4
     else:
-        # 事实标记：没有 CBAP 就是 legacy 直连，不允许把两者混为一谈。
-        记("legacy 直连模式（未启用 CYBERDYNE_CBAP=1）")
+        # 事实标记：只有显式 LEGACY 才是直连，必须留痕。
+        记("legacy 直连模式（显式 CYBERDYNE_LEGACY=1）")
 
     列 = 列车(bridge, 安静=参.安静)
     列.车厢表 = 表
