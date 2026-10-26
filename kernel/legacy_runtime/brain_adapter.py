@@ -253,11 +253,13 @@ class CBAPHandAdapter:
                     "t": int(time.time() * 1000),
                 })
                 return False
-            deadline = obj.get("ms") or 5000
+            # collect 是“自己走+挖+捡”的复合动作，5 秒必然不够；
+            # 用 60 秒给手侧完成，不允许把它当成普通单步动作。
+            deadline = obj.get("ms") or (60000 if cmd == "collect" else 5000)
             try:
                 deadline = max(1000, int(deadline) + 1000)
             except Exception:
-                deadline = 5000
+                deadline = 60000 if cmd == "collect" else 5000
             rid = self.client.request(
                 "write", {"fd": self.fd, "frame": frame},
                 deadline_ms=deadline)
