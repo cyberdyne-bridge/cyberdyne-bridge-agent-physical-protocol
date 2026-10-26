@@ -117,3 +117,67 @@ python3 agents/voyager/upstream_bench/run.py \
   --task "Say 'upstream voyager online' in chat." \
   --learn --iterations 2
 ```
+
+---
+
+## 2026-10-26 mobile task update
+
+The upstream agents now run a task list through the CBAP body, with a
+server-fact critic for inventory tasks.
+
+### Passed: upstream ActionAgent, spruce mining
+
+```text
+task: Mine 1 spruce_log from a nearby tree.
+before: {oak_log: 8, crafting_table: 1}
+after:  {oak_log: 8, crafting_table: 1, spruce_log: 6}
+program: main
+fact:   spruce_log count increased
+```
+
+This is a real body-side change, not a Qwen judgement. The program called the
+upstream `mineBlock` control primitive.
+
+### Passed: chat task
+
+```text
+Say 'upstream mobile task online' in chat.
+```
+
+### Not yet: crafting
+
+```text
+Craft 4 oak_planks      -> failed
+Craft 1 crafting_table  -> failed
+```
+
+Qwen either produced no parseable program or executed a plan that did not
+change inventory. The direct CBAP body can craft:
+
+```text
+oak_planks / crafting_table -> inventory changed
+```
+
+so the remaining gap is the action-agent program, not the body.
+
+### Flakiness
+
+The same spruce task passed alone but failed in a two-task run. This is a Qwen
+action-planning reliability issue, not a server-fact success. The strict fact
+critic correctly rejected it.
+
+### Bridge hardening
+
+The upstream bridge's two `bot.waitForTicks()` calls are now bounded
+(`waitTicksSafe`, 3.5s). A slow tick or a pathfinder failure returns the
+observation instead of leaving `/step` hung forever. The CBAP adapter still
+uses a wall-clock pulse for forward.
+
+### Honest scope
+
+```text
+[Mine one block]            1/1 when the agent produces the direct program
+[Craft item]                0/1
+[Multi-task repeatability]  flaky
+[Voyager paper benchmark]   not attempted
+```

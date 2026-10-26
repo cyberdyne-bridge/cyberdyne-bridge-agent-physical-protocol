@@ -388,7 +388,7 @@ def main() -> int:
                 return False, f"server inventory fact: {name} did not increase " \
                               f"({count_inv(before, name)} -> {count_inv(after, name)})"
             if "craft" in low:
-                m = re.search(r"craft\s+(?:one|1)?\s*([a-z0-9_]+)", low)
+                m = re.search(r"craft\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
                 name = m.group(1) if m else "crafting_table"
                 if count_inv(after, name) > count_inv(before, name):
                     return True, f"server inventory fact: {name} increased"
@@ -409,9 +409,10 @@ def main() -> int:
                         f"mineBlock(bot, '{target}', 1) directly. Do not call "
                         "exploreUntil and do not wander.")
             if "craft" in low:
-                return ("You have logs. Craft planks first if needed, then "
-                        "craft a crafting_table. Use craftItem(bot, "
-                        "'crafting_table', 1) when possible.")
+                m = re.search(r"craft\s+(?:one|1|\d+)?\s*([a-z0-9_]+)", low)
+                target = m.group(1) if m else "crafting_table"
+                return (f"You have logs. Use craftItem(bot, '{target}', 1) "
+                        "when possible. Craft planks first if the target needs them.")
             return ""
 
         for task in tasks:
