@@ -41,6 +41,19 @@ import time
 # ⚠ 三层 dirname ✗ —— 我第一版只写了两层，账本落到 `外挂/logs/记性.json` 去了 ✗
 #   （实机 15:12 记下了，可 `logs/记性.json` 是空的 ✓ 一查就露馅 ✓）
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+def _记忆开():
+    """m7.memory_enable=false ⇒ 复现模式：不读旧账、不预热、不记位置。
+
+    单独玩时把 m7.memory_enable 设回 true，记忆和预热照旧。
+    """
+    try:
+        with open(os.path.join(ROOT, "config.json"), encoding="utf-8") as f:
+            c = json.load(f)
+        return bool((c.get("m7") or {}).get("memory_enable", True))
+    except Exception:
+        return True
+
+
 账本路径 = os.path.join(ROOT, "logs", "记性.json")
 上限 = 64
 
@@ -170,6 +183,8 @@ def 预热(状态):
     ⚠ 只认**手真报回来的** ✓ —— 没拿到就**下一拍再看** ✓（绝不自己编一段历史 ✗）
     """
     global _预热过
+    if not _记忆开():
+        return 0
     if _预热过[0] or not isinstance(状态, dict):
         return 0
     变 = 状态.get("变了")
@@ -795,6 +810,9 @@ def 记计划(步骤):
 def 装上(bridge, 日志=None, **kw):
     global _日志
     _日志 = 日志
+    if not _记忆开():
+        return {"好": True, "为什么": "m7.memory_enable=false（复现模式：记忆关闭）",
+                "打了": []}
     栈类 = getattr(bridge, "任务栈", None)
     if 栈类 is None:
         return {"好": False, "为什么": "找不到 任务栈 类", "打了": []}
