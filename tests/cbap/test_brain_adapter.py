@@ -113,7 +113,8 @@ class BrainAdapterTest(unittest.TestCase):
         self.assertEqual(results[-1]["cmd"], "watch_blocks")
 
     def test_unsupported_fails_closed(self) -> None:
-        self.assertFalse(self.adapter.发({"cmd": "furnace_watch"}))
+        # furnace_watch is now a supported CBAP ioctl; mode remains unsupported.
+        self.assertFalse(self.adapter.发({"cmd": "mode", "hz": 5}))
         msgs, _ = self.adapter.收()
         results = [m for m in msgs if m.get("kind") == "cmdResult"]
         self.assertTrue(results, msgs)
