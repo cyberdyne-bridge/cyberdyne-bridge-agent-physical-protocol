@@ -40,6 +40,7 @@
   - 默认启动仍是 legacy，但会明确记 `legacy 直连模式（未启用 CYBERDYNE_CBAP=1）`。
   - 第十一轮实机尝试 `做个石镐`：CBAP 下已拿到 `cobblestone 4` / `diorite 4`，但任务卡在“前面挡着 diorite”的重复 dig 拒绝；服务端背包仍没有 `stone_pickaxe`，因此不构成成功。
   - 第十二轮去掉 adapter 的伪造状态字段：`look`/`friends`/`deaths`/`respawned` 现在从 CBAP 状态帧读取，不再硬编码 0/空。
+  - 第十三轮把 legacy hand 的中文机器字段（`先挖`/`挡着`/`未暴露`/`够不着`/`距`…）在 CBAP wire 上映射为 ASCII，再由 adapter 还原，避免障碍自愈丢失 `先挖`。
 
 ---
 
