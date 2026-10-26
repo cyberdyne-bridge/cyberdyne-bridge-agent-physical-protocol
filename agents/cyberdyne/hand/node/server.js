@@ -1855,6 +1855,12 @@ function 执行前往(sock, 坐标, msg) {
   }
   停动作();
   if (typeof 插.停 === 'function') { try { 插.停(bot); } catch (e) { /* 无所谓 */ } }
+  // ★ 走之前先把视角朝目的地；后面沿路怎么转由寻路器负责，
+  //   至少起手不是背对目标。
+  try {
+    const 我 = bot.entity && bot.entity.position;
+    if (我) bot.lookAt(我.offset(坐标[0] - 我.x, 坐标[1] - 我.y, 坐标[2] - 我.z), true).catch(() => {});
+  } catch (e) { /* 朝向失败不阻断前往 */ }
   // near = 到点容差（格）。默认交给插件（2）；"走过去捡东西"这类要精确到位，
   // 脑那边会传 near:1 —— 不然它会停在 2 格外看着掉落物干等（实测踩过）。
   Promise.resolve(插.前往(bot, 坐标,

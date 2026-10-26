@@ -170,6 +170,8 @@ async function 真做(bot, 物品, 方块, 要, 单, 起点) {
       const 刻 = Date.now();
       try {
         日志(`  [collect#${单}] 开始 collect（第 ${i + 1}/${上限} 次）…`);
+        // ★ 收/挖之前先看过去；collectblock 自己会走位，但起步视角要对齐。
+        try { await bot.lookAt(块.position.offset(0.5, 0.5, 0.5), true); } catch (e) {}
         await 引擎.collect(块, { ignoreNoPath: true });
         const 后 = 背包数(bot, 物品);
         const 增 = (前 >= 0 && 后 >= 0) ? (后 - 前) : 0;

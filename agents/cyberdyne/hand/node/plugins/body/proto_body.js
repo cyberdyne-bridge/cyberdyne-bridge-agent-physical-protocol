@@ -931,6 +931,8 @@ async function 使用(bot, a) {
   const 距离 = bot.entity.position.distanceTo(块.position);
   if (距离 > 4.5) return { ok: false, why: `方块在 ${距离.toFixed(1)} 格外，够不着（最多 4.5）` };
   清控制(bot);
+  // ★ 用方块之前也先看过去：跟挖/放保持同一套视角语义。
+  try { await bot.lookAt(块.position.offset(0.5, 0.5, 0.5), true); } catch (e) {}
   await bot.activateBlock(块);
   return { ok: true, 用了: 块.name, 距离: Number(距离.toFixed(2)) };
 }
