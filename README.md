@@ -104,6 +104,7 @@ docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
 docs/VOYAGER-AUTONOMY.md       Voyager-style 3/3 自治循环
 docs/VOYAGER-UPSTREAM-BENCH.md 上游 Voyager agents + CBAP 三任务 3/3
 docs/VOYAGER-BUGS.md           Voyager 最小复现与 PoC
+docs/VOYAGER-LEGACY-GPT-TRIAGE.md  GPT 遗留 bug 查重与归档规则
 poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
 tools/mcp_official_matrix.py   官方 server 矩阵 runner
 ```
