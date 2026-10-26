@@ -3413,8 +3413,9 @@ class 指令层:
     它跑在反射层**后面**：反射层说"我没事干"的时候，才轮到它。"""
 
     def __init__(self, m3, 说, 发命令, 叫停=None, 任务栈=None, 三觉=None, 心跳器=None,
-                 记忆=None):
+                 记忆=None, 翻译器=None):
         self.cfg = (m3 or {}).get("command") or {}
+        self.翻译器 = 翻译器
         self.说 = 说
         self.发 = 发命令
         # M4：主人说「停」/「别追了」的时候，顺手把正在进行的追击也掐掉。
@@ -3585,6 +3586,11 @@ class 指令层:
             if not 配:
                 return {"act": "place", "p": None, "why": "没给坐标"}
             return {"act": "place", "p": [float(配.group(1)), float(配.group(2)), float(配.group(3))]}
+        # 造物目标（不是单步合成）：交给「生存常识」把意图推成依赖链。
+        # 主链自己不做配方求解；没有装载生存常识时会明确说不会。
+        if self._含(原, "石镐", "木镐", "铁镐") and self._含(原, "做个", "做一把", "要一把", "来把", "做个"):
+            _目标 = "stone_pickaxe" if "石镐" in 原 else ("wooden_pickaxe" if "木镐" in 原 else "iron_pickaxe")
+            return {"act": "intent_task", "target": _目标, "text": 原}
         if self._含(原, "合成", "做一个", "做个", "造一个"):
             尾 = self._尾(原, "合成", "做一个", "做个", "造一个")
             # 口语数量：「合成 4 个 oak_planks」里的 4 是数量，不是物品名。
@@ -3733,6 +3739,29 @@ class 指令层:
                 self.发({"cmd": 类, "p": 坐标})
                 self.回话({"dig": "好，我挖。", "place": "好，我放。",
                           "use": "我去用一下。"}[类])
+        elif 类 == "intent_task":
+            目标 = 动作.get("target")
+            if self.任务栈 is None or not self.任务栈.启用():
+                self.回话("我还没学会做多步的活…")
+            elif self.翻译器 is None:
+                self.回话("我现在没有常识推演器，做不了这个。")
+            else:
+                try:
+                    import json as _json
+                    _动, _任, _因 = self.翻译器.收输出(
+                        _json.dumps({"意图": "要", "目标": 目标}, ensure_ascii=False),
+                        s, 用途="聊天")
+                except Exception as _e:
+                    _动, _任, _因 = None, None, "%s: %s" % (type(_e).__name__, _e)
+                if isinstance(_任, dict) and _任.get("步骤"):
+                    好 = self.任务栈.接(_任.get("名字") or f"常识：{目标}",
+                                        _任.get("步骤"), s)
+                    if 好:
+                        self.回话(f"好，我按常识做：{_任.get('名字') or 目标}。")
+                    else:
+                        self.回话(f"这个活我接不了：{_因 or '任务栈拒单'}")
+                else:
+                    self.回话(f"我现在做不了 {目标}：{_因 or '推不出步骤'}")
         elif 类 == "craft":
             物品 = 动作.get("item")
             if not 物品:
@@ -4216,7 +4245,8 @@ def 主():
         三觉层.发 = iface.发
         指令 = 指令层(cfg.get("m3"), 说, iface.发,
                       叫停=lambda 原因="主人叫停": (反射.放掉追击(原因), 任务.中止(原因)),
-                      任务栈=任务, 三觉=三觉层, 心跳器=心跳器, 记忆=记忆层)
+                      任务栈=任务, 三觉=三觉层, 心跳器=心跳器, 记忆=记忆层,
+                      翻译器=翻译)
         说(不计流=True, 行=f"           指令层{'已上线' if 指令.启用() else '关着'}；"
               f"大模型层{'开着（' + str((cfg.get('m3') or {}).get('llm', {}).get('model')) + '）' if 大模型.开() else '关着'}。")
         # 手那边一旦发现"大脑全走了"会自己降回平静档，脑这边也跟着对齐，

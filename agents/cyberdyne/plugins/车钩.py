@@ -89,7 +89,7 @@ import weakref
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 外挂根 = os.path.dirname(os.path.abspath(__file__))
-主链路 = os.path.join(ROOT, "bridge.py")
+主链路 = os.path.join(ROOT, "brain", "bridge.py")
 日志目录 = os.path.join(ROOT, "logs")
 日志文件 = os.path.join(日志目录, "外挂-车钩.log")
 插座路径 = os.path.join(外挂根, "车钩.sock")
@@ -1094,7 +1094,7 @@ def 主():
         return 0
 
     # ── ③ 进主链 ──
-    sys.path.insert(0, os.path.dirname(外挂根))
+    sys.path.insert(0, os.path.join(os.path.dirname(外挂根), "brain"))
     import bridge
 
     列 = 列车(bridge, 安静=参.安静)

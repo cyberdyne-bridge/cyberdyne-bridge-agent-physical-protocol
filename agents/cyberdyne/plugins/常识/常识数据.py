@@ -40,21 +40,25 @@ def _找数据目录(版本="1.21.1"):
       （node_modules/minecraft-data/minecraft-data/data/…），
       所以不能硬写一层，得真去找。找不到就报清楚，别静默返回空。
     """
-    起 = os.path.join(ROOT, "node", "node_modules")
-    候选 = [
-        os.path.join(起, "minecraft-data", "minecraft-data", "data", "pc", 版本),
-        os.path.join(起, "minecraft-data", "data", "pc", 版本),
+    起们 = [
+        os.path.join(ROOT, "hand", "node", "node_modules"),
+        os.path.join(ROOT, "node", "node_modules"),
     ]
-    for p in 候选:
-        if os.path.isfile(os.path.join(p, "recipes.json")):
-            return p
-    # 最后一招：全盘扫 node_modules 下的 data/pc/<版本>
-    for 根, 目录们, _ in os.walk(起):
-        if 根.endswith(os.path.join("data", "pc", 版本)):
-            if os.path.isfile(os.path.join(根, "recipes.json")):
-                return 根
+    for 起 in 起们:
+        候选 = [
+            os.path.join(起, "minecraft-data", "minecraft-data", "data", "pc", 版本),
+            os.path.join(起, "minecraft-data", "data", "pc", 版本),
+        ]
+        for p in 候选:
+            if os.path.isfile(os.path.join(p, "recipes.json")):
+                return p
+        # 最后一招：全盘扫 node_modules 下的 data/pc/<版本>
+        for 根, 目录们, _ in os.walk(起):
+            if 根.endswith(os.path.join("data", "pc", 版本)):
+                if os.path.isfile(os.path.join(根, "recipes.json")):
+                    return 根
     raise FileNotFoundError(
-        f"找不到 {版本} 的原版数据（在 {起} 下面翻了）—— "
+        f"找不到 {版本} 的原版数据（在 {起们} 下面翻了）—— "
         f"常识库没有原料就跑不了，不猜、不用空表兜底")
 
 
