@@ -6,7 +6,7 @@
   "bot_name": "DeepSeek",
   "_transport说明": "auto = Linux/macOS 走 Unix socket，Windows 自动退化为 127.0.0.1 TCP；也可强制 unix / tcp",
   "transport": "auto",
-  "unix_socket": "./cyberdyne.sock",
+  "unix_socket": "../../cyberdyne.sock",
   "tcp_host": "127.0.0.1",
   "tcp_port": 8765,
   "_state_interval说明": "手向大脑推送状态的间隔（毫秒）",

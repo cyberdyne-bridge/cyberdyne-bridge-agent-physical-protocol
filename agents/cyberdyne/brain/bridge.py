@@ -58,7 +58,8 @@ class 时间源类:
 
 时间源 = 时间源类()
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.abspath(__file__))
+CONFIG_PATH = os.path.join(os.path.dirname(ROOT), "config.json")
 
 
 # ───────────────────────────── 小工具 ─────────────────────────────
@@ -82,7 +83,7 @@ def 血文本(值):
 
 
 def 读配置():
-    with open(os.path.join(ROOT, "config.json"), encoding="utf-8") as f:
+    with open(CONFIG_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -3586,10 +3587,16 @@ class 指令层:
             return {"act": "place", "p": [float(配.group(1)), float(配.group(2)), float(配.group(3))]}
         if self._含(原, "合成", "做一个", "做个", "造一个"):
             尾 = self._尾(原, "合成", "做一个", "做个", "造一个")
+            # 口语数量：「合成 4 个 oak_planks」里的 4 是数量，不是物品名。
+            数 = 1
+            配量 = _re.match(r"^(\d+)\s*(?:个)?\s*(.+)$", 尾)
+            if 配量:
+                数 = max(1, min(64, int(配量.group(1))))
+                尾 = 配量.group(2)
             名 = self.物品名.get(尾.strip(), 尾.strip())
             if not 名:
                 return None
-            return {"act": "craft", "item": 名}
+            return {"act": "craft", "item": 名, "count": 数}
         if self._含(原, "开箱", "打开", "按钮", "开门", "用一下"):
             配 = _re.search(r"(-?\d+)\s+(-?\d+)\s+(-?\d+)", 原)
             if not 配:
