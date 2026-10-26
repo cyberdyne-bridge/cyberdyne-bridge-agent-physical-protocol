@@ -1107,6 +1107,9 @@ def 主():
         except Exception as e:
             print(f"❌ CBAP 模式启动失败：{type(e).__name__}: {e}", file=sys.stderr)
             return 4
+    else:
+        # 事实标记：没有 CBAP 就是 legacy 直连，不允许把两者混为一谈。
+        记("legacy 直连模式（未启用 CYBERDYNE_CBAP=1）")
 
     列 = 列车(bridge, 安静=参.安静)
     列.车厢表 = 表
