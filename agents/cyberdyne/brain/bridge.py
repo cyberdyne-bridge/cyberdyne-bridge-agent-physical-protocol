@@ -1435,6 +1435,7 @@ class 任务栈:
         self.平静起点 = None
         # 陈旧坐标失败后，允许外部注入一个“重新求解”回调；默认不启用。
         self.重规划 = None
+        self._重规划次数 = 0
 
     def 记平静(self, 现在):
         if self.平静起点 is None:
@@ -2126,8 +2127,9 @@ class 任务栈:
         #   若有重规划器，立刻用同一帧事实重新求解；最多两次，防止死循环。
         if failure_code == "stale_coordinate" and callable(self.重规划):
             try:
-                if int(任.get("重规划次数") or 0) < 2:
-                    任["重规划次数"] = int(任.get("重规划次数") or 0) + 1
+                if int(getattr(self, "_重规划次数", 0)) < 2:
+                    self._重规划次数 = int(getattr(self, "_重规划次数", 0)) + 1
+                    任["重规划次数"] = self._重规划次数
                     self.重规划(self, s)
             except Exception as _eR:
                 self._记("重规划失败", 原因=f"{type(_eR).__name__}: {_eR}")
@@ -4396,11 +4398,19 @@ def 主():
     _名称 = {"stone_pickaxe": "石镐", "wooden_pickaxe": "木镐",
              "iron_pickaxe": "铁镐"}
     def _重规划(栈, s):
-        目标 = (栈.任务 or {}).get("目标物品")
+        当前 = 栈.任务 or {}
+        目标 = 当前.get("目标物品")
         中文 = _名称.get(str(目标 or ""))
-        if not 中文:
-            return False
-        结果 = 翻译.收输出("做个" + 中文, s, 用途="闲聊")
+        if 中文:
+            文本 = "做个" + 中文
+        else:
+            # 演示任务没有目标物品；只用它自己的名字重解，且仍受两次上限约束。
+            名字 = str(当前.get("名字") or "")
+            if "石井" in 名字 or "stone_shaft" in 名字:
+                文本 = "挖石井"
+            else:
+                return False
+        结果 = 翻译.收输出(文本, s, 用途="闲聊")
         if not isinstance(结果, tuple) or len(结果) < 2 or not isinstance(结果[1], dict):
             return False
         新 = 结果[1]
