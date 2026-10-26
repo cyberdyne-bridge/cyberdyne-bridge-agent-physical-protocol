@@ -781,6 +781,22 @@ def _同名候选(状态, 名):
             return (q[0] - 我[0]) ** 2 + (q[1] - 我[1]) ** 2 + (q[2] - 我[2]) ** 2
         except Exception:
             return 0.0
+
+    # ★ 主人 2026-10-26：
+    #   · 砍树要从下到上砍完一棵，不要东砍一根西砍一根；
+    #   · 挖石头要在一处挖，不要这里一点那里一点。
+    #   实现：原木/石头先按 (x,z) 列分组，列按“离我最近”排序，
+    #   同一列内按 y 从低到高。找到一列就先把这列挖完，再换下一列。
+    #   坐标仍然全部来自雷达，不猜、不编。
+    if str(名).endswith("_log") or str(名) in (
+            "stone", "cobblestone", "deepslate", "cobbled_deepslate"):
+        cols = {}
+        for q in 出:
+            cols.setdefault((q[0], q[2]), []).append(q)
+        ordered = []
+        for col in sorted(cols, key=lambda c: min(距(q) for q in cols[c])):
+            ordered.extend(sorted(cols[col], key=lambda q: (q[1], 距(q))))
+        return ordered
     return sorted(出, key=距)
 
 

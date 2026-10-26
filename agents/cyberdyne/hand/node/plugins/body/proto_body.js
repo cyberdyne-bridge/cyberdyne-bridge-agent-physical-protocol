@@ -456,6 +456,11 @@ async function 挖(bot, a) {
   }
 
   清控制(bot);
+  // ★ 主人 2026-10-26：砍树/挖矿时背对目标，人类看着非常恐怖。
+  //   挖之前先真正朝向目标方块；转不过去也照样挖，不让朝向判断阻断功能。
+  try {
+    await bot.lookAt(块.position.offset(0.5, 0.5, 0.5), true);
+  } catch (e) { /* 朝向失败不阻断挖，但绝不背对还假装没这回事 */ }
   const t0 = Date.now();
   await bot.dig(块);
   return { ok: true, 挖掉: 块.name, 毫秒: Date.now() - t0, 位置: 块.position.toArray() };
