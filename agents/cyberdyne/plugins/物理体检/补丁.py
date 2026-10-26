@@ -151,6 +151,9 @@ def 体检(步骤, 状态):
     挖的 = {}            # 坐标 -> 挖的是什么（T3 要用）
     计划产物 = set()     # 计划**自己会做出来**的东西（T5 要用，跨步累加）✓
     for i, 步 in enumerate(步骤 or []):
+        if isinstance(步, dict) and 步.get("跳过"):
+            # 主连接单时已经用当前事实判定“目标已是空气”；别再报 T1。
+            continue
         if not isinstance(步, dict):
             出.append(步)
             continue
