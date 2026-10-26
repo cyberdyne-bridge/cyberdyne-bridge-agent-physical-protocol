@@ -1,0 +1,53 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python-cbap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python
+        run: python -m compileall -q kernel agents tools
+      - name: CBAP conformance and security tests
+        env:
+          PYTHONPATH: .
+        run: python -m unittest discover -s tests/cbap -p 'test_*.py'
+
+  node-syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: agents/cyberdyne/hand/node/package-lock.json
+      - name: Install hand dependencies
+        working-directory: agents/cyberdyne/hand/node
+        run: npm ci --ignore-scripts
+      - name: Syntax-check native hand
+        run: |
+          find agents/cyberdyne/hand/node -type f -name '*.js' \
+            -not -path '*/node_modules/*' -print0 \
+            | xargs -0 -n1 node --check
+
+  audit-banner-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require audit banner while audit report is open
+        run: |
+          grep -q '代码审计中' site/index.html
+          grep -q 'Code audit in progress' site/en.html

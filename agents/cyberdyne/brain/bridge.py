@@ -4531,10 +4531,25 @@ def _跑一轮反射(s, 反射, 叙事, 温度, iface, 只读, 节拍, 指令=No
     温度.采样()
     结果 = 反射.查热(温度.cpu, 温度.gpu)
     if 结果 == "挂起":
+        # ★ 2026-10-26：热保护不能只 return。任务必须显式进入“暂停（过热）”，
+        #   否则外面看到的只是“接了单但一镐没发”，和真正的调度 bug 无法区分。
+        if 任务 is not None and getattr(任务, "任务", None):
+            try:
+                任务.暂停("过热保护", s)
+            except Exception as _eTP:
+                print(f"[任务栈] 热挂起时暂停失败：{_eTP!r}", flush=True)
         iface.发({"cmd": "stop"})
         return
     if 反射.热挂起:
         return
+    if 结果 == "恢复":
+        # 热保护解除：把因过热暂停的任务显式恢复，再从断点继续。
+        if 任务 is not None and getattr(任务, "任务", None):
+            try:
+                if 任务.任务.get("状态") == "暂停" and "过热" in str(任务.任务.get("暂停原因") or ""):
+                    任务.恢复(s)
+            except Exception as _eTR2:
+                print(f"[任务栈] 过热恢复失败：{_eTR2!r}", flush=True)
 
     # 3) 反射层判断，然后交给手去执行
     决策 = 反射.决断(s)
