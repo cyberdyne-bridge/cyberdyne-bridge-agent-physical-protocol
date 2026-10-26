@@ -365,4 +365,21 @@ class CBAPHandAdapter:
         payload = msg.get("payload") or {}
         if isinstance(payload, dict):
             out.update(payload)
+            # Restore the legacy hand's Chinese machine-readable fields after
+            # the CBAP wire has used ASCII keys.
+            back = {
+                "pre_dig": "先挖",
+                "blockers": "挡着",
+                "unexposed": "未暴露",
+                "unreachable": "够不着",
+                "distance": "距",
+                "cancel": "取消",
+                "dug": "挖掉",
+                "crafted": "合成",
+                "placed": "放的是",
+                "used": "用了",
+            }
+            for src, dst in back.items():
+                if src in out:
+                    out[dst] = out[src]
         return out

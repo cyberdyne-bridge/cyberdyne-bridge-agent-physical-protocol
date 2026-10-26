@@ -2024,6 +2024,18 @@ def _ascii_extra(extra: dict) -> dict:
         "要找": "wanted",
         "命中": "hits",
         "盯着": "watching",
+        # Hand-side machine-readable refusal fields must not leak Chinese keys
+        # onto the CBAP wire; the legacy adapter translates them back.
+        "先挖": "pre_dig",
+        "挡着": "blockers",
+        "未暴露": "unexposed",
+        "够不着": "unreachable",
+        "距": "distance",
+        "取消": "cancel",
+        "挖掉": "dug",
+        "合成": "crafted",
+        "放的是": "placed",
+        "用了": "used",
     }
     return {rename.get(k, k): v for k, v in extra.items()}
 
