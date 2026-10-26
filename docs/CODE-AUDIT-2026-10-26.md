@@ -33,7 +33,8 @@
   - 第八轮已把 `watch_items` / `furnace_watch` 接到 CBAP ioctl；实机任务启动时不再出现“不支持”两条。
   - 实机 CBAP 任务已连续挖掉 [847,62,-2]/[847,61,-2] stone；`/tmp/cbap-live-audit3.jsonl` 仍可 verify。
   - 观察到的剩余 CBAP 噪声：`device max_inflight reached`，重下命令会撞 kernel 的单请求上限；需要 adapter 侧去重/排队，不能让任务把 E_BUSY 当作动作失败。
-  - 默认启动仍是 legacy，需要显式 `CYBERDYNE_CBAP=1`。
+  - 第九轮已对相同 in-flight 命令做去重；实机连续 dig 不再因同一命令重发撞 `max_inflight`。
+  - 仍会偶发 `say` 与动作并发撞 `max_inflight`；协议层错误可见，但没有排队。默认启动仍是 legacy，需要显式 `CYBERDYNE_CBAP=1`。
 
 ---
 
