@@ -1663,6 +1663,7 @@ class 任务栈:
             "暂停时刻": None,
             "暂停原因": None,
             "下发过": False,
+            "实际挖": 0,
             "目标物品": str(目标) if 目标 else None,
             "目标数量": _目标数,
             "口径": "owned" if (目标 and _目标数 is not None) else None,
@@ -2072,6 +2073,8 @@ class 任务栈:
                      "输入": 步.get("输入"), "燃料": 步.get("燃料")})
         elif 动 == "熔炉取成品":
             self.发({"cmd": "furnace_take", "p": [float(v) for v in 步.get("p", [])[:3]]})
+        if 动 == "挖":
+            任["实际挖"] = int(任.get("实际挖") or 0) + 1
         self.上次下发 = 现在
         任["下发过"] = True
         return True
@@ -2137,6 +2140,10 @@ class 任务栈:
 
     def _整任务完成(self, s=None):
         任 = self.任务
+        # 事实优先：计划里明明有“挖”，却一次 dig 都没发出去，不能算完成。
+        if any(步.get("动作") == "挖" for 步 in 任.get("步骤") or []) and int(任.get("实际挖") or 0) == 0:
+            return self._整任务失败("没有实际挖过任何一格，不能算完成",
+                                    failure_code="no_dig", s=s)
         任["状态"] = "完"
         任["failure_code"] = None
         _目标 = 任.get("目标物品")

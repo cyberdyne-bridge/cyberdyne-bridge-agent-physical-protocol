@@ -55,6 +55,19 @@ class TaskGuardTest(unittest.TestCase):
         self.assertEqual(t.任务.get("状态"), "败")
         self.assertEqual(t.任务.get("failure_code"), "stale_coordinate")
 
+    def test_task_without_any_dig_cannot_complete(self):
+        t = self._stack()
+        state = {
+            "pos": [844.2, 64, -2.0],
+            "scan": {"t": 1, "可交互": [], "方块": []},
+            "blocks": [{"p": [844, 63, -2], "name": "air"}],
+            "items": {},
+        }
+        self.assertTrue(t.接("demo", [{"动作": "挖", "p": [844, 63, -2]}], state))
+        self.assertFalse(t.跑(state))
+        self.assertEqual(t.任务.get("状态"), "败")
+        self.assertEqual(t.任务.get("failure_code"), "no_dig")
+
     def test_stale_failure_invokes_replanner_once(self):
         t = self._stack()
         state = {
