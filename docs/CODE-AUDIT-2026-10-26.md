@@ -50,6 +50,9 @@
     - `插进当前活()` 插入前按当前 blocks 事实跳过空气挖点，并把被同一短活清掉的原步骤标记跳过。
   - 实机 `做个石镐` 已连续挖到 `cobblestone 4` / `diorite 13`，障碍自愈连续插入挡路步骤；仍未出现 `stone_pickaxe`。
   - 第十八轮把原生 hook 默认改成 CBAP；legacy 必须显式 `CYBERDYNE_LEGACY=1`。实机启动日志已确认 `CBAP 模式` 与 `接线口连上了`。
+  - 受控合成验证：通过 RCON 注入 `oak_log 2 + stick 4` 后，CBAP 原生任务完成
+    `oak_planks -> crafting_table -> stone_pickaxe`，服务端背包确实出现 `stone_pickaxe 1`。
+    **这不是全量随机验收**：材料是注入的，不能据此移除审计提示。
 
 ---
 
