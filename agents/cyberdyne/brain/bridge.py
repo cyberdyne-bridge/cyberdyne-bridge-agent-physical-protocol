@@ -1611,7 +1611,7 @@ class 任务栈:
                 pass
 
     # ── 接单 ──
-    def 接(self, 名字, 步骤, s, 目标=None, 数量=None):
+    def 接(self, 名字, 步骤, s, 目标=None, 数量=None, 探索目标=None):
         print("[接三行] ★ 进 接 了 ✓ 步骤类型=" + type(步骤).__name__ + " len=" + str(len(步骤) if hasattr(步骤, "__len__") else "无") , flush=True)
         if not self.启用():
             return False
@@ -1630,6 +1630,13 @@ class 任务栈:
             self._记("拒单", 原因="未知动作", 动作=野的)
             return False
         if self.在跑():
+            # 探索任务没有“时间到”这回事：在雷达看见目标方块之前，
+            # 新任务不能把它顶掉（人/急停仍可显式中止）。
+            if self.任务.get("无时限") and not self._探索目标已见(s):
+                self._记("探索拒绝替换", 新活=名字, 找=self.任务.get("探索目标"))
+                self.说(f"[{时刻()}] 我还在找 {self.任务.get('探索目标') or '目标'}，"
+                        f"没看到之前不换活。", 紧急=True)
+                return False
             self._记("替换", 原因="来了新活，旧的作废", 旧=名字)
             self.说(f"[{时刻()}] 来了新活儿，手上那件我先放下。")
         起点 = list((s or {}).get("pos") or [0, 0, 0])
@@ -1658,6 +1665,8 @@ class 任务栈:
             "目标数量": _目标数,
             "口径": "owned" if (目标 and _目标数 is not None) else None,
             "failure_code": None,
+            "无时限": bool(探索目标 or str(名字).startswith("常识：出去找")),
+            "探索目标": list(探索目标 or []),
         }
         self.上次下发 = 0.0        # 新任务的第一步不许被上一件事的节流挡住
         self._挂探针(步骤, s)
@@ -1922,6 +1931,8 @@ class 任务栈:
         一步要处理的**件数越多，允许的时间越长**（挖 N 块、拾 N 件、烧 N 个）。
         步骤自己写了超时就听步骤的（测试用短超时就走这条）。
         注意：`wait_until` 走它自己的"等待超时"，跟动作超时各走各的。"""
+        if self.任务 and self.任务.get("无时限"):
+            return 10 ** 12       # 探索任务无时间限制；只由“目标进入雷达”终止
         if 步.get("超时_ms"):
             return float(步["超时_ms"])
         动 = 步.get("动作")
@@ -2048,6 +2059,15 @@ class 任务栈:
         任 = self.任务
         上限 = int(self._数("每步重试上限", 2))
         self._记("步骤失败", 动作=步.get("动作"), 原因=原因, 已重试=任["重试"])
+        if 任.get("无时限"):
+            # 探索任务没有“试几次就放弃”：失败只重新起一段，不判任务失败。
+            任["重试"] = 0
+            任["重试到"] = 时间源.单调() + 1.0
+            任["步骤开始"] = 时间源.单调()
+            self._记("探索重试", 原因=原因, 动作=步.get("动作"))
+            self.说(f"[{时刻()}] 找路这一段没成（{原因}）—— 不停探索，重新起一段。",
+                    紧急=True)
+            return False
         if 步.get("动作") == "wait_until":
             # ★ 等待超时**不计入退避重试**：直接判任务失败，并把原因说清楚
             return self._整任务失败(f"等到超时了（{原因}）")
@@ -2109,6 +2129,22 @@ class 任务栈:
         self._撤探针()
         self._存快照()
 
+    def _探索目标已见(self, s):
+        """目标方块是否真的进入了当前雷达/记忆？只认事实，不认“我觉得快到了”。"""
+        找 = [str(x) for x in (self.任务.get("探索目标") or []) if x]
+        if not 找:
+            return False
+        扫 = (s or {}).get("scan") or {}
+        池 = []
+        for k in ("方块", "可交互", "视锥", "找", "记得"):
+            v = 扫.get(k) if isinstance(扫, dict) else None
+            if isinstance(v, list):
+                池.extend(v)
+        for x in 池:
+            if isinstance(x, dict) and str(x.get("name") or "") in 找:
+                return True
+        return False
+
     def _下一步(self, s):
         任 = self.任务
         当前步 = None
@@ -2127,6 +2163,15 @@ class 任务栈:
         #（症状：「说」这一步一句话都没说出去就被判失败）。
         self.上次下发 = 0.0
         if 任["第几步"] >= len(任["步骤"]):
+            if 任.get("无时限") and not self._探索目标已见(s):
+                # 雷达还没看到目标：回到第一段继续找，不结束、不算超时。
+                任["第几步"] = 0
+                任["重试"] = 0
+                任["重试到"] = 0.0
+                任["步骤开始"] = 时间源.单调()
+                self._说(f"[{时刻()}] 还没看到 {任.get('探索目标')}，继续找"
+                         f"（无时间限制）。", 紧急=True)
+                return True
             达标, 为什么 = self._目标达标(s)
             if not 达标:
                 return self._整任务失败(
@@ -3755,7 +3800,8 @@ class 指令层:
                     _动, _任, _因 = None, None, "%s: %s" % (type(_e).__name__, _e)
                 if isinstance(_任, dict) and _任.get("步骤"):
                     好 = self.任务栈.接(_任.get("名字") or f"常识：{目标}",
-                                        _任.get("步骤"), s)
+                                        _任.get("步骤"), s,
+                                        探索目标=_任.get("探索目标"))
                     if 好:
                         self.回话(f"好，我按常识做：{_任.get('名字') or 目标}。")
                     else:

@@ -2781,8 +2781,19 @@ def 装上(bridge, 开关=True, 车钩=None, 日志=None, 数=None):
                     except Exception:
                         pass
                     _记账(self, 用途, 目标, 说明)
+                    # 把“雷达到底缺哪些方块”带进任务，任务栈才能判断：
+                    # 这些方块真的进了当前扫描之前，探索不许结束/被替换。
+                    _找 = []
+                    try:
+                        import re as _reE
+                        _mE = _reE.search(r"没有\s*\[([^\]]+)\]", str(r.get("为什么") or ""))
+                        if _mE:
+                            _找 = [x.strip().strip("'\"") for x in _mE.group(1).split(",") if x.strip()]
+                    except Exception:
+                        _找 = []
                     return None, {"名字": f"常识：出去找 {目标}",
-                                 "为什么": 说明, "步骤": 探}, None
+                                 "为什么": 说明, "步骤": 探,
+                                 "探索目标": _找}, None
             _说(f"生存常识：推演不出来 —— {r['为什么']}")
             self.说(f"[{time.strftime('%H:%M')}] 「{目标}」我做不到：{r['为什么']}",
                    紧急=True)
