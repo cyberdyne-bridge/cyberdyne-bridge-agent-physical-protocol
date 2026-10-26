@@ -318,8 +318,10 @@ def main() -> int:
     os.environ["OPENAI_API_KEY"] = "local"
     os.environ["OPENAI_API_BASE"] = "http://127.0.0.1:8099/v1"
     Voyager = load_voyager_class(args.adapter, args.server_log)
-    task = (args.task or ["Say 'upstream voyager online' in chat."])[0]
-    report: dict = {"ok": False, "task": task, "mode": "upstream Voyager + CBAP env + local Qwen"}
+    tasks = args.task or ["Say 'upstream voyager online' in chat."]
+    report: dict = {"ok": False, "task": tasks[0], "tasks": tasks,
+                    "mode": "upstream Voyager + CBAP env + local Qwen",
+                    "rollouts": []}
     try:
         v = Voyager(
             mc_port=25565,
@@ -350,13 +352,88 @@ def main() -> int:
             return task, context
         v.curriculum_agent.propose_next_task = cbap_safe_propose
 
+        # Server-fact guard for task success.  Upstream CriticAgent is a Qwen
+        # judgement; for deterministic inventory tasks we check the body facts
+        # first and only fall back to the upstream critic when facts are not
+        # applicable.
+        orig_critic = v.critic_agent.check_task_success
+        before_inv = {"value": {}}
+
+        def inventory(event):
+            if not event:
+                return {}
+            for kind, payload in reversed(event):
+                if kind == "observe":
+                    return payload.get("inventory") or {}
+            return {}
+
+        def count_inv(inv, name):
+            for k, val in (inv or {}).items():
+                if str(k).split(":")[-1] == name:
+                    if isinstance(val, (int, float)):
+                        return int(val)
+                    if isinstance(val, dict):
+                        return int(val.get("count") or 0)
+            return 0
+
+        def fact_critic(*, events, task, context, chest_observation, max_retries=5):
+            low = str(task).lower()
+            after = inventory(events)
+            before = before_inv.get("value") or {}
+            if "mine" in low or "collect" in low:
+                m = re.search(r"(?:mine|collect)\s+(?:one|1)?\s*([a-z0-9_]+)", low)
+                name = m.group(1) if m else "oak_log"
+                if count_inv(after, name) > count_inv(before, name):
+                    return True, f"server inventory fact: {name} increased"
+                return False, f"server inventory fact: {name} did not increase " \
+                              f"({count_inv(before, name)} -> {count_inv(after, name)})"
+            if "craft" in low:
+                m = re.search(r"craft\s+(?:one|1)?\s*([a-z0-9_]+)", low)
+                name = m.group(1) if m else "crafting_table"
+                if count_inv(after, name) > count_inv(before, name):
+                    return True, f"server inventory fact: {name} increased"
+                return False, f"server inventory fact: {name} did not increase " \
+                              f"({count_inv(before, name)} -> {count_inv(after, name)})"
+            return orig_critic(events=events, task=task, context=context,
+                               chest_observation=chest_observation,
+                               max_retries=max_retries)
+        v.critic_agent.check_task_success = fact_critic
+
         # Our fake env reads adapter/server_log from the installed factory.
-        messages, reward, done, info = v.rollout(task=task, context="")
-        report["rollout"] = {"done": done, "reward": reward,
-                             "success": info.get("success"),
-                             "program_name": info.get("program_name"),
-                             "program_code": info.get("program_code")}
-        report["ok"] = bool(info.get("success"))
+        def task_context(task: str) -> str:
+            low = task.lower()
+            if "mine" in low or "collect" in low:
+                m = re.search(r"(?:mine|collect)\s+(?:one|1)?\s*([a-z0-9_]+)", low)
+                target = m.group(1) if m else "spruce_log"
+                return (f"There is a {target} in Nearby blocks. Call "
+                        f"mineBlock(bot, '{target}', 1) directly. Do not call "
+                        "exploreUntil and do not wander.")
+            if "craft" in low:
+                return ("You have logs. Craft planks first if needed, then "
+                        "craft a crafting_table. Use craftItem(bot, "
+                        "'crafting_table', 1) when possible.")
+            return ""
+
+        for task in tasks:
+            before_inv["value"] = v.env.inner.state().get("items") or {}
+            ctx = task_context(task)
+            messages, reward, done, info = v.rollout(task=task, context=ctx)
+            rec = {"task": task, "done": done, "reward": reward,
+                   "success": bool(info.get("success")),
+                   "before_inventory": before_inv.get("value") or {},
+                   "after_inventory": v.env.inner.state().get("items") or {},
+                   "program_name": info.get("program_name"),
+                   "program_code": info.get("program_code")}
+            report["rollouts"].append(rec)
+            if info.get("success"):
+                try:
+                    v.skill_manager.add_new_skill(info)
+                except Exception as e:
+                    rec["skill_error"] = str(e)
+        report["ok"] = bool(report["rollouts"]) and all(
+            r["success"] for r in report["rollouts"])
+        # Keep the first rollout at top level for backwards compatibility.
+        report["rollout"] = report["rollouts"][0]
         if args.learn:
             learned = v.learn(reset_env=False)
             report["learn"] = {

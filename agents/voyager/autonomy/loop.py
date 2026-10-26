@@ -175,8 +175,34 @@ class BridgeEnv:
         self.last_events: list = []
 
     def state(self) -> dict:
-        r = self.client.read(self.fd, "body", 3000)
-        return ((r.get("payload") or {}).get("frame") or {}).get("body") or {}
+        # Prefer the bridge's own observation: it carries the full inventory,
+        # voxels and block records that the legacy body frame omits.  Actions
+        # still go through CBAP; this is read-only state used by the Voyager
+        # observation and the server-fact critic.
+        url = os.environ.get("VOYAGER_BRIDGE_URL", "http://127.0.0.1:3000").rstrip("/")
+        try:
+            with urllib.request.urlopen(url + "/state", timeout=3) as r:
+                raw = json.loads(r.read().decode("utf-8"))
+            if isinstance(raw, str):
+                raw = json.loads(raw)
+            obs = next((e[1] for e in raw if e and e[0] == "observe"), {})
+            st = obs.get("status") or {}
+            pos = st.get("position") or {}
+            return {
+                "pos": [pos.get("x", 0), pos.get("y", 0), pos.get("z", 0)],
+                "hp": st.get("health", 20), "food": st.get("food", 20),
+                "items": obs.get("inventory") or {},
+                "voxels": obs.get("voxels") or [],
+                "blockRecords": obs.get("blockRecords") or [],
+                "biome": st.get("biome"), "timeOfDay": st.get("timeOfDay"),
+                "entities": st.get("entities") or {},
+                "inventoryUsed": st.get("inventoryUsed") or 0,
+                "elapsedTime": st.get("elapsedTime") or 0,
+                "equipment": st.get("equipment") or [],
+                "bot": st.get("name") or "bot",
+            }
+        except Exception:
+            return self.driver.latest_state() or {}
 
     def log_has(self, text: str) -> bool:
         if not self.server_log or not os.path.exists(self.server_log):
@@ -192,13 +218,19 @@ class BridgeEnv:
 
     def step(self, code: str) -> tuple[list, dict]:
         before = self.state()
-        _, _, res = self.client.write(
-            self.fd,
-            {"channel": "body", "op": "exec",
-             "args": {"code": HELPERS + "\n\n" + code}},
-            deadline_ms=60000, timeout=60,
-        )
-        payload = res.get("payload") or {}
+        try:
+            _, _, res = self.client.write(
+                self.fd,
+                {"channel": "body", "op": "exec",
+                 "args": {"code": HELPERS + "\n\n" + code}},
+                deadline_ms=60000, timeout=60,
+            )
+        except Exception:
+            # The body may finish slowly (pathfinder/collectBlock).  Keep the
+            # observation and let the server-fact critic decide; a timed-out
+            # code execution is not itself proof of failure.
+            res = {}
+        payload = (res.get("payload") or {}) if isinstance(res, dict) else {}
         on_chat = payload.get("onChat") or []
         after = self.state()
         obs = self._observe(after)
