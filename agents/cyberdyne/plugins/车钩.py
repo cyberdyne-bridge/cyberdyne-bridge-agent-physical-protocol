@@ -1097,6 +1097,17 @@ def 主():
     sys.path.insert(0, os.path.join(os.path.dirname(外挂根), "brain"))
     import bridge
 
+    # ★ 2026-10-27：实机可以选择走 CBAP，而不是 legacy 直连 UDS。
+    #   由环境变量显式开启，默认仍走旧路径，避免静默改变生产行为。
+    if os.environ.get("CYBERDYNE_CBAP") == "1":
+        try:
+            import bridge_cbap
+            bridge_cbap.install()
+            记("CBAP 模式：接线口已切到 CBAPHandAdapter")
+        except Exception as e:
+            print(f"❌ CBAP 模式启动失败：{type(e).__name__}: {e}", file=sys.stderr)
+            return 4
+
     列 = 列车(bridge, 安静=参.安静)
     列.车厢表 = 表
 
