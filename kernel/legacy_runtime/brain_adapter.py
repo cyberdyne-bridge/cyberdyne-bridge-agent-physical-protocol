@@ -290,11 +290,18 @@ class CBAPHandAdapter:
         if not mapping:
             return None
         args: dict = {}
+        rename = mapping.get("legacy_args") or {}
+        if not isinstance(rename, dict):
+            rename = {}
         for key, _typ in (mapping.get("args") or {}).items():
             optional = key.startswith("?")
             name = key[1:] if optional else key
-            if name in obj:
-                args[name] = obj[name]
+            # 任务栈用中文动作字段（物品/方块/数量），CBAP mapping 用
+            # generic 名字（item/block/count）；mapping 已经声明了
+            # legacy_args，adapter 必须真的用它，否则 collect 永远缺参。
+            src = name if name in obj else rename.get(name, name)
+            if src in obj:
+                args[name] = obj[src]
             elif not optional:
                 return None
         return {"channel": mapping["channel"],
