@@ -26,6 +26,7 @@ import json
 import os
 import socket
 import time
+from collections import deque
 
 from .client import CBAPClient
 
@@ -58,6 +59,8 @@ class CBAPHandAdapter:
         # re-sends the same step while it is still in flight; CBAP's per-device
         # max_inflight=1 would turn those retries into E_BUSY noise.
         self._inflight_keys: dict[str, str] = {}
+        # Serialize distinct writes behind the one allowed by the MC device.
+        self._queue: deque[dict] = deque()
         self._outbox: list[dict] = []
         self._last_error = ""
         self.烂包数 = 0
@@ -102,6 +105,12 @@ class CBAPHandAdapter:
         self.说(f"[CBAP] 试了 {重试} 次都没连上（{last}）")
         return False
 
+    def _flush_one_queued(self) -> None:
+        while self._queue and self.client and not self._inflight_keys:
+            obj = self._queue.popleft()
+            self.发(obj)
+            return
+
     def 收(self):
         """Return (legacy messages, disconnected). Mirrors 接线口.收()."""
         if not self.client:
@@ -141,6 +150,7 @@ class CBAPHandAdapter:
                     out.append({"type": "event", "kind": "cmdResult",
                                 "cmd": cmd, "ok": True, "why": None,
                                 "t": msg.get("ts") or int(time.time() * 1000)})
+        self._flush_one_queued()
         if not self.client.connected and not out:
             return [], True
         return out, False
@@ -180,6 +190,10 @@ class CBAPHandAdapter:
         # Exactly one in-flight copy per identical command.  Returning True is
         # truthful for the legacy caller: the command is already on the wire.
         if key in self._inflight_keys.values():
+            return True
+        # Hard safety commands must not wait behind a queued say/dig.
+        if self._inflight_keys and cmd not in ("stop", "estop"):
+            self._queue.append(dict(obj))
             return True
         try:
             if not self._ensure_lease():
@@ -262,6 +276,8 @@ class CBAPHandAdapter:
                 pass
         self.client = None
         self.fd = None
+        self._queue.clear()
+        self._inflight_keys.clear()
 
     # ── translations ─────────────────────────────────────────
 
