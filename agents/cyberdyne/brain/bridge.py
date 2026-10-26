@@ -1433,6 +1433,8 @@ class 任务栈:
         # 实测教训：一次追逐里会出现"暂停-恢复"每 0.2 秒抖一次，日志刷一屏、
         # 活儿也根本推不动（它一边想干活、一边被反复打断）。
         self.平静起点 = None
+        # 陈旧坐标失败后，允许外部注入一个“重新求解”回调；默认不启用。
+        self.重规划 = None
 
     def 记平静(self, 现在):
         if self.平静起点 is None:
@@ -2089,7 +2091,7 @@ class 任务栈:
             return False
         if 步.get("动作") == "wait_until":
             # ★ 等待超时**不计入退避重试**：直接判任务失败，并把原因说清楚
-            return self._整任务失败(f"等到超时了（{原因}）")
+            return self._整任务失败(f"等到超时了（{原因}）", s=s)
         if 任["重试"] < 上限:
             任["重试"] += 1
             退避 = [1.0, 3.0, 6.0][min(任["重试"] - 1, 2)] * self._数("重试倍率", 1.0)
@@ -2103,9 +2105,9 @@ class 任务栈:
             self._存快照()
             return False
         return self._整任务失败(f"第 {任['第几步'] + 1} 步「{步.get('动作')}」"
-                               f"试了 {上限 + 1} 次都不成（{原因}）")
+                               f"试了 {上限 + 1} 次都不成（{原因}）", s=s)
 
-    def _整任务失败(self, 原因, failure_code="task_failed"):
+    def _整任务失败(self, 原因, failure_code="task_failed", s=None):
         任 = self.任务
         任["状态"] = "败"
         任["failure_code"] = str(failure_code or "task_failed")
@@ -2120,6 +2122,15 @@ class 任务栈:
                 self._记("记忆写入出错", 原因=f"{type(e).__name__}: {e}")
         self._撤探针()
         self._存快照()
+        # ★ 2026-10-26：陈坐标不是“任务终点”，而是“这一版计划作废”。
+        #   若有重规划器，立刻用同一帧事实重新求解；最多两次，防止死循环。
+        if failure_code == "stale_coordinate" and callable(self.重规划):
+            try:
+                if int(任.get("重规划次数") or 0) < 2:
+                    任["重规划次数"] = int(任.get("重规划次数") or 0) + 1
+                    self.重规划(self, s)
+            except Exception as _eR:
+                self._记("重规划失败", 原因=f"{type(_eR).__name__}: {_eR}")
         return False
 
     def _整任务完成(self, s=None):
@@ -2235,7 +2246,7 @@ class 任务栈:
             if not 达标:
                 return self._整任务失败(
                     "收集未完成（incomplete_collection）：%s" % 为什么,
-                    failure_code="incomplete_collection")
+                    failure_code="incomplete_collection", s=s)
             self._整任务完成(s)
             return False
         步 = 任["步骤"][任["第几步"]]
@@ -2266,7 +2277,7 @@ class 任务栈:
         #   陈坐标继续重试。
         if 任.get("_陈坐标") or (isinstance(步, dict) and 步.get("_陈坐标")):
             self._记("陈坐标任务失败", 步=步.get("动作"), p=步.get("p"))
-            return self._整任务失败("陈坐标，重新规划", failure_code="stale_coordinate")
+            return self._整任务失败("陈坐标，重新规划", failure_code="stale_coordinate", s=s)
         # ⚠ 要**回头把整个任务里所有**待解析的步骤都补一遍：
         # 「拾」得在方块还在的时候解析出该拾什么 —— 等挖完了再问"这一格原来是什么"，
         # 探针只会告诉你 air。
@@ -4380,6 +4391,24 @@ def 主():
     翻译 = 翻译器(cfg.get("m5") or {}, 说, os.path.join(ROOT, "logs"),
                   任务栈=任务, 三觉=三觉层, 人格=人物,
                   允许动作=任务栈.允许动作, 记忆=记忆层)
+    # ★ 2026-10-26：陈坐标任务失败后，用同一帧状态重新求解一次。
+    #   这不是“无限重试”：任务栈自己限制 2 次，且新的计划仍要过全部 fail-closed 闸。
+    _名称 = {"stone_pickaxe": "石镐", "wooden_pickaxe": "木镐",
+             "iron_pickaxe": "铁镐"}
+    def _重规划(栈, s):
+        目标 = (栈.任务 or {}).get("目标物品")
+        中文 = _名称.get(str(目标 or ""))
+        if not 中文:
+            return False
+        结果 = 翻译.收输出("做个" + 中文, s, 用途="闲聊")
+        if not isinstance(结果, tuple) or len(结果) < 2 or not isinstance(结果[1], dict):
+            return False
+        新 = 结果[1]
+        步骤 = 新.get("步骤") or []
+        if not 步骤:
+            return False
+        return 栈.接(新.get("名字") or f"常识：{目标}", 步骤, s)
+    任务.重规划 = _重规划
     心跳器 = 心跳(cfg.get("m6") or {}, 说, 翻译, 任务, 三觉层,
                    lambda p, 用途="通用": 大模型.问一次(p, 用途, 600),
                   os.path.join(ROOT, "logs"))
