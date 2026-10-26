@@ -1945,7 +1945,8 @@ function 执行前往(sock, 坐标, msg) {
   // 脑那边会传 near:1 —— 不然它会停在 2 格外看着掉落物干等（实测踩过）。
   Promise.resolve(插.前往(bot, 坐标,
     { timeout_ms: m2.goto_timeout_ms || 30000,
-      near: (msg && msg.near !== undefined) ? Number(msg.near) : undefined }))
+      near: (msg && msg.near !== undefined) ? Number(msg.near) : undefined,
+      no_dig: !!(msg && msg.no_dig) }))
     .then((r) => 回执(sock, 'goto', true, null, r || {}))
     .catch((e) => 回执(sock, 'goto', false, e.message));
 }

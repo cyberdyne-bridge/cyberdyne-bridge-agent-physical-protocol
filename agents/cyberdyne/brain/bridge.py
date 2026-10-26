@@ -1971,7 +1971,10 @@ class 任务栈:
         if 会重复 and 现在 - self.上次下发 < 重下 and not 卡住:
             return False
         if 动 == "走到":
-            self.发({"act": "goto", "p": [float(v) for v in 步.get("p", [])[:3]]})
+            _goto = {"act": "goto", "p": [float(v) for v in 步.get("p", [])[:3]]}
+            if 步.get("不挖"):
+                _goto["no_dig"] = True
+            self.发(_goto)
         elif 动 == "挖":
             self.发({"cmd": "dig", "p": [float(v) for v in 步.get("p", [])[:3]]})
         elif 动 == "放":
@@ -2175,7 +2178,7 @@ class 任务栈:
         dx, dz = 方向[i]
         任["探索段"] = i + 1
         位 = [round(我[0] + dx), round(我[1]), round(我[2] + dz)]
-        任["步骤"] = [{"动作": "走到", "p": 位, "到点": 3.0}]
+        任["步骤"] = [{"动作": "走到", "p": 位, "到点": 3.0, "不挖": True}]
         任["第几步"] = 0
         任["重试"] = 0
         任["重试到"] = 0.0
