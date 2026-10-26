@@ -39,6 +39,7 @@
   - 完整回归：CBAP `129/129 OK`（约 119s），native `6/6 OK`。
   - 默认启动仍是 legacy，但会明确记 `legacy 直连模式（未启用 CYBERDYNE_CBAP=1）`。
   - 第十一轮实机尝试 `做个石镐`：CBAP 下已拿到 `cobblestone 4` / `diorite 4`，但任务卡在“前面挡着 diorite”的重复 dig 拒绝；服务端背包仍没有 `stone_pickaxe`，因此不构成成功。
+  - 第十二轮去掉 adapter 的伪造状态字段：`look`/`friends`/`deaths`/`respawned` 现在从 CBAP 状态帧读取，不再硬编码 0/空。
 
 ---
 
