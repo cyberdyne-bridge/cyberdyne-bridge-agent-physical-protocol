@@ -4,7 +4,13 @@
 - 审计对象：CBAP `kernel/legacy_runtime`、MC driver、legacy brain、hand/body、插件编组、测试与配置
 - 基线：`b0cb1a7`
 - 方式：静态阅读、运行时日志、异常扫描、逐文件 `unittest`、CBAP 安全路径检查
-- 结论：**不能把当前状态当成“已验收”**。协议骨架和部分安全闸门是好的，但仍有 P0 级控制面绕过、审计链并发风险、任务静默停滞和测试红灯。
+- 结论：**不能把当前状态当成“已验收”**。协议骨架和部分安全闸门是好的，但仍有 P0 级控制面绕过、任务静默停滞和异常可见性问题。
+- 进度（2026-10-26 晚，非最终验收）：
+  - 官网已挂中英文“代码审计中”提示。
+  - `AuditChain` 已补跨进程 `flock`，并发 60 条写入验证 `(True, 'ok')`。
+  - CBAP 测试在包模式下 `129/129` 通过（约 119 秒），已加 `.github/workflows/verify.yml`。
+  - 热保护挂起现在会显式 `任务.暂停('过热保护')`，恢复时显式恢复。
+  - 主链数据目录创建已补；剩余 `FileNotFoundError` 根因和 legacy 路径仍未完成。
 
 ---
 
@@ -20,10 +26,11 @@
    16 步竖井计划已接单，但 hand 侧 `dig` 次数为 0；`任务栈.跑()` 加了 traceback 后也没有异常。说明不是“挖空守卫拦住了”，而是任务调度/暂停/下发前返回。
 4. **CBAP 审计链不是跨进程安全的。**
    `AuditChain` 只有进程内 `threading.Lock`；kernel 和 legacy bridge 可以同时写 `logs/cbap-audit.jsonl`，会破坏 `seq/hash` 链。
-5. **CBAP 测试不是全绿，整套还会挂住。**
-   逐文件跑：16 个文件通过，3 个失败，1 个 `test_conformance.py` 超时挂起；整套 120 秒也没跑完。
-6. **没有 CI 测试门。**
-   `.github/workflows` 只有 Pages 部署，没有 Python/JS 测试、没有异常扫描、没有安全回归。
+5. **CBAP 测试当前已转为绿灯，但验证方式必须统一。**
+   包模式 `python -m unittest discover -s tests/cbap`：129/129 通过，约 119 秒。
+   ⚠ 直接 `python3 tests/cbap/test_*.py` 仍会因未走 `tests.cbap` 包初始化而出现 policy/路径假红；CI 已统一走包模式。
+6. **CI 测试门已新增。**
+   `.github/workflows/verify.yml`：Python 编译、CBAP 129 测试、native hand JS 语法检查、审计提示存在性检查。
 
 ## 2. P0 / Blocker
 
@@ -159,33 +166,20 @@ seq 可能重复，hash 链可能断裂
 
 ### P1-1 CBAP 测试红灯与挂起
 
-逐文件结果（`PYTHONPATH=.`）：
+已验证（包模式，`PYTHONPATH=.`）：
 
 ```text
-通过 16 个
-test_conformance.py                 超时 (>25s)
-test_device_contract.py             1 failure + 3 errors
-test_mcp_device.py                  1 failure
-test_security.py                    1 failure + 4 errors
+python3 -m unittest discover -s tests/cbap -p 'test_*.py'
+129 tests, 118.940s, OK
 ```
 
-典型失败：
+补充说明：
 
 ```text
-E_PERM: device not allowed: test://security/light-01
-E_PERM: device not allowed: test://parity/light-01
-E_PERM: device not allowed: mcp://lab/light-01
+直接按文件执行 test_*.py 不会加载 tests.cbap 包初始化，
+CBAP_TEST_MODE 与测试路径不生效，会产生假红。
+CI 必须固定使用 `python -m unittest ...` 或 pytest 的包模式。
 ```
-
-判断：
-
-```text
-默认策略改为 default-deny 本身是对的；
-但测试没有在自己的 KernelServer 上提供对应 policy，
-所以测试和产品语义脱节。
-```
-
-整套 `unittest discover` 120 秒未完成，说明测试缺少强制超时/清理。
 
 ### P1-2 无 CI 测试门
 
@@ -351,7 +345,7 @@ Python compileall: 通过
 协议设计：中上
 安全闸门：有，但未覆盖实机路径
 错误可见性：不合格
-测试可信度：不合格（红灯 + 挂起 + 无 CI）
+测试可信度：包模式下 129/129 通过，CI 已加；仍需清理直接按文件运行的假红入口
 实机自主性：未通过（第一镐未下发）
 总体：不可验收，可继续修
 ```
