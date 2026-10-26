@@ -1,6 +1,6 @@
 # Voyager bugs / minimal reproductions / PoCs
 
-**Date:** 2026-10-25
+**Date:** 2026-10-26 (revised; VY-01 retracted)
 **Upstream:** MineDojo/Voyager `55e45a880755d0c8c66ca7fb5fe7962ac8974f89` (2023-07-27)
 **Tested with:** Node 22.14, Mineflayer 4.39, Minecraft 1.21.1, Python 3.10
 **Status:** reliability / compatibility report, not a security advisory
@@ -12,81 +12,75 @@
 
 | ID | Severity | Component | Issue | Confidence |
 |---|---|---|---|---|
-| VY-01 | P1 | `voyager/utils/record_utils.py` | `EventRecorder` assumes every event has `status`/`inventory`; `onChat` does not, so recording a chat action crashes with `KeyError: 'status'` | confirmed |
+| VY-01 | — | CBAP adapter | **RETRACTED as an upstream bug.** The upstream `bot.event()` includes every non-`on*` observation in an `onChat` event; our CBAP adapter omitted them. The adapter was fixed. | not upstream |
 | VY-02 | P1 | `voyager/agents/action.py` | `process_ai_message` requires `@babel/core` and `@babel/generator`, but they are not in the bridge package; parsing fails on a clean install | confirmed |
 | VY-03 | P1/P2 | `voyager/env/mineflayer/index.js` | optional `minecrafthawkeye` export is an object, but upstream passes it directly to `bot.loadPlugin()`; this throws `plugin needs to be a function` | confirmed |
 | VY-04 | P2 | `voyager/env/mineflayer/index.js` | setup / `returnItems()` sends multiple `/gamerule`, `/setblock`, `/give` commands per step; observed `disconnect.spam` on a non-op vanilla 1.21.1 body | observed, server-config dependent |
-| VY-05 | P2 | `voyager/env/mineflayer/mineflayer-collectblock` | `npm install` alone does not produce `lib/index.js`; the bridge crashes on startup unless `npx tsc` is run | confirmed setup footgun |
+| VY-05 | info | `voyager/env/mineflayer/mineflayer-collectblock` | `npm install` alone does not produce `lib/index.js`, but the upstream README already says `npx tsc` | documented setup, not a bug |
 | VY-06 | P3 | bridge `/step` | `bot.waitForTicks()` can reject after a paused/slow-tick or kicked body; the bridge then exits on an uncaught timeout | observed, operational |
 
 ---
 
-## VY-01 — EventRecorder crashes on `onChat`
-
-**Affected:** `voyager/utils/record_utils.py`, `EventRecorder.record()` / `update_items()`
-
-**Symptom:**
+## Revision 2026-10-26
 
 ```text
-KeyError: 'status'
+VY-01  retracted: CBAP adapter emitted incomplete onChat; upstream includes
+       non-on observations in bot.event()
+VY-03  clarified: 1.3.6 function -> 1.3.7+ object default; upstream ^1.3.6
+       now resolves 1.3.9
+VY-04  removed editorial question; observed compatibility only
+VY-05  downgraded: upstream README already says npx tsc
 ```
 
-`Voyager.step()` calls `self.recorder.record(events, task)` for every action.
-The bridge emits an `onChat` event shaped as:
+---
+
+## VY-01 — RETRACTED: this was a CBAP adapter bug, not Voyager
+
+**Affected:** our CBAP adapter, not `voyager/utils/record_utils.py`
+
+**Correction:** The upstream bridge does include `status`, `inventory`, `voxels`,
+and the other non-`on*` observations in every `onChat` event. In
+`voyager/env/mineflayer/lib/observation/base.js`:
+
+```javascript
+bot.event = function (event_name) {
+    let result = {};
+    bot.obsList.forEach((obs) => {
+        if (obs.name.startsWith("on") && obs.name !== event_name) return;
+        result[obs.name] = obs.observe();
+    });
+    bot.cumulativeObs.push([event_name, result]);
+};
+```
+
+Only other `on*` observations are skipped. `status`, `inventory`, `voxels`,
+etc. are still included.
+
+Our CBAP adapter originally forwarded only:
 
 ```json
 ["onChat", {"onChat": "hello"}]
 ```
 
-`update_items(event)` unconditionally reads:
-
-```python
-inventory = event["inventory"]
-elapsed_time = event["status"]["elapsedTime"]
-```
-
-So a chat action crashes the recorder before the critic/skill step.
-
-**Minimal repro:**
+That made the upstream recorder crash. We changed the adapter to attach the full
+observation snapshot to `onChat`. The PoC now demonstrates the **adapter
+contract**, not an upstream bug:
 
 ```bash
 VOYAGER_SRC=/path/to/Voyager \
-python3 poc/voyager/poc_record_onchat.py
+python3 poc/voyager/poc_cbap_onchat_contract.py
 ```
 
-The PoC feeds:
-
-```python
-[
-  ["onChat", {"onChat": "hello"}],
-  ["observe", {"status": {...}, "inventory": {}, "blockRecords": []}],
-]
-```
-
-**Actual:**
+Expected:
 
 ```text
-REPRODUCED: KeyError 'status' (onChat event has no status/inventory)
+REPRODUCED (CBAP adapter contract): KeyError 'status'
 ```
 
-**Expected:** recording should ignore non-observation events for inventory
-bookkeeping, or the bridge should attach the last observation snapshot to every
-event.
+This is retained as a regression test for our adapter. It must not be reported
+to Voyager.
 
-**PoC:** [`poc/voyager/poc_record_onchat.py`](../poc/voyager/poc_record_onchat.py)
-
-**Workaround / fix:**
-
-```python
-for event_type, event in events:
-    if event_type != "observe":
-        continue
-    self.update_items(event)
-    self.update_elapsed_time(event)
-```
-
-Our CBAP adapter also attaches the full observation to `onChat`, which is why
-the upstream runner can proceed.
+**PoC:** [`poc/voyager/poc_cbap_onchat_contract.py`](../poc/voyager/poc_cbap_onchat_contract.py)
 
 ---
 
@@ -182,6 +176,11 @@ require("minecrafthawkeye") typeof = object
 REPRODUCED: upstream calls bot.loadPlugin(minecraftHawkEye) with an object
 ```
 
+**Version note:** the upstream range is `^1.3.6`. `minecrafthawkeye@1.3.6`
+ended with `module.exports = inject` (a function); `1.3.7` and later export an
+object with a `default` key. A fresh install today resolves `1.3.9`, so the
+failure is a version-drift bug, not a property of 1.3.6.
+
 **Expected:** guard on type or use the actual plugin function.
 
 ```javascript
@@ -228,9 +227,9 @@ The exact kick threshold is server-configuration dependent; a minimal 3-command
 probe did not kick, so this is reported as an **observed compatibility issue**,
 not a deterministic upstream repro.
 
-**Repro context:** apply `voyager-1.21.1.patch`? The patch removes these
-commands; remove those hunks to restore the behavior, start the bridge and run
-one action. The observed bridge log is above.
+**Repro context:** remove the setup/`returnItems` hunks from the 1.21.1
+compatibility patch, start the bridge, and run one action. The observed bridge
+log is above.
 
 **Workaround:** default `returnItems()` to no-op; send setup commands only with
 an explicit `setupCommands: true` and an op/allowlist check. This is what the
@@ -240,9 +239,12 @@ an explicit `setupCommands: true` and an op/allowlist check. This is what the
 
 ---
 
-## VY-05 — `mineflayer-collectblock` has no built `lib/`
+## VY-05 — Documented setup step: `mineflayer-collectblock` needs `npx tsc`
 
 **Affected:** `voyager/env/mineflayer/mineflayer-collectblock`
+
+**Status:** not an upstream bug. The upstream README already documents the
+build step at lines 56–57.
 
 **Symptom:**
 
@@ -262,8 +264,7 @@ npm install
 node -e "require('mineflayer-collectblock')"
 ```
 
-**Expected:** `npm install` should build the local package, or the package should
-ship `lib/`.
+**Expected:** follow the documented build step.
 
 **Workaround:**
 
@@ -272,8 +273,7 @@ cd mineflayer-collectblock
 npx tsc
 ```
 
-**Confidence:** confirmed; this is a setup footgun rather than a runtime logic
-bug.
+**Confidence:** documented setup; downgraded from P2 to informational.
 
 ---
 
@@ -299,7 +299,7 @@ CBAP action instead of leaving an uncaught Node exception.
 ## PoC index
 
 ```text
-poc/voyager/poc_record_onchat.py
+poc/voyager/poc_cbap_onchat_contract.py
 poc/voyager/poc_babel_missing.sh
 poc/voyager/poc_hawkeye_plugin.js
 ```

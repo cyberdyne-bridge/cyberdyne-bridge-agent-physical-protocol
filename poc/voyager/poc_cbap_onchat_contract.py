@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Minimal repro: EventRecorder crashes on a Voyager onChat event."""
+"""CBAP adapter contract regression: incomplete onChat event breaks recorder.
+
+This is NOT an upstream Voyager reproduction: upstream bot.event() attaches
+all non-on observations to onChat. It reproduces the shape our adapter used to
+emit and guards that we keep attaching the full snapshot.
+"""
 import os
 import sys
 import tempfile
@@ -29,7 +34,7 @@ events = [
 try:
     rec.record(events, "say hello")
 except KeyError as e:
-    print(f"REPRODUCED: KeyError {e} (onChat event has no status/inventory)")
+    print(f"REPRODUCED (CBAP adapter contract): KeyError {e} (onChat lacks status/inventory)")
     raise SystemExit(0)
 print("NOT REPRODUCED")
 raise SystemExit(1)

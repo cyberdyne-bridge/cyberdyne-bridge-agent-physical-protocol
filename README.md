@@ -329,7 +329,7 @@ CBAP conformance       129/129
 Alice                  源码归档，未构建
 CBAP OS 0.1            live ISO / 版本选择 / host bridge 实测
 Host device surface    5 个 device_id / 输入默认关闭
-控制面 p50             0.2–0.3 ms
+控制面 p50             0.2–0.3 ms（本地 UDS）
 旧套件                 已归档，不再进主 CI
 ```
 
