@@ -2140,7 +2140,7 @@ class 任务栈:
             return False
         扫 = (s or {}).get("scan") or {}
         池 = []
-        for k in ("方块", "可交互", "视锥", "找", "记得"):
+        for k in ("方块", "可交互", "视锥", "找", "记得", "木"):
             v = 扫.get(k) if isinstance(扫, dict) else None
             if isinstance(v, list):
                 池.extend(v)
