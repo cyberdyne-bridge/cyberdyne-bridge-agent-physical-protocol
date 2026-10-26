@@ -83,7 +83,82 @@ Possible mechanisms, in order:
 4. Voyager instance reuse semantics differ from what our runner assumes.
 ```
 
+## Four isolation experiments — results
+
+Script: `agents/voyager/upstream_bench/isolation.py`
+
+| Experiment | Isolation | Result |
+|---|---|---|
+| A | same CBAP env, two direct craft steps; no ActionAgent/Qwen | **2/2** |
+| B | same Voyager instance, two chat tasks | **2/2** |
+| C | same ActionAgent, fresh SkillManager for second craft | **2/2** |
+| D | same SkillManager, fresh ActionAgent for second craft | **2/2** |
+
+### A — direct env
+
+```text
+before: oak_log 8
+first:  oak_log 7, oak_planks 4
+second: oak_log 6, oak_planks 8
+```
+
+### B — two chat tasks
+
+```text
+say isolation one  -> success
+say isolation two  -> success
+```
+
+### C — fresh SkillManager
+
+```text
+first:  oak_planks 0 -> 16
+second: oak_planks 16 -> 32
+```
+
+### D — fresh ActionAgent
+
+```text
+first:  oak_planks 0 -> 16
+second: oak_planks 16 -> 28
+```
+
+## Revised attribution
+
+All four isolations pass. The failure was **not reproduced** by:
+
+```text
+direct env reuse
+same-Voyager chat reuse
+fresh SkillManager
+fresh ActionAgent
+```
+
+Therefore the current evidence points to the **runner's seeded-skill routing
+and task-wrapper state**, not to:
+
+```text
+Minecraft / CBAP body
+craft primitive
+Voyager SkillManager alone
+Voyager ActionAgent alone
+GPT-era OpenAI API
+```
+
+The next step is to instrument the runner's second craft task:
+
+```text
+current_skill
+routed_process return value
+SkillManager.programs contains craftOakPlanks
+env.step programs argument
+```
+
+The isolation script itself is a diagnostic, not the production runner.
+
 ## Next experiment
+
+
 
 Before changing the architecture:
 
