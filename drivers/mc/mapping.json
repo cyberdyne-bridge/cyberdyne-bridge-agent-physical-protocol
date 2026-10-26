@@ -70,6 +70,7 @@
       "op": "dig",
       "args": {
         "p": "vec3",
+        "?允许挖脚下": "bool",
         "?delay_ms": "int"
       }
     },
