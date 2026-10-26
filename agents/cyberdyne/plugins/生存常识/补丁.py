@@ -1995,6 +1995,26 @@ def 插进当前活(桥, 步骤, 名字=None, 状态=None):
     要插 = [x for x in list(步骤 or []) if isinstance(x, dict)]
     if not 要插:
         return False, "要插的步骤是空的 ⇒ 插不了 ✓"
+    # 插入的步骤也必须服从当前事实：目标已经是空气就跳过，
+    # 否则“先挖挡路方块”的短活会把一个空气挖点插回任务。
+    _已知 = {}
+    for _条 in ((状态 or {}).get("blocks") or []):
+        try:
+            _p = _条.get("p")
+            if isinstance(_p, (list, tuple)) and len(_p) >= 3:
+                _已知[(int(_p[0]), int(_p[1]), int(_p[2]))] = str(_条.get("name") or "")
+        except Exception:
+            continue
+    for _步 in 要插:
+        try:
+            if _步.get("动作") != "挖" or not isinstance(_步.get("p"), (list, tuple)):
+                continue
+            _q = tuple(int(float(v)) for v in _步["p"][:3])
+            if _已知.get(_q) in 空气名:
+                _步["跳过"] = True
+                _步["跳过原因"] = "插入时目标已是空气"
+        except Exception:
+            continue
     任["步骤"][第几:第几] = 要插
     # 如果插进来的短活恰好就是“把当前挡路的那一格挖掉”，
     # 被挡的原步骤在短活完成后目标已经是空气；把它标记跳过，
