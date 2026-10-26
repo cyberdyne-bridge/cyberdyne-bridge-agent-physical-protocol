@@ -784,6 +784,28 @@ function 扫环境(半径, 步长, 要找, 找半径) {
 
     /* ★ 把"刚变没的坐标"一起报出去（60 秒内）——
      *   车厢据这把那些陈条目从本地记忆里划掉，这样"刷新坐标"才是真刷新 ✓ */
+    /* ★ 2026-10-26：木头单独用 1 格步长扫。
+     *   近场统计是 2 格步长，树在 (845,65,7)、我在 (844.5,65,9.8) 时
+     *   dx=0.5 被 floor 到 844，正好跨过 1 格宽的树干 —— 眼睛摘要里有，
+     *   求解器却拿不到。木头是单棵树也要用的关键材料，不能靠抽样碰运气。
+     */
+    try {
+      for (let dx = -近半径; dx <= 近半径; dx++) {
+        for (let dz = -近半径; dz <= 近半径; dz++) {
+          for (let dy = 0; dy <= 5; dy++) {
+            let b = null;
+            try { b = bot.blockAt(p.offset(dx, dy, dz)); } catch (e) { continue; }
+            if (!b || !b.name.endsWith('_log')) continue;
+            if (木们.some((w) => w.p[0] === Math.floor(p.x + dx) && w.p[1] === Math.floor(p.y + dy) && w.p[2] === Math.floor(p.z + dz))) continue;
+            if (木们.length >= 24) break;
+            木们.push({ name: b.name,
+                       p: [Math.floor(p.x + dx), Math.floor(p.y + dy), Math.floor(p.z + dz)],
+                       距: Math.round(Math.hypot(dx, dy, dz) * 10) / 10 });
+          }
+        }
+      }
+    } catch (e) { /* 木头扫描失败不拖垮整个雷达 */ }
+
     /* ★ 2026-10-26：仿生视锥。
      *   不是 360° 透视：只沿当前 yaw/pitch 的视锥发射线，射线遇到第一个
      *   实心方块就停；远处最多 8 个区块（128 格）。局部仍保留近场扫描，
