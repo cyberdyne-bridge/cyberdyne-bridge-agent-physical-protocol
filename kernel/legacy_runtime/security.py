@@ -152,6 +152,9 @@ class AuditChain:
                  require_remote_ack: bool = False):
         self.path = os.path.abspath(path)
         self.checkpoint_path = self.path + ".checkpoint"
+        # Cross-process serialization.  threading.Lock only protects one
+        # process; kernel and legacy bridge may share the same audit file.
+        self.file_lock_path = self.path + ".lock"
         self.mirror_path = os.path.abspath(mirror_path) if mirror_path else None
         self.signing_key = signing_key
         self.remote_url = remote_url
@@ -203,33 +206,57 @@ class AuditChain:
 
     def append(self, event: str, **fields: Any) -> dict:
         with self._lock:
-            row = {"seq": self._seq + 1, "t": int(time.time() * 1000),
-                   "event": str(event)}
-            row.update(fields)
-            prev = self._last_hash
-            body = self._canonical(row)
-            digest = hashlib.sha256((prev + "\n" + body).encode("utf-8")).hexdigest()
-            row["prev"] = prev
-            row["hash"] = digest
-            if self.signing_key:
-                row["mac"] = hmac.new(
-                    self.signing_key.encode("utf-8"),
-                    (prev + "\n" + body).encode("utf-8"),
-                    hashlib.sha256,
-                ).hexdigest()
-            line = self._canonical(row) + "\n"
-            self._append_file(self.path, line, 0o600)
-            if self.mirror_path:
-                self._append_file(self.mirror_path, line, 0o600)
-            if self._remote_q is not None:
+            # Re-read the tail under the cross-process lock.  Two AuditChain
+            # instances may otherwise both start from the same prev/hash.
+            try:
+                os.makedirs(os.path.dirname(self.file_lock_path) or ".",
+                            mode=0o700, exist_ok=True)
+            except OSError:
+                pass
+            with open(self.file_lock_path, "a", encoding="utf-8") as _lf:
+                _locked = False
                 try:
-                    self._remote_q.put_nowait(line)
-                except queue.Full:
-                    self._remote_failures += 1
-            self._last_hash = digest
-            self._seq = int(row["seq"])
-            self._write_checkpoint()
-            return row
+                    import fcntl as _fcntl
+                    _fcntl.flock(_lf.fileno(), _fcntl.LOCK_EX)
+                    _locked = True
+                except (ImportError, OSError):
+                    _locked = True
+                try:
+                    self._load_tail()
+                    row = {"seq": self._seq + 1, "t": int(time.time() * 1000),
+                           "event": str(event)}
+                    row.update(fields)
+                    prev = self._last_hash
+                    body = self._canonical(row)
+                    digest = hashlib.sha256((prev + "\n" + body).encode("utf-8")).hexdigest()
+                    row["prev"] = prev
+                    row["hash"] = digest
+                    if self.signing_key:
+                        row["mac"] = hmac.new(
+                            self.signing_key.encode("utf-8"),
+                            (prev + "\n" + body).encode("utf-8"),
+                            hashlib.sha256,
+                        ).hexdigest()
+                    line = self._canonical(row) + "\n"
+                    self._append_file(self.path, line, 0o600)
+                    if self.mirror_path:
+                        self._append_file(self.mirror_path, line, 0o600)
+                    if self._remote_q is not None:
+                        try:
+                            self._remote_q.put_nowait(line)
+                        except queue.Full:
+                            self._remote_failures += 1
+                    self._last_hash = digest
+                    self._seq = int(row["seq"])
+                    self._write_checkpoint()
+                    return row
+                finally:
+                    if _locked:
+                        try:
+                            import fcntl as _fcntl
+                            _fcntl.flock(_lf.fileno(), _fcntl.LOCK_UN)
+                        except (ImportError, OSError):
+                            pass
 
     def _write_checkpoint(self) -> None:
         cp = {"seq": self._seq, "hash": self._last_hash}
