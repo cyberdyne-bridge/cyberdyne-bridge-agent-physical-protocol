@@ -55,6 +55,19 @@ class TaskGuardTest(unittest.TestCase):
         self.assertEqual(t.任务.get("状态"), "败")
         self.assertEqual(t.任务.get("failure_code"), "stale_coordinate")
 
+    def test_runtime_air_step_is_skipped(self):
+        t = self._stack()
+        state = {
+            "pos": [847.5, 51, -2.0],
+            "scan": {"t": 1, "可交互": [], "方块": []},
+            "blocks": [{"p": [847, 53, -2], "name": "air"}],
+            "items": {"wooden_pickaxe": 1},
+        }
+        steps = [{"动作": "挖", "p": [847, 53, -2]}]
+        self.assertTrue(t.接("air-runtime", steps, state))
+        self.assertFalse(t.跑(state))
+        self.assertTrue(steps[0].get("跳过"))
+
     def test_task_without_any_dig_cannot_complete(self):
         t = self._stack()
         state = {

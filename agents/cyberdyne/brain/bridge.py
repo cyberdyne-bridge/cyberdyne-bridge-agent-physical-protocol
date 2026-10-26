@@ -2287,6 +2287,13 @@ class 任务栈:
         if 任.get("_陈坐标") or (isinstance(步, dict) and 步.get("_陈坐标")):
             self._记("陈坐标任务失败", 步=步.get("动作"), p=步.get("p"))
             return self._整任务失败("陈坐标，重新规划", failure_code="stale_coordinate", s=s)
+        # 开挖点已经是空气：这一步没有可挖的东西，按事实跳过。
+        # 不能等 `_看完成了没` 把它判成“陈坐标”再失败；那会把整条计划作废。
+        if (isinstance(步, dict) and 步.get("动作") == "挖"
+                and isinstance(步.get("p"), (list, tuple))
+                and self._方块名(s, 步.get("p")) in ("air", "cave_air", "void_air")):
+            步["跳过"] = True
+            步["跳过原因"] = "当前事实：目标已是空气"
         # ⚠ 要**回头把整个任务里所有**待解析的步骤都补一遍：
         # 「拾」得在方块还在的时候解析出该拾什么 —— 等挖完了再问"这一格原来是什么"，
         # 探针只会告诉你 air。
