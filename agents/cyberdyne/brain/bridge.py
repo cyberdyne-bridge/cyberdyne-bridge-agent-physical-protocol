@@ -2145,8 +2145,15 @@ class 任务栈:
             if isinstance(v, list):
                 池.extend(v)
         for x in 池:
-            if isinstance(x, dict) and str(x.get("name") or "") in 找:
-                return True
+            if not isinstance(x, dict):
+                continue
+            名 = str(x.get("name") or "")
+            for t in 找:
+                if 名 == t:
+                    return True
+                # 找树时“橡木/白桦/金合欢”是同一类；雷达看到任意原木都算找到。
+                if t.endswith("_log") and 名.endswith("_log"):
+                    return True
         return False
 
     def _探索下一段(self, s):
