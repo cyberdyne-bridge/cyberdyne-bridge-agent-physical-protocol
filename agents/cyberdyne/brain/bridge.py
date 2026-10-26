@@ -1422,6 +1422,7 @@ class 任务栈:
         self.发 = 发命令
         self.任务 = None
         self.记忆 = 记忆          # M7：干完/失败都写进记忆（记忆不是指令，只是记事）
+        os.makedirs(日志目录, exist_ok=True)
         self.日志路径 = os.path.join(日志目录, "任务.jsonl")
         self.快照路径 = os.path.join(日志目录, "任务快照.json")
         self.上次下发 = 0.0
@@ -1462,8 +1463,11 @@ class 任务栈:
             if isinstance(原, dict):
                 return {str(k): float(v) for k, v in 原.items()
                         if isinstance(v, (int, float)) and float(v) > 0}
-        except Exception:
-            pass
+        except FileNotFoundError:
+            # 第一次运行没有箱子账是正常状态，不是错误。
+            return {}
+        except Exception as _e:
+            self._记("箱子账读取失败", 原因=repr(_e)[:160])
         return {}
 
     def _存箱子账(self):
@@ -2440,6 +2444,7 @@ class 记忆:
     def _追一条(self, 类, 条):
         """更新过的卡也追一条到文件（加载时按各自的键合并）。"""
         try:
+            os.makedirs(os.path.dirname(self._路(类)), exist_ok=True)
             with open(self._路(类), "a", encoding="utf-8") as f:
                 f.write(json.dumps(条, ensure_ascii=False) + "\n")
         except Exception as _e:
@@ -4327,6 +4332,13 @@ def 主():
     #   不登记 ⇒ `_活实例(bridge,"叙事者")` 返回 None ⇒ 耳朵读到 None ✗ ⇒ 永远"没有扫描帧"✗（今晚老谜题 ✓）
     叙事者.车钩活着的实例 = [叙事]
     说 = 叙事.说
+    # 主链自己的落盘目录必须先存在；否则第一次运行会把“目录不存在”
+    # 当成业务错误写进静默账。目录是基础设施，不是业务异常。
+    try:
+        os.makedirs(os.path.join(ROOT, "logs"), exist_ok=True)
+        os.makedirs(os.path.join(ROOT, "记忆"), exist_ok=True)
+    except OSError as _eDirs:
+        说(f"[{时刻()}] 数据目录创建失败：{_eDirs!r}", 紧急=True)
     # ⚠ 反射层要同时拿到 m1 和 m2（还有 M4 的猎手参数）—— M2 的参数全在 m2 里。
     # 只喂 m1 的话，counter_dist / finish_hp / counter_cooldown_ms 这些
     # 会**静默地用代码里的硬编码默认值**，配置怎么写都没用。
