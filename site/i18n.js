@@ -29,7 +29,7 @@
       "Read spec": "قراءة المواصفة", "10-minute path": "مسار 10 دقائق",
       "UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED": "بروتوكول مفتوح المصدر غير رسمي · كما هو · بمساعدة الذكاء الاصطناعي",
       "Legal": "قانوني", "Third-party notices": "إشعارات الأطراف الثالثة", "License": "الرخصة",
-      "_note": "الأقسام التفصيلية بالإنجليزية حاليًا."
+      "_note": "ترجمة آلية؛ المصطلحات التقنية بالإنجليزية."
     },
     fr: {
       "An open protocol bridge for physical agents": "Un pont de protocole ouvert pour les agents physiques",
@@ -63,7 +63,7 @@
       "Read spec": "Lire la spécification", "10-minute path": "Parcours 10 minutes",
       "UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED": "PROTOCOLE OPEN SOURCE NON OFFICIEL · EN L'ÉTAT · ASSISTÉ PAR IA",
       "Legal": "Mentions légales", "Third-party notices": "Déclarations tierces", "License": "Licence",
-      "_note": "Les sections détaillées sont encore en anglais."
+      "_note": "Traduction automatique ; termes techniques en anglais."
     },
     ru: {
       "An open protocol bridge for physical agents": "Открытый протокольный мост для физических агентов",
@@ -97,7 +97,7 @@
       "Read spec": "Читать спецификацию", "10-minute path": "Путь за 10 минут",
       "UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED": "НЕОФИЦИАЛЬНЫЙ ОТКРЫТЫЙ ПРОТОКОЛ · КАК ЕСТЬ · ПРИ УЧАСТИИ ИИ",
       "Legal": "Правовая информация", "Third-party notices": "Уведомления третьих сторон", "License": "Лицензия",
-      "_note": "Подробные разделы пока на английском."
+      "_note": "Машинный перевод; технические термины — на английском."
     },
     es: {
       "An open protocol bridge for physical agents": "Un puente de protocolo abierto para agentes físicos",
@@ -131,7 +131,7 @@
       "Read spec": "Leer la especificación", "10-minute path": "Ruta de 10 minutos",
       "UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED": "PROTOCOLO OPEN SOURCE NO OFICIAL · TAL CUAL · ASISTIDO POR IA",
       "Legal": "Legal", "Third-party notices": "Avisos de terceros", "License": "Licencia",
-      "_note": "Las secciones detalladas siguen en inglés."
+      "_note": "Traducción automática; términos técnicos en inglés."
     }
   };
 
@@ -160,6 +160,35 @@
     注.textContent = 表._note;
     const 头 = document.querySelector('.site-header');
     if (头) 头.insertAdjacentElement('afterend', 注);
+  }
+
+  function 应用全文() {
+    const 表 = window.LM_I18N_FULL || {};
+    if (!Object.keys(表).length) return;
+    const skip = 'script,style,select,option,code,pre,.lm-boot-overlay,.lm-lock-overlay';
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(n) {
+        const p = n.parentElement;
+        if (!p || p.closest(skip)) return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => {
+      const m = n.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      if (!m) return;
+      const core = m[2].replace(/\s+/g, ' ').trim();
+      const 译 = 表[core];
+      if (译) n.nodeValue = m[1] + 译 + m[3];
+    });
+  }
+
+  if (!是中文页 && 当前 !== 'en' && ['fr', 'ru', 'es', 'ar'].includes(当前)) {
+    const sc = document.createElement('script');
+    sc.src = './i18n-full-' + 当前 + '.js';
+    sc.onload = 应用全文;
+    document.body.appendChild(sc);
   }
 
   document.querySelectorAll('.lang-select').forEach(sel => {
