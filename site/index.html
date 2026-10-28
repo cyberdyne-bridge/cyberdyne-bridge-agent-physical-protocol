@@ -1,44 +1,78 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cyberdyne Bridge · CBAP 协议桥</title>
-  <meta name="description" content="CBAP v1：Agent ↔ 物理世界的参考协议桥。主仓只放协议、Kernel、租约、安全和审计；四个 Agent 子仓各自接入。Minecraft 只是低成本物理沙盒。">
+  <title>Cyberdyne Bridge · CBAP Protocol Bridge</title>
+  <meta name="description" content="CBAP v1: an open-source reference protocol for agents that acquire devices, execute actions, and verify outcomes through server-authoritative facts.">
   <meta name="theme-color" content="#070a0f">
-  <meta property="og:title" content="Cyberdyne Bridge · CBAP 协议桥">
-  <meta property="og:description" content="Agent ↔ 物理世界协议：服务端事实校验、每设备租约、审计锚点、MCP 最小权限、operator 急停与显式恢复。">
+  <meta property="og:title" content="Cyberdyne Bridge · CBAP Protocol Bridge">
+  <meta property="og:description" content="Agent ↔ physical world: leases, server facts, audit, estop, MCP least privilege, and explicit recovery.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.cyberdyne-bridge.com/">
   <link rel="canonical" href="https://www.cyberdyne-bridge.com/">
-  <link rel="alternate" hreflang="zh-CN" href="https://www.cyberdyne-bridge.com/">
-  <link rel="alternate" hreflang="en" href="https://www.cyberdyne-bridge.com/en.html">
+  <link rel="alternate" hreflang="zh-CN" href="https://www.cyberdyne-bridge.com/zh.html">
+  <link rel="alternate" hreflang="fr" href="https://www.cyberdyne-bridge.com/?lang=fr">
+  <link rel="alternate" hreflang="ru" href="https://www.cyberdyne-bridge.com/?lang=ru">
+  <link rel="alternate" hreflang="es" href="https://www.cyberdyne-bridge.com/?lang=es">
+  <link rel="alternate" hreflang="en" href="https://www.cyberdyne-bridge.com/">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style-lm.css">
+  <script>
+    (function(){try{
+      if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+        var m = new URLSearchParams(location.search).get('enter') === 'b' ? 'lm-lock' : 'lm-boot';
+        document.documentElement.classList.add(m);
+      }
+    }catch(e){}})();
+  </script>
+
 </head>
 <body>
-  <a class="skip-link" href="#main">跳到正文</a>
+  <div class="lm-boot-overlay" aria-hidden="true">
+    <div class="lm-boot-inner">
+      <p class="lm-boot-word">CYBERDYNE <em>/</em> BRIDGE</p>
+      <div class="lm-boot-line"></div>
+      <div class="lm-boot-meta"><span>CBAP v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
+      <div class="lm-boot-steps">
+        <span>INITIALIZING CONTROL PLANE</span>
+        <span>SYNCING FACTS</span>
+        <span>READY</span>
+      </div>
+    </div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CBAP v1</span><span>v1.7.5</span></div>
+  </div>
+
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <div class="audit-banner" role="status">
-    <strong>代码审计中</strong>
-    <span>当前源码存在 P0 级问题，暂不建议用于新部署。审计完成并全部修复后移除本提示。</span>
+    <strong>Code audit in progress</strong>
+    <span>P0 issues are present in this source tree. Not recommended for new deployments. This notice will be removed after the audit and fixes are complete.</span>
   </div>
 
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="Cyberdyne Bridge 首页">
+    <a class="brand" href="./index.html" aria-label="Cyberdyne Bridge home">
       <span class="brand-mark"><img src="./assets/deepseek-skin.png" alt="" width="32" height="32"></span>
       <span class="brand-text"><strong>CYBERDYNE</strong><em>BRIDGE</em></span>
     </a>
-    <nav class="site-nav" aria-label="主导航">
-      <a href="#what">概览</a>
-      <a href="#architecture">架构</a>
-      <a href="#principles">协议</a>
-      <a href="#security">安全</a>
-      <a href="#mcp-status">MCP 状态</a>
-      <a href="#protocol-map">协议地图</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="#what">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#principles">Protocol</a>
+      <a href="#security">Security</a>
+      <a href="#mcp-status">MCP status</a>
+      <a href="#protocol-map">Protocol map</a>
       <a href="#os">CBAP OS</a>
-      <a href="#agents">Agent 子仓</a>
-      <a class="lang-switch" href="./en.html" hreflang="en" lang="en">EN</a>
+      <a href="#agents">Agents</a>
+      <label class="lang-wrap"><span class="sr-only">Language</span>
+        <select class="lang-select" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="zh">中文</option>
+          <option value="fr">FR</option>
+          <option value="ru">RU</option>
+          <option value="es">ES</option>
+        </select></label>
       <a class="nav-cta" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
@@ -49,59 +83,36 @@
         <p class="eyebrow"><span class="signal" aria-hidden="true"></span>AGENT ↔ PHYSICAL WORLD / CBAP v1</p>
         <p class="unofficial-tag">UNOFFICIAL OPEN-SOURCE PROTOCOL</p>
         <h1>Cyberdyne<br><span>Bridge</span></h1>
-        <p class="hero-cn">赛博戴恩之桥 · 协议桥</p>
-        <p class="lede">一个 Agent 申请设备、执行动作、再用服务端事实校验结果的协议。<br>主仓只放 CBAP；四个 Agent 子仓各自接入。</p>
+        <p class="hero-cn">An open protocol bridge for physical agents</p>
+        <p class="lede">A protocol where an agent acquires a device, executes an action, and verifies the result through server-authoritative facts.<br>The main repository is CBAP; each agent adapter lives in its own subrepo.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">进入仓库 <span aria-hidden="true">↗</span></a>
-          <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/releases" target="_blank" rel="noopener">发行版</a>
-          <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/README.md" target="_blank" rel="noopener">读 README</a>
-          <a class="text-link" href="#architecture">看架构 <span aria-hidden="true">↓</span></a>
+          <a class="btn btn-primary" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">Open repository <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/releases" target="_blank" rel="noopener">Releases</a>
+          <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/README.en.md" target="_blank" rel="noopener">README</a>
+          <a class="text-link" href="#architecture">See architecture <span aria-hidden="true">↓</span></a>
         </div>
         <dl class="stats">
-          <div><dt>4</dt><dd>活跃 Agent 子仓</dd></div>
-          <div><dt>v1.7.5</dt><dd>源码发行版</dd></div>
+          <div><dt>4</dt><dd>active agent subrepos</dd></div>
+          <div><dt>v1.7.5</dt><dd>source release</dd></div>
           <div><dt>129/129</dt><dd>CBAP conformance</dd></div>
-          <div><dt>0.2ms</dt><dd>控制面 p50（本地 UDS）</dd></div>
-          <div><dt>facts</dt><dd>完成判据</dd></div>
+          <div><dt>0.2ms</dt><dd>control-plane p50 (local UDS)</dd></div>
+          <div><dt>facts</dt><dd>completion criterion</dd></div>
         </dl>
       </div>
 
-      <aside class="hero-panel" aria-label="CBAP 系统分层">
+      <aside class="hero-panel" aria-label="CBAP system layers">
         <div class="panel-head">
           <span>CBAP / LAYERS</span>
           <span class="panel-live"><i aria-hidden="true"></i>SPEC</span>
         </div>
         <div class="layer-stack">
-          <div class="layer">
-            <span class="layer-id">05</span>
-            <div class="layer-copy"><strong>Agents</strong><small>Cyberdyne · MCP · Mindcraft · Voyager</small></div>
-            <span class="layer-tag">外部</span>
-          </div>
-          <div class="layer">
-            <span class="layer-id">04</span>
-            <div class="layer-copy"><strong>CBAP-U</strong><small>Unix socket · 一行一条 JSON</small></div>
-            <span class="layer-tag">Agent 面</span>
-          </div>
-          <div class="layer layer-hot">
-            <span class="layer-id">03</span>
-            <div class="layer-copy"><strong>CBAP Kernel</strong><small>租约 · 安全 · 急停 · 审计</small></div>
-            <span class="layer-tag">控制面</span>
-          </div>
-          <div class="layer">
-            <span class="layer-id">02</span>
-            <div class="layer-copy"><strong>CBAP-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div>
-            <span class="layer-tag">设备面</span>
-          </div>
-          <div class="layer">
-            <span class="layer-id">01</span>
-            <div class="layer-copy"><strong>Bodies / Minecraft</strong><small>真实身体 · 服务端事实源</small></div>
-            <span class="layer-tag">物理</span>
-          </div>
+          <div class="layer"><span class="layer-id">05</span><div class="layer-copy"><strong>Agents</strong><small>Cyberdyne · MCP · Mindcraft · Voyager</small></div><span class="layer-tag">external</span></div>
+          <div class="layer"><span class="layer-id">04</span><div class="layer-copy"><strong>CBAP-U</strong><small>Unix socket · one JSON per line</small></div><span class="layer-tag">agent side</span></div>
+          <div class="layer layer-hot"><span class="layer-id">03</span><div class="layer-copy"><strong>CBAP Kernel</strong><small>lease · safety · estop · audit</small></div><span class="layer-tag">control</span></div>
+          <div class="layer"><span class="layer-id">02</span><div class="layer-copy"><strong>CBAP-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div><span class="layer-tag">device side</span></div>
+          <div class="layer"><span class="layer-id">01</span><div class="layer-copy"><strong>Bodies / Minecraft</strong><small>real bodies · server facts</small></div><span class="layer-tag">physical</span></div>
         </div>
-        <div class="panel-foot">
-          <span>UDS · JSON</span>
-          <span>facts + verify</span>
-        </div>
+        <div class="panel-foot"><span>UDS · JSON</span><span>facts + verify</span></div>
       </aside>
     </section>
 
@@ -109,26 +120,14 @@
       <div class="section-head">
         <p class="kicker">01 / WHAT IT IS</p>
         <div>
-          <h2>不是「LLM 直连 MC」，<br>是协议桥。</h2>
-          <p class="section-lede">我们想验证的东西与 Minecraft 无关：一个 Agent 要在信息不完整、动作有代价、环境会变的世界里可靠地干活，需要什么样的接口与判据。Minecraft 只是低成本、可观测、可复现的沙盒。</p>
+          <h2>Not "LLM directly<br>driving Minecraft".</h2>
+          <p class="section-lede">The question is independent of Minecraft: what interface and completion criteria does an agent need when information is incomplete, actions have cost, and the world changes? Minecraft is simply a low-cost, observable sandbox.</p>
         </div>
       </div>
       <div class="cards">
-        <article class="card">
-          <span class="card-num">01</span>
-          <h3>完成判据看事实</h3>
-          <p>背包、坐标、方块、任务终态才算数。adapter 说成功、命令发出去了，都不算完成。</p>
-        </article>
-        <article class="card">
-          <span class="card-num">02</span>
-          <h3>每设备租约</h3>
-          <p>同一设备同一时刻只有一个 writer；FIFO 等待、显式释放、每设备急停，不靠自觉。</p>
-        </article>
-        <article class="card">
-          <span class="card-num">03</span>
-          <h3>Agent 可替换</h3>
-          <p>主仓只依赖 driver 接口。Cyberdyne、MCP、Mindcraft、Voyager 各自是子仓，不写死进 Kernel。</p>
-        </article>
+        <article class="card"><span class="card-num">01</span><h3>Facts, not receipts</h3><p>Inventory, position, blocks, and task terminal state count. An adapter saying "ok" or a command being sent does not count as completion.</p></article>
+        <article class="card"><span class="card-num">02</span><h3>One lease per device</h3><p>One writer at a time; FIFO waiting, explicit release, and per-device estop. Cooperation is not the safety mechanism.</p></article>
+        <article class="card"><span class="card-num">03</span><h3>Replaceable agents</h3><p>The main repo depends only on the driver interface. Cyberdyne, MCP, Mindcraft, and Voyager each live in their own subrepo.</p></article>
       </div>
     </section>
 
@@ -136,45 +135,28 @@
       <div class="section-head">
         <p class="kicker">02 / ARCHITECTURE</p>
         <div>
-          <h2>Agent 在上面，<br>事实在下面。</h2>
-          <p class="section-lede">CBAP-U 面向 Agent；CBAP-D 面向设备；Kernel 在中间做租约、安全、取消和审计。完整结构以仓库中文架构图为准。</p>
+          <h2>Agents above.<br>Facts below.</h2>
+          <p class="section-lede">CBAP-U faces agents; CBAP-D faces devices; the Kernel owns leases, safety, cancellation, and audit. The canonical diagram is in the repository.</p>
         </div>
       </div>
-
-      <img class="arch-image" src="./assets/cbap-structure-zh.png"
-           alt="CBAP 协议桥中文架构图：外部规划器、CBAP-U、CBAP Kernel、CBAP-D、Agent 子仓与 Minecraft 服务端事实">
-      <p class="arch-image-note">图例：实线 = 动作 / 控制；青虚线 = 状态 / 事实 / 结果；金实线 = 自己的旧直连；金虚线 = 未构建 / 部分。</p>
+      <img class="arch-image" src="./assets/cbap-structure-en.svg" alt="CBAP architecture: agents, CBAP-U, Kernel, CBAP-D, drivers, bodies, and server facts">
+      <p class="arch-image-note">Solid cyan = control / facts flow; gold dashed = legacy or partial path. The Kernel controls access and evidence; it does not plan or execute the agent's strategy.</p>
     </section>
 
     <section class="section" id="principles">
       <div class="section-head">
         <p class="kicker">03 / PROTOCOL NOTES</p>
         <div>
-          <h2>协议不信任<br>「它说成功了」。</h2>
-          <p class="section-lede">这些判据来自真实的竞争、断线、急停和恢复。</p>
+          <h2>The protocol does not trust<br>"it said it worked".</h2>
+          <p class="section-lede">These rules come from real contention, disconnects, estops, and recovery.</p>
         </div>
       </div>
       <ol class="principles">
-        <li>
-          <span class="principle-num">01</span>
-          <div><h3>完成看服务端事实</h3><p>不是 <code>result.ok</code>。服务端位置、背包、方块和任务终态才是完成判据。</p></div>
-        </li>
-        <li>
-          <span class="principle-num">02</span>
-          <div><h3>每设备一个 writer</h3><p>租约按设备隔离；等待 FIFO；release、estop、cancel 是不同语义。</p></div>
-        </li>
-        <li>
-          <span class="principle-num">03</span>
-          <div><h3>fail-closed，且出声</h3><p>听不懂、拿不准、参数缺，就拒绝执行并留下原因，不静默吞掉。</p></div>
-        </li>
-        <li>
-          <span class="principle-num">04</span>
-          <div><h3>审计和幂等</h3><p>动作有账；在途请求和重连不会乱重放；危险状态可以急停。</p></div>
-        </li>
-        <li>
-          <span class="principle-num">05</span>
-          <div><h3>Agent 不进主链</h3><p>不同 Agent 只实现 adapter 和设备契约。主仓保持薄，身体和规划器各自演进。</p></div>
-        </li>
+        <li><span class="principle-num">01</span><div><h3>Completion is a server fact</h3><p>Not <code>result.ok</code>. Server position, inventory, blocks, and terminal task state are the completion criteria.</p></div></li>
+        <li><span class="principle-num">02</span><div><h3>One writer per device</h3><p>Leases are scoped per device; waiters are FIFO; release, estop, and cancel are distinct operations.</p></div></li>
+        <li><span class="principle-num">03</span><div><h3>Fail closed, and say why</h3><p>Unknown input, ambiguous state, or missing arguments result in refusal with a reason — never a silent swallow.</p></div></li>
+        <li><span class="principle-num">04</span><div><h3>Audit and idempotency</h3><p>Every action leaves a record; inflight requests and reconnects do not replay blindly; dangerous state can be stopped.</p></div></li>
+        <li><span class="principle-num">05</span><div><h3>Agents stay out of the main path</h3><p>Different agents only implement adapters and device contracts. The core stays thin; bodies and planners evolve separately.</p></div></li>
       </ol>
     </section>
 
@@ -182,235 +164,112 @@
       <div class="section-head">
         <p class="kicker">04 / TRUST BOUNDARY</p>
         <div>
-          <h2>先关信任边界，<br>再让 AI 跑。</h2>
-          <p class="section-lede">Agent 可以自主运行，但 Kernel 不相信它自带的安全声明。身份、租约、审计、MCP 子进程和 operator 动作各自有边界；失败默认关闭。</p>
+          <h2>Close the trust boundary<br>before letting AI run.</h2>
+          <p class="section-lede">The Kernel does not trust an agent's self-declared safety. Identity, leases, audit, MCP child processes, and operator actions each have explicit boundaries; failure is closed by default.</p>
         </div>
       </div>
-
       <div class="cards cards-six">
-        <article class="card card-small card-accent">
-          <span class="card-num">01 / IDENTITY</span>
-          <h3>身份与权限</h3>
-          <p>UDS 0600 + SO_PEERCRED；token 文件 0600、O_NOFOLLOW；per-agent uid/token；设备级 allowlist；普通 Agent 没有 estop/admin。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">02 / EXECUTION</span>
-          <h3>租约与 fencing</h3>
-          <p>每设备单 writer、FIFO、TTL、fencing token；release / estop / cancel 语义分离；inflight、session 和 UID 速率限制。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">03 / EVIDENCE</span>
-          <h3>审计锚点</h3>
-          <p>JSONL seq + hash chain；checkpoint 检测尾部截断；可选 HMAC；远程 sink 可要求 seq/hash ack；审计失败进入安全态。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">04 / MCP</span>
-          <h3>子进程最小权限</h3>
-          <p>env allowlist、rlimits、进程组终止、输出上限；manifest HMAC（可强制）、tool/instruction pin；estop 必须有 safe-state 证据；可选独立 UID 与 bwrap/nsjail。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">05 / OPERATOR</span>
-          <h3>人能看见，人能停</h3>
-          <p>本地优先 Console；HttpOnly session、Host/Origin、CSP、登录限速；lease 释放、双人审批、SLA 通知、registry reload、显式 resume；远程 bind 必须 TLS，mTLS 可选。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">06 / RESIDUAL</span>
-          <h3>不冒充物理安全</h3>
-          <p>同 UID/root、恶意 MCP facts、未认证的物理急停、TPM/HSM 和形式化验证仍是边界外；console mTLS 不等于 Kernel 端到端 mTLS。</p>
-        </article>
+        <article class="card card-small card-accent"><span class="card-num">01 / IDENTITY</span><h3>Identity and permission</h3><p>UDS 0600 + SO_PEERCRED; token files 0600 and O_NOFOLLOW; per-agent uid/token; device allowlists; ordinary agents do not get estop/admin.</p></article>
+        <article class="card card-small"><span class="card-num">02 / EXECUTION</span><h3>Leases and fencing</h3><p>One writer, FIFO, TTL, fencing token; release/estop/cancel are distinct; inflight, session, and UID rate limits.</p></article>
+        <article class="card card-small"><span class="card-num">03 / EVIDENCE</span><h3>Audit anchors</h3><p>JSONL seq + hash chain; checkpoint detects tail truncation; optional HMAC; remote sink can require seq/hash ack; audit failure enters a safe state.</p></article>
+        <article class="card card-small"><span class="card-num">04 / MCP</span><h3>Least-privilege child process</h3><p>Env allowlist, rlimits, process-group termination, output caps; manifest HMAC (enforceable); full tool/instruction pin; estop needs safe-state evidence; optional isolated UID and bwrap/nsjail.</p></article>
+        <article class="card card-small"><span class="card-num">05 / OPERATOR</span><h3>Humans can see and stop</h3><p>Local-first console; HttpOnly session, Host/Origin checks, CSP, login throttling; lease release, two-person approval, SLA notice, registry reload, explicit resume; remote bind requires TLS, mTLS optional.</p></article>
+        <article class="card card-small"><span class="card-num">06 / RESIDUAL</span><h3>Not physical safety</h3><p>Same UID/root, malicious MCP facts, unverified physical estop, TPM/HSM, and formal verification remain out of scope. Console mTLS is not end-to-end Kernel mTLS.</p></article>
       </div>
-
-      <div class="arch-note">
-        <strong>默认不按每个动作审批。</strong> 普通 read / write / lease 直接执行；只有 policy 显式配置 <code>approvals.ops</code> 才拦高风险动作。estop 不需要审批；resume 是故障后 operator 的人工确认。
-        <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/SECURITY-HARDENING.md" target="_blank" rel="noopener">读完整安全边界 ↗</a>
-      </div>
+      <div class="arch-note"><strong>Not every action is approved.</strong> Normal read/write/lease runs directly; only policy-configured <code>approvals.ops</code> gate high-risk actions. Estop needs no approval; resume is an explicit operator decision after failure. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/SECURITY-HARDENING.md" target="_blank" rel="noopener">Read the full security boundary ↗</a></div>
     </section>
 
     <section class="section section-arch" id="mcp-status">
       <div class="section-head">
         <p class="kicker">MCP / UPSTREAM STATUS</p>
         <div>
-          <h2>上游还没修完，<br>CBAP 只做本地缓解。</h2>
-          <p class="section-lede">SEP #3452 仍在讨论工具定义完整性；CBAP v1.7.5 加了完整 JCS pin 和同连接 drift 校验，但这不是 MCP 官方修复，也不代表 3D 执行授权已经解决。</p>
+          <h2>Upstream is not fixed.<br>CBAP only mitigates locally.</h2>
+          <p class="section-lede">SEP #3452 is still discussing tool-definition integrity. CBAP v1.7.5 adds a full JCS pin and same-connection drift checks, but this is not an official MCP fix and does not solve 3D execution authority.</p>
         </div>
       </div>
-
-      <figure class="status-figure">
-        <img src="./assets/mcp-upstream-status.svg" alt="MCP 上游状态：SEP 3452 open，CBAP v1.7.5 本地缓解，3D 执行授权未解决" loading="lazy">
-      </figure>
-
+      <figure class="status-figure"><img src="./assets/mcp-upstream-status.svg" alt="MCP upstream status: SEP 3452 open, CBAP v1.7.5 local mitigation, 3D execution authority not solved" loading="lazy"></figure>
       <div class="cards cards-six">
-        <article class="card card-small card-accent">
-          <span class="card-num">01 / UPSTREAM</span>
-          <h3>SEP #3452 仍 OPEN</h3>
-          <p>讨论 definition / instructions / scope 完整性，还没有最终规范。CBAP 不把 issue 里的讨论说成官方结论。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">02 / LOCAL</span>
-          <h3>v1.7.5 本地 pin</h3>
-          <p>完整 tool object、serverInfo、instructions、RFC 8785 JCS；旧 pin fail closed；动作前重新检查 tools/list。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">03 / 3D</span>
-          <h3>执行授权仍未解决</h3>
-          <p>digest 能防“菜单被换”，不能证明 remote server 按菜单做菜。facts、批准 UI、attestation 和 sandbox 仍是边界。</p>
-        </article>
+        <article class="card card-small card-accent"><span class="card-num">01 / UPSTREAM</span><h3>SEP #3452 is OPEN</h3><p>Definition, instructions, and scope integrity are still under discussion. CBAP does not present thread discussion as an official conclusion.</p></article>
+        <article class="card card-small"><span class="card-num">02 / LOCAL</span><h3>v1.7.5 local pin</h3><p>Complete tool objects, serverInfo, instructions, RFC 8785 JCS; legacy pins fail closed; tools/list is rechecked before actions.</p></article>
+        <article class="card card-small"><span class="card-num">03 / 3D</span><h3>Execution authority remains</h3><p>A digest detects a changed menu, not whether a remote server follows it. Facts, approval UI, attestation, and sandboxing remain boundaries.</p></article>
       </div>
-
-      <div class="arch-note">
-        <strong>等待官方修复，不在上游重复开 issue。</strong> 本地保留测试、PoC 和 3D 边界记录。
-        <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/MCP-UPSTREAM-STATUS.md" target="_blank" rel="noopener">读 MCP 状态说明 ↗</a>
-      </div>
+      <div class="arch-note"><strong>Wait for an official fix; do not open duplicate upstream issues.</strong> Local tests, PoCs, and 3D boundary records stay here. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/MCP-UPSTREAM-STATUS.md" target="_blank" rel="noopener">Read the MCP status note ↗</a></div>
     </section>
 
     <section class="section section-arch" id="protocol-map">
       <div class="section-head">
         <p class="kicker">PROTOCOL / LONG-TERM</p>
         <div>
-          <h2>CBAP 不是全栈<br>Agent 协议。</h2>
-          <p class="section-lede">模型调用、工具发现、Agent 间任务、UI 渲染都有各自的标准。CBAP 只守住设备控制、授权、事实和证据这一层；其他层先做 adapter，不复制。</p>
+          <h2>CBAP is not the<br>whole agent stack.</h2>
+          <p class="section-lede">Model calls, tool discovery, agent-to-agent tasks, and UI rendering each have their own standards. CBAP holds the device-control, authorization, facts, and evidence layer; other layers get adapters, not copies.</p>
         </div>
       </div>
-
-      <figure class="status-figure">
-        <img src="./assets/protocol-map.svg" alt="Agent 协议分层：模型/运行时、工具/上下文、Agent 间、CBAP 设备控制、证据/身份" loading="lazy">
-      </figure>
-
+      <figure class="status-figure"><img src="./assets/protocol-map.svg" alt="Agent protocol layers: model/runtime, tools/context, agent-to-agent, CBAP device control, evidence/identity" loading="lazy"></figure>
       <div class="cards cards-six">
-        <article class="card card-small card-accent">
-          <span class="card-num">L4 / CORE</span>
-          <h3>设备控制面</h3>
-          <p>CBAP 的核心：device contract、lease、cancel、estop、policy、facts、audit。其他层不塞进 Kernel。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">ADAPTER</span>
-          <h3>MCP / A2A / OpenAI</h3>
-          <p>MCP 做工具发现，A2A 做 Agent 间任务，OpenAI Responses / Agents SDK 做模型调用；CBAP 通过 adapter 接，不重写。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">LONG TERM</span>
-          <h3>H1 → H3</h3>
-          <p>H1 钉边界和互操作；H2 做 async / signed envelope / OTel；H3 做 attestation hook、多租户和 certification。</p>
-        </article>
+        <article class="card card-small card-accent"><span class="card-num">L4 / CORE</span><h3>Device control plane</h3><p>CBAP core: device contract, lease, cancel, estop, policy, facts, audit. Other layers do not get stuffed into the Kernel.</p></article>
+        <article class="card card-small"><span class="card-num">ADAPTER</span><h3>MCP / A2A / OpenAI</h3><p>MCP for tools, A2A for agent tasks, OpenAI Responses / Agents SDK for model calls. CBAP connects through adapters and does not rewrite them.</p></article>
+        <article class="card card-small"><span class="card-num">LONG TERM</span><h3>H1 → H3</h3><p>H1 fixes boundaries and interop; H2 adds async, signed envelopes, and OTel; H3 adds attestation hooks, multi-tenancy, and certification.</p></article>
       </div>
-
-      <div class="arch-note">
-        <strong>规则：先 adapter，后 core。</strong> 不复制 MCP、A2A、AG-UI；CBAP 的护城河是设备控制与证据，不是协议数量。
-        <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">读长期路线 ↗</a>
-      </div>
+      <div class="arch-note"><strong>Rule: adapter before core.</strong> Do not copy MCP, A2A, or AG-UI. CBAP's value is device control and evidence, not protocol count. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">Read the roadmap ↗</a></div>
     </section>
 
     <section class="section section-arch" id="os">
       <div class="section-head">
         <p class="kicker">05 / CBAP OS</p>
         <div>
-          <h2>把协议装进<br>一个可启动的系统。</h2>
-          <p class="section-lede">CBAP OS 0.1 是 DSH OS 底座上的 CBAP 运行时层：GRUB 选 CBAP/Python 版本，Control Center 显示当前槽并热切换，Host Bridge 用 CBAP 协议访问宿主机 allowlist。</p>
+          <h2>Put the protocol<br>into a bootable system.</h2>
+          <p class="section-lede">CBAP OS 0.1 is a CBAP runtime layer on the DSH OS base: GRUB selects CBAP/Python versions, Control Center shows the active slot and supports hot-swap, and Host Bridge exposes an allowlisted host surface through CBAP.</p>
         </div>
       </div>
-
       <div class="cards cards-six">
-        <article class="card card-small card-accent">
-          <span class="card-num">01 / BOOT</span>
-          <h3>版本化启动</h3>
-          <p>GRUB 每个已安装的 CBAP 槽一项；内核参数携带 <code>cbap.cbap=</code> 和 <code>cbap.python=</code>，Kernel 挂载对应版本。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">02 / CONTROL</span>
-          <h3>Control Center</h3>
-          <p>本地 Tk 面板显示当前 CBAP/Python、版本槽和热切换入口；不把 root shell 暴露给 Agent。</p>
-        </article>
-        <article class="card card-small">
-          <span class="card-num">03 / HOST</span>
-          <h3>5 个 host device_id</h3>
-          <p><code>host://fs</code>、<code>host://display</code>、<code>host://input/mouse</code>、<code>host://input/keyboard</code> 和兼容的 <code>host://desktop</code>；输入默认关闭。</p>
-        </article>
+        <article class="card card-small card-accent"><span class="card-num">01 / BOOT</span><h3>Versioned boot</h3><p>One GRUB entry per installed CBAP slot; kernel arguments carry <code>cbap.cbap=</code> and <code>cbap.python=</code>.</p></article>
+        <article class="card card-small"><span class="card-num">02 / CONTROL</span><h3>Control Center</h3><p>A local Tk panel shows the active CBAP/Python, slots, and hot-swap entry. No root shell is exposed to agents.</p></article>
+        <article class="card card-small"><span class="card-num">03 / HOST</span><h3>5 host device IDs</h3><p><code>host://fs</code>, <code>host://display</code>, <code>host://input/mouse</code>, <code>host://input/keyboard</code>, and legacy <code>host://desktop</code>; input is off by default.</p></article>
       </div>
-
       <div class="cards" style="margin-top:1px">
-        <article class="card" style="padding:0;min-height:0"><img src="assets/cbap-os-desktop.png" alt="CBAP OS 桌面" style="width:100%;display:block"></article>
+        <article class="card" style="padding:0;min-height:0"><img src="assets/cbap-os-desktop.png" alt="CBAP OS desktop" style="width:100%;display:block"></article>
         <article class="card" style="padding:0;min-height:0"><img src="assets/cbap-os-control.png" alt="CBAP Control Center" style="width:100%;display:block"></article>
       </div>
-      <div class="arch-note">
-        <strong>P0–P6：</strong>device contract、默认拒绝、逐设备配额、trust facts、safe_state、Wayland portal、129/129 conformance。Host 输入默认关闭；<code>host://fs</code> 仍是 allowlist，不是宿主根目录。
-      </div>
-      <div class="arch-note">
-        <strong>实测：</strong>QEMU/KVM，4G 内存上限；VM 通过 CBAP 在宿主机桌面白名单目录写出 <code>hello-from-vm.txt</code>。ISO 与 CBAP OS 源码在 <a href="https://github.com/6750432/dsh-os-build" target="_blank" rel="noopener">dsh-os-build</a>。
-      </div>
-    </section>
-
-    <section class="section section-status" id="status">
-      <div class="section-head">
-        <p class="kicker">06 / CURRENT STATE</p>
-        <div>
-          <h2>四个活跃子仓，<br>一个归档。</h2>
-          <p class="section-lede">CBAP 控制面已通过 129 项 conformance；P0–P6 设备平权契约、默认拒绝、逐设备配额、trust facts、safe_state 和 Wayland portal 已落地。Alice 的 Forge bridge 源码保留，但未编译、未跑真实服务端，所以不算活跃子仓。</p>
-        </div>
-      </div>
-      <div class="status-grid">
-        <div class="status-main">
-          <p class="status-label">主仓 / 子仓边界</p>
-          <div class="timeline" aria-label="CBAP 组件">
-            <span>CBAP Kernel</span><i aria-hidden="true">→</i><span>CBAP-U</span><i aria-hidden="true">→</i><span>Agent</span><i aria-hidden="true">→</i><span>CBAP-D</span><i aria-hidden="true">→</i><span class="timeline-end">Server facts</span>
-          </div>
-          <p>旧版脑 / 手、车厢、老祖思维和 M1–M7b 里程碑已经从主 README 移到 <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/agents/cyberdyne/docs/LEGACY.md" target="_blank" rel="noopener">Cyberdyne 子链档案</a>。主仓现在描述协议，不再把旧实验细节堆在首页。</p>
-        </div>
-        <div class="status-side">
-          <p class="status-label">当前状态</p>
-          <ul class="tag-list">
-            <li>4 个活跃子仓</li>
-            <li>129/129 CBAP</li>
-            <li>Alice 未构建</li>
-            <li>旧套件已归档</li>
-            <li>CBAP OS 0.1</li>
-            <li>mTLS 可选</li>
-            <li>v1.7.5 source release</li>
-            <li>CBAP OS 0.1 / Host Bridge</li>
-            <li>5 host device IDs</li>
-          </ul>
-          <p class="status-note">不把源码当成已验证。</p>
-        </div>
-      </div>
+      <div class="arch-note"><strong>P0–P6:</strong> device contract, default deny, per-device quotas, trust facts, safe_state, Wayland portal, 129/129 conformance. Host input is off by default; <code>host://fs</code> is an allowlist, not the host root.</div>
+      <div class="arch-note"><strong>Verified:</strong> QEMU/KVM with a 4 GB memory cap; a VM wrote <code>hello-from-vm.txt</code> into the host allowlist directory through CBAP. ISO and source: <a href="https://github.com/6750432/dsh-os-build" target="_blank" rel="noopener">dsh-os-build</a>.</div>
     </section>
 
     <section class="section" id="agents">
       <div class="section-head">
-        <p class="kicker">07 / AGENT SUBREPOS</p>
+        <p class="kicker">06 / AGENT SUBREPOS</p>
         <div>
-          <h2>同样的协议，<br>不同的身体。</h2>
-          <p class="section-lede">每个子仓拥有自己的 adapter、device / mapping、工具和 smoke test。主仓只负责接口与 conformance。</p>
+          <h2>Same protocol.<br>Different bodies.</h2>
+          <p class="section-lede">Each subrepo owns its adapter, device/mapping, tools, and smoke test. The main repo owns the interface and conformance.</p>
         </div>
       </div>
       <div class="carriage-stats">
-        <div><strong>4</strong><span>活跃子仓</span></div>
-        <div><strong>1</strong><span>归档：Alice</span></div>
-        <div><strong>129/129</strong><span>CBAP 测试</span></div>
-        <div><strong>0.2ms</strong><span>控制面 p50（本地 UDS）</span></div>
+        <div><strong>4</strong><span>active subrepos</span></div>
+        <div><strong>1</strong><span>archived: Alice</span></div>
+        <div><strong>129/129</strong><span>CBAP tests</span></div>
+        <div><strong>0.2ms</strong><span>control p50 (local UDS)</span></div>
       </div>
       <div class="cards cards-six">
-        <article class="card card-small card-accent"><span class="card-num">OURS</span><h3>Cyberdyne</h3><p>旧脑保留，默认经 <code>bridge_cbap.py</code> 走 CBAP；root 直连 shim 已移除，旧源码冻结归档。</p></article>
-        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>真实 MCP body。公开 MCP tools → CBAP read / write / poll / estop，MCPDriver 走 stdio JSON-RPC。</p></article>
-        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy 自带规划器。CBAP 观察状态、投递 prompt、停止；不冒充低层动作驱动。</p></article>
-        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>只接 Mineflayer bridge：state / exec / forward / say / stop。1.21.1 真实 bridge 8/8；本地 Qwen 自治循环 3/3；上游 Voyager agents + CBAP 三任务 3/3。</p></article>
-        <article class="card card-small"><span class="card-num">ARCHIVE</span><h3>Alice</h3><p>Forge 1.20.1 最小 bridge 源码。未编译、未跑真实服务器，不假装是活跃子仓。</p></article>
-        <article class="card card-small"><span class="card-num">NEXT</span><h3>别优化项圈</h3><p>协议桥开销亚毫秒。真正慢的是 Minecraft 动作、Agent 规划和 LLM。</p></article>
+        <article class="card card-small card-accent"><span class="card-num">OURS</span><h3>Cyberdyne</h3><p>Legacy brain retained; the default path goes through <code>bridge_cbap.py</code>. The root direct shim is removed and old source is frozen in the archive.</p></article>
+        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>A real MCP body. Public MCP tools map to CBAP read/write/poll/estop; MCPDriver speaks stdio JSON-RPC.</p></article>
+        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy brings its own planner. CBAP observes state, delivers prompts, and stops; it does not pretend to be a low-level action driver.</p></article>
+        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>Mineflayer bridge only: state / exec / forward / say / stop. Real 1.21.1 bridge passes 8/8; local-Qwen loop 3/3; upstream Voyager agents over CBAP complete a 3-task sequence 3/3.</p></article>
+        <article class="card card-small"><span class="card-num">ARCHIVE</span><h3>Alice</h3><p>Forge 1.20.1 minimal bridge source. Not compiled and not run against a real server; not presented as active.</p></article>
+        <article class="card card-small"><span class="card-num">NEXT</span><h3>Don't optimize the collar</h3><p>Bridge overhead is sub-millisecond. The real latency is Minecraft actions, agent planning, and the LLM.</p></article>
       </div>
-      <div class="section-foot">
-        <a class="text-link" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/tree/main/agents" target="_blank" rel="noopener">看四个子仓 <span aria-hidden="true">↗</span></a>
-      </div>
+      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/tree/main/agents" target="_blank" rel="noopener">See the four subrepos <span aria-hidden="true">↗</span></a></div>
     </section>
 
     <section class="cta">
       <div>
         <p class="kicker">DETAILS / SOURCE / EVIDENCE</p>
-        <h2>协议、子仓、验收记录，<br>都在仓库。</h2>
-        <p>本站只是门面：不镜像文档，不接本地服务，不放运行数据。</p>
+        <h2>Protocol, subrepos, and<br>acceptance records live in the repo.</h2>
+        <p>This site is a front door only: no mirrored docs, no local service, no runtime data.</p>
       </div>
       <div class="cta-actions">
-        <a class="btn btn-primary" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">进入 GitHub <span aria-hidden="true">↗</span></a>
-        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/README.md" target="_blank" rel="noopener">读 README</a>
-        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/spec/README.md" target="_blank" rel="noopener">看协议</a>
-        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/START-10MIN.md" target="_blank" rel="noopener">10 分钟跑通</a>
+        <a class="btn btn-primary" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">Open GitHub <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/README.en.md" target="_blank" rel="noopener">Read README</a>
+        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/spec/README.md" target="_blank" rel="noopener">Read spec</a>
+        <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/START-10MIN.md" target="_blank" rel="noopener">10-minute path</a>
       </div>
     </section>
   </main>
@@ -418,14 +277,18 @@
   <footer class="site-footer">
     <div>
       <span class="footer-brand">CYBERDYNE / BRIDGE</span>
-      <span>赛博戴恩之桥 · <a href="https://cyberdyne-bridge.com">cyberdyne-bridge.com</a></span>
+      <span>Cyberdyne Bridge · <a href="https://cyberdyne-bridge.com">cyberdyne-bridge.com</a></span>
     </div>
     <div class="footer-meta">
-      <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI 协作</span>
-      <a href="./legal.html">法律 / Legal</a>
-      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">第三方声明</a>
+      <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED</span>
+      <a href="./legal-en.html">Legal</a>
+      <a href="./index.html" hreflang="zh-CN">中文</a>
+      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a>
       <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
     </div>
   </footer>
+  <script src="./motion-lm.js"></script>
+  <script src="./enter-lm.js"></script>
+  <script src="./i18n.js"></script>
 </body>
 </html>
