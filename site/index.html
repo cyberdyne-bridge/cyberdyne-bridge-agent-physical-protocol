@@ -14,12 +14,16 @@
   <link rel="alternate" hreflang="zh-CN" href="https://www.cyberdyne-bridge.com/zh.html">
   <link rel="alternate" hreflang="fr" href="https://www.cyberdyne-bridge.com/?lang=fr">
   <link rel="alternate" hreflang="ru" href="https://www.cyberdyne-bridge.com/?lang=ru">
+  <link rel="alternate" hreflang="es" href="https://www.cyberdyne-bridge.com/?lang=es">
+  <link rel="alternate" hreflang="ar" href="https://www.cyberdyne-bridge.com/?lang=ar">
   <link rel="alternate" hreflang="en" href="https://www.cyberdyne-bridge.com/">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
   <script>
     (function(){try{
+      var q=new URLSearchParams(location.search).get('lang');
+      if(q==='ar'){document.documentElement.dir='rtl';document.documentElement.lang='ar';}
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
         var m = new URLSearchParams(location.search).get('enter') === 'b' ? 'lm-lock' : 'lm-boot';
         document.documentElement.classList.add(m);
@@ -70,6 +74,8 @@
           <option value="zh" lang="zh-CN">中文</option>
           <option value="fr" lang="fr">Français</option>
           <option value="ru" lang="ru">Русский</option>
+          <option value="es" lang="es">Español</option>
+          <option value="ar" lang="ar">العربية</option>
         </select></label>
       <a class="nav-cta" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
     </nav>

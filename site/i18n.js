@@ -1,6 +1,36 @@
 /* 五常语言：EN 默认，中文整页，FR/RU/ES 先翻译"框架"，正文暂留英文。 */
 (() => {
   const 字典 = {
+    ar: {
+      "Overview": "نظرة عامة", "Architecture": "المعمارية", "Protocol": "البروتوكول",
+      "Security": "الأمان", "MCP status": "حالة MCP", "Protocol map": "خريطة البروتوكول",
+      "CBAP OS": "CBAP OS", "Agents": "الوكلاء",
+      "AGENT ↔ PHYSICAL WORLD / CBAP v1": "الوكيل ↔ العالم المادي / CBAP v1",
+      "UNOFFICIAL OPEN-SOURCE PROTOCOL": "بروتوكول مفتوح المصدر غير رسمي",
+      "An open protocol bridge for physical agents": "جسر بروتوكول مفتوح للوكلاء الماديين",
+      "A protocol where an agent acquires a device, executes an action, and verifies the result through server-authoritative facts. The main repository is CBAP; each agent adapter lives in its own subrepo.":
+        "بروتوكول يحصل فيه الوكيل على جهاز، وينفّذ إجراءً، ويتحقق من النتيجة عبر حقائق موثوقة من الخادم. المستودع الرئيسي هو CBAP؛ وكل محوّل وكيل يعيش في مستودعه الفرعي.",
+      "Open repository ↗": "فتح المستودع ↗", "Releases": "الإصدارات", "README": "README",
+      "See architecture ↓": "عرض المعمارية ↓",
+      "active agent subrepos": "مستودعات وكلاء نشطة", "source release": "إصدار المصدر",
+      "CBAP conformance": "توافق CBAP", "control-plane p50 (local UDS)": "p50 لطائرة التحكم (UDS محلي)",
+      "completion criterion": "معيار الإنجاز",
+      "Not \"LLM directly driving Minecraft\".": "ليس «LLM يقود Minecraft مباشرة».",
+      "Agents above. Facts below.": "الوكلاء في الأعلى. الحقائق في الأسفل.",
+      "The protocol does not trust \"it said it worked\".": "البروتوكول لا يثق بـ«قال إنه نجح».",
+      "Close the trust boundary before letting AI run.": "أغلق حدود الثقة قبل تشغيل الذكاء الاصطناعي.",
+      "Upstream is not fixed. CBAP only mitigates locally.": "المنبع لم يُصلح. CBAP يخفف محليًا فقط.",
+      "CBAP is not the whole agent stack.": "CBAP ليس كامل حزمة الوكلاء.",
+      "Put the protocol into a bootable system.": "ضع البروتوكول في نظام قابل للإقلاع.",
+      "Same protocol. Different bodies.": "نفس البروتوكول. أجساد مختلفة.",
+      "Protocol, subrepos, and acceptance records live in the repo.": "البروتوكول والمستودعات الفرعية وسجلات القبول في المستودع.",
+      "This site is a front door only: no mirrored docs, no local service, no runtime data.": "هذا الموقع واجهة فقط: لا نسخ وثائق، لا خدمة محلية، لا بيانات تشغيل.",
+      "Open GitHub ↗": "فتح GitHub ↗", "Read README": "قراءة README",
+      "Read spec": "قراءة المواصفة", "10-minute path": "مسار 10 دقائق",
+      "UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED": "بروتوكول مفتوح المصدر غير رسمي · كما هو · بمساعدة الذكاء الاصطناعي",
+      "Legal": "قانوني", "Third-party notices": "إشعارات الأطراف الثالثة", "License": "الرخصة",
+      "_note": "الأقسام التفصيلية بالإنجليزية حاليًا."
+    },
     fr: {
       "An open protocol bridge for physical agents": "Un pont de protocole ouvert pour les agents physiques",
       "active agent subrepos": "sous-dépôts d'agents actifs",
@@ -117,6 +147,7 @@
   if (!是中文页 && 当前 !== 'en' && 字典[当前]) {
     const 表 = 字典[当前];
     document.documentElement.lang = 当前;
+    document.documentElement.dir = 当前 === 'ar' ? 'rtl' : 'ltr';
     document.querySelectorAll(选择器).forEach(el => {
       if (el.classList.contains('lang-select')) return;
       const 原文 = 规整(el.innerText || el.textContent);

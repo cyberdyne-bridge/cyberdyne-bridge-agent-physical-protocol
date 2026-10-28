@@ -419,3 +419,15 @@ html.lm-static .lm-lock-meta, html.lm-static .lm-lock-word { animation: none; op
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* RTL（阿拉伯语） */
+html[dir="rtl"] body { font-family: "Noto Sans Arabic", "Noto Sans SC", "Segoe UI", sans-serif; }
+html[dir="rtl"] .hero::before { background-position: left center; }
+html[dir="rtl"] .kicker::after,
+html[dir="rtl"] .site-nav a::after,
+html[dir="rtl"] .lm-progress { transform-origin: right; }
+html[dir="rtl"] .lang-select {
+  background-position: left 10px center, left 6px center;
+  padding: .3rem 1.5rem .3rem .55rem;
+}
+html[dir="rtl"] .lm-boot-inner { text-align: right; }
