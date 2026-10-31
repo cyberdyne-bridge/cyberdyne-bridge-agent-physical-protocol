@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cyberdyne Bridge · CBAP 协议桥</title>
-  <meta name="description" content="CBAP v1：Agent ↔ 物理世界的参考协议桥。主仓只放协议、Kernel、租约、安全和审计；四个 Agent 子仓各自接入。Minecraft 只是低成本物理沙盒。">
+  <title>临界协议：中枢核 · CPNC</title>
+  <meta name="description" content="CPNC v1：Agent ↔ 物理世界的参考协议桥。主仓只放协议、Kernel、租约、安全和审计；四个 Agent 子仓各自接入。Minecraft 只是低成本物理沙盒。">
   <meta name="theme-color" content="#070a0f">
-  <meta property="og:title" content="Cyberdyne Bridge · CBAP 协议桥">
+  <meta property="og:title" content="临界协议：中枢核 · CPNC">
   <meta property="og:description" content="Agent ↔ 物理世界协议：服务端事实校验、每设备租约、审计锚点、MCP 最小权限、operator 急停与显式恢复。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.cyberdyne-bridge.com/zh.html">
@@ -33,20 +33,20 @@
     <span class="lm-lock-b b1"></span><span class="lm-lock-b b2"></span>
     <span class="lm-lock-b b3"></span><span class="lm-lock-b b4"></span>
     <div class="lm-lock-meta"><span>ACQUIRING</span><span>LOCK 04 / 1.0</span></div>
-    <div class="lm-lock-word">CYBERDYNE / BRIDGE</div>
+    <div class="lm-lock-word">NEKXSR / CORE</div>
   </div>
   <div class="lm-boot-overlay" aria-hidden="true">
     <div class="lm-boot-inner">
-      <p class="lm-boot-word">CYBERDYNE <em>/</em> BRIDGE</p>
+      <p class="lm-boot-word">NEKXSR <em>/</em> CORE</p>
       <div class="lm-boot-line"></div>
-      <div class="lm-boot-meta"><span>CBAP v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
+      <div class="lm-boot-meta"><span>CPNC v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
       <div class="lm-boot-steps">
         <span>INITIALIZING CONTROL PLANE</span>
         <span>SYNCING FACTS</span>
         <span>READY</span>
       </div>
     </div>
-    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CBAP v1</span><span>v1.7.5</span></div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC v1</span><span>v1.7.5</span></div>
   </div>
 
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,9 +57,9 @@
   </div>
 
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="Cyberdyne Bridge 首页">
+    <a class="brand" href="#top" aria-label="Critical Protocol: NEKXSR Core 首页">
       <span class="brand-mark"><img src="./assets/deepseek-skin.png" alt="" width="32" height="32"></span>
-      <span class="brand-text"><strong>CYBERDYNE</strong><em>BRIDGE</em></span>
+      <span class="brand-text"><strong>NEKXSR</strong><em>CORE</em></span>
     </a>
     <nav class="site-nav" aria-label="主导航">
       <a href="#what">概览</a>
@@ -68,7 +68,7 @@
       <a href="#security">安全</a>
       <a href="#mcp-status">MCP 状态</a>
       <a href="#protocol-map">协议地图</a>
-      <a href="#os">CBAP OS</a>
+      <a href="#os">CPNC OS</a>
       <a href="#agents">Agent 子仓</a>
       <label class="lang-wrap"><span class="sr-only">Language</span>
         <select class="lang-select" aria-label="Language">
@@ -86,11 +86,11 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="signal" aria-hidden="true"></span>AGENT ↔ PHYSICAL WORLD / CBAP v1</p>
+        <p class="eyebrow"><span class="signal" aria-hidden="true"></span>AGENT ↔ PHYSICAL WORLD / CPNC v1</p>
         <p class="unofficial-tag">UNOFFICIAL OPEN-SOURCE PROTOCOL</p>
-        <h1>Cyberdyne<br><span>Bridge</span></h1>
-        <p class="hero-cn">赛博戴恩之桥 · 协议桥</p>
-        <p class="lede">一个 Agent 申请设备、执行动作、再用服务端事实校验结果的协议。<br>主仓只放 CBAP；四个 Agent 子仓各自接入。</p>
+        <h1>Critical<br><span>Protocol</span></h1>
+        <p class="hero-cn">NEKXSR Core · 临界协议：中枢核</p>
+        <p class="lede">一个 Agent 申请设备、执行动作、再用服务端事实校验结果的协议。<br>主仓只放 CPNC；四个 Agent 子仓各自接入。</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">进入仓库 <span aria-hidden="true">↗</span></a>
           <a class="btn btn-ghost" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/releases" target="_blank" rel="noopener">发行版</a>
@@ -100,15 +100,15 @@
         <dl class="stats">
           <div><dt>4</dt><dd>活跃 Agent 子仓</dd></div>
           <div><dt>v1.7.5</dt><dd>源码发行版</dd></div>
-          <div><dt>129/129</dt><dd>CBAP conformance</dd></div>
+          <div><dt>129/129</dt><dd>CPNC conformance</dd></div>
           <div><dt>0.2ms</dt><dd>控制面 p50（本地 UDS）</dd></div>
           <div><dt>facts</dt><dd>完成判据</dd></div>
         </dl>
       </div>
 
-      <aside class="hero-panel" aria-label="CBAP 系统分层">
+      <aside class="hero-panel" aria-label="CPNC 系统分层">
         <div class="panel-head">
-          <span>CBAP / LAYERS</span>
+          <span>CPNC / LAYERS</span>
           <span class="panel-live"><i aria-hidden="true"></i>SPEC</span>
         </div>
         <div class="layer-stack">
@@ -119,17 +119,17 @@
           </div>
           <div class="layer">
             <span class="layer-id">04</span>
-            <div class="layer-copy"><strong>CBAP-U</strong><small>Unix socket · 一行一条 JSON</small></div>
+            <div class="layer-copy"><strong>CPNC-U</strong><small>Unix socket · 一行一条 JSON</small></div>
             <span class="layer-tag">Agent 面</span>
           </div>
           <div class="layer layer-hot">
             <span class="layer-id">03</span>
-            <div class="layer-copy"><strong>CBAP Kernel</strong><small>租约 · 安全 · 急停 · 审计</small></div>
+            <div class="layer-copy"><strong>CPNC Kernel</strong><small>租约 · 安全 · 急停 · 审计</small></div>
             <span class="layer-tag">控制面</span>
           </div>
           <div class="layer">
             <span class="layer-id">02</span>
-            <div class="layer-copy"><strong>CBAP-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div>
+            <div class="layer-copy"><strong>CPNC-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div>
             <span class="layer-tag">设备面</span>
           </div>
           <div class="layer">
@@ -177,12 +177,12 @@
         <p class="kicker">02 / ARCHITECTURE</p>
         <div>
           <h2>Agent 在上面，<br>事实在下面。</h2>
-          <p class="section-lede">CBAP-U 面向 Agent；CBAP-D 面向设备；Kernel 在中间做租约、安全、取消和审计。完整结构以仓库中文架构图为准。</p>
+          <p class="section-lede">CPNC-U 面向 Agent；CPNC-D 面向设备；Kernel 在中间做租约、安全、取消和审计。完整结构以仓库中文架构图为准。</p>
         </div>
       </div>
 
       <div class="arch-frame"><img class="arch-image" src="./assets-lm/cbap-architecture-lm.png"
-           alt="CBAP 协议桥中文架构图：外部规划器、CBAP-U、CBAP Kernel、CBAP-D、Agent 子仓与 Minecraft 服务端事实"></div>
+           alt="CPNC 协议桥中文架构图：外部规划器、CPNC-U、CPNC Kernel、CPNC-D、Agent 子仓与 Minecraft 服务端事实"></div>
       <p class="arch-image-note">图例：细线 = 请求 / 状态；蓝 = 控制面与事实源；白底 = 本协议；灰 = 外部系统。</p>
     </section>
 
@@ -270,20 +270,20 @@
       <div class="section-head">
         <p class="kicker">MCP / UPSTREAM STATUS</p>
         <div>
-          <h2>上游还没修完，<br>CBAP 只做本地缓解。</h2>
-          <p class="section-lede">SEP #3452 仍在讨论工具定义完整性；CBAP v1.7.5 加了完整 JCS pin 和同连接 drift 校验，但这不是 MCP 官方修复，也不代表 3D 执行授权已经解决。</p>
+          <h2>上游还没修完，<br>CPNC 只做本地缓解。</h2>
+          <p class="section-lede">SEP #3452 仍在讨论工具定义完整性；CPNC v1.7.5 加了完整 JCS pin 和同连接 drift 校验，但这不是 MCP 官方修复，也不代表 3D 执行授权已经解决。</p>
         </div>
       </div>
 
       <figure class="status-figure">
-        <img src="./assets/mcp-upstream-status.svg" alt="MCP 上游状态：SEP 3452 open，CBAP v1.7.5 本地缓解，3D 执行授权未解决" loading="lazy">
+        <img src="./assets/mcp-upstream-status.svg" alt="MCP 上游状态：SEP 3452 open，CPNC v1.7.5 本地缓解，3D 执行授权未解决" loading="lazy">
       </figure>
 
       <div class="cards cards-six">
         <article class="card card-small card-accent">
           <span class="card-num">01 / UPSTREAM</span>
           <h3>SEP #3452 仍 OPEN</h3>
-          <p>讨论 definition / instructions / scope 完整性，还没有最终规范。CBAP 不把 issue 里的讨论说成官方结论。</p>
+          <p>讨论 definition / instructions / scope 完整性，还没有最终规范。CPNC 不把 issue 里的讨论说成官方结论。</p>
         </article>
         <article class="card card-small">
           <span class="card-num">02 / LOCAL</span>
@@ -307,25 +307,25 @@
       <div class="section-head">
         <p class="kicker">PROTOCOL / LONG-TERM</p>
         <div>
-          <h2>CBAP 不是全栈<br>Agent 协议。</h2>
-          <p class="section-lede">模型调用、工具发现、Agent 间任务、UI 渲染都有各自的标准。CBAP 只守住设备控制、授权、事实和证据这一层；其他层先做 adapter，不复制。</p>
+          <h2>CPNC 不是全栈<br>Agent 协议。</h2>
+          <p class="section-lede">模型调用、工具发现、Agent 间任务、UI 渲染都有各自的标准。CPNC 只守住设备控制、授权、事实和证据这一层；其他层先做 adapter，不复制。</p>
         </div>
       </div>
 
       <figure class="status-figure">
-        <img src="./assets/protocol-map.svg" alt="Agent 协议分层：模型/运行时、工具/上下文、Agent 间、CBAP 设备控制、证据/身份" loading="lazy">
+        <img src="./assets/protocol-map.svg" alt="Agent 协议分层：模型/运行时、工具/上下文、Agent 间、CPNC 设备控制、证据/身份" loading="lazy">
       </figure>
 
       <div class="cards cards-six">
         <article class="card card-small card-accent">
           <span class="card-num">L4 / CORE</span>
           <h3>设备控制面</h3>
-          <p>CBAP 的核心：device contract、lease、cancel、estop、policy、facts、audit。其他层不塞进 Kernel。</p>
+          <p>CPNC 的核心：device contract、lease、cancel、estop、policy、facts、audit。其他层不塞进 Kernel。</p>
         </article>
         <article class="card card-small">
           <span class="card-num">ADAPTER</span>
           <h3>MCP / A2A / OpenAI</h3>
-          <p>MCP 做工具发现，A2A 做 Agent 间任务，OpenAI Responses / Agents SDK 做模型调用；CBAP 通过 adapter 接，不重写。</p>
+          <p>MCP 做工具发现，A2A 做 Agent 间任务，OpenAI Responses / Agents SDK 做模型调用；CPNC 通过 adapter 接，不重写。</p>
         </article>
         <article class="card card-small">
           <span class="card-num">LONG TERM</span>
@@ -335,17 +335,17 @@
       </div>
 
       <div class="arch-note">
-        <strong>规则：先 adapter，后 core。</strong> 不复制 MCP、A2A、AG-UI；CBAP 的护城河是设备控制与证据，不是协议数量。
+        <strong>规则：先 adapter，后 core。</strong> 不复制 MCP、A2A、AG-UI；CPNC 的护城河是设备控制与证据，不是协议数量。
         <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">读长期路线 ↗</a>
       </div>
     </section>
 
     <section class="section section-arch" id="os">
       <div class="section-head">
-        <p class="kicker">05 / CBAP OS</p>
+        <p class="kicker">05 / CPNC OS</p>
         <div>
           <h2>把协议装进<br>一个可启动的系统。</h2>
-          <p class="section-lede">CBAP OS 0.1 是 DSH OS 底座上的 CBAP 运行时层：GRUB 选 CBAP/Python 版本，Control Center 显示当前槽并热切换，Host Bridge 用 CBAP 协议访问宿主机 allowlist。</p>
+          <p class="section-lede">CPNC OS 0.1 是 DSH OS 底座上的 CPNC 运行时层：GRUB 选 CPNC/Python 版本，Control Center 显示当前槽并热切换，Host Bridge 用 CPNC 协议访问宿主机 allowlist。</p>
         </div>
       </div>
 
@@ -353,12 +353,12 @@
         <article class="card card-small card-accent">
           <span class="card-num">01 / BOOT</span>
           <h3>版本化启动</h3>
-          <p>GRUB 每个已安装的 CBAP 槽一项；内核参数携带 <code>cbap.cbap=</code> 和 <code>cbap.python=</code>，Kernel 挂载对应版本。</p>
+          <p>GRUB 每个已安装的 CPNC 槽一项；内核参数携带 <code>cbap.cbap=</code> 和 <code>cbap.python=</code>，Kernel 挂载对应版本。</p>
         </article>
         <article class="card card-small">
           <span class="card-num">02 / CONTROL</span>
           <h3>Control Center</h3>
-          <p>本地 Tk 面板显示当前 CBAP/Python、版本槽和热切换入口；不把 root shell 暴露给 Agent。</p>
+          <p>本地 Tk 面板显示当前 CPNC/Python、版本槽和热切换入口；不把 root shell 暴露给 Agent。</p>
         </article>
         <article class="card card-small">
           <span class="card-num">03 / HOST</span>
@@ -368,7 +368,7 @@
       </div>
 
       <div class="cards cards-img" style="margin-top:1px">
-        <article class="card" style="padding:0;min-height:0"><img src="assets-lm/cbap-os-lm.png" alt="CBAP OS 桌面与 Control Center" style="width:100%;display:block"></article>
+        <article class="card" style="padding:0;min-height:0"><img src="assets-lm/cbap-os-lm.png" alt="CPNC OS 桌面与 Control Center" style="width:100%;display:block"></article>
       </div>
     </section>
 
@@ -377,14 +377,14 @@
         <p class="kicker">06 / CURRENT STATE</p>
         <div>
           <h2>四个活跃子仓，<br>一个归档。</h2>
-          <p class="section-lede">CBAP 控制面已通过 129 项 conformance；P0–P6 设备平权契约、默认拒绝、逐设备配额、trust facts、safe_state 和 Wayland portal 已落地。Alice 的 Forge bridge 源码保留，但未编译、未跑真实服务端，所以不算活跃子仓。</p>
+          <p class="section-lede">CPNC 控制面已通过 129 项 conformance；P0–P6 设备平权契约、默认拒绝、逐设备配额、trust facts、safe_state 和 Wayland portal 已落地。Alice 的 Forge bridge 源码保留，但未编译、未跑真实服务端，所以不算活跃子仓。</p>
         </div>
       </div>
       <div class="status-grid">
         <div class="status-main">
           <p class="status-label">主仓 / 子仓边界</p>
-          <div class="timeline" aria-label="CBAP 组件">
-            <span>CBAP Kernel</span><i aria-hidden="true">→</i><span>CBAP-U</span><i aria-hidden="true">→</i><span>Agent</span><i aria-hidden="true">→</i><span>CBAP-D</span><i aria-hidden="true">→</i><span class="timeline-end">Server facts</span>
+          <div class="timeline" aria-label="CPNC 组件">
+            <span>CPNC Kernel</span><i aria-hidden="true">→</i><span>CPNC-U</span><i aria-hidden="true">→</i><span>Agent</span><i aria-hidden="true">→</i><span>CPNC-D</span><i aria-hidden="true">→</i><span class="timeline-end">Server facts</span>
           </div>
           <p>旧版脑 / 手、车厢、老祖思维和 M1–M7b 里程碑已经从主 README 移到 <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/agents/cyberdyne/docs/LEGACY.md" target="_blank" rel="noopener">Cyberdyne 子链档案</a>。主仓现在描述协议，不再把旧实验细节堆在首页。</p>
         </div>
@@ -392,13 +392,13 @@
           <p class="status-label">当前状态</p>
           <ul class="tag-list">
             <li>4 个活跃子仓</li>
-            <li>129/129 CBAP</li>
+            <li>129/129 CPNC</li>
             <li>Alice 未构建</li>
             <li>旧套件已归档</li>
-            <li>CBAP OS 0.1</li>
+            <li>CPNC OS 0.1</li>
             <li>mTLS 可选</li>
             <li>v1.7.5 source release</li>
-            <li>CBAP OS 0.1 / Host Bridge</li>
+            <li>CPNC OS 0.1 / Host Bridge</li>
             <li>5 host device IDs</li>
           </ul>
           <p class="status-note">不把源码当成已验证。</p>
@@ -417,14 +417,14 @@
       <div class="carriage-stats">
         <div><strong>4</strong><span>活跃子仓</span></div>
         <div><strong>1</strong><span>归档：Alice</span></div>
-        <div><strong>129/129</strong><span>CBAP 测试</span></div>
+        <div><strong>129/129</strong><span>CPNC 测试</span></div>
         <div><strong>0.2ms</strong><span>控制面 p50（本地 UDS）</span></div>
       </div>
       <div class="cards cards-six">
-        <article class="card card-small card-accent"><span class="card-num">OURS</span><h3>Cyberdyne</h3><p>旧脑保留，默认经 <code>bridge_cbap.py</code> 走 CBAP；root 直连 shim 已移除，旧源码冻结归档。</p></article>
-        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>真实 MCP body。公开 MCP tools → CBAP read / write / poll / estop，MCPDriver 走 stdio JSON-RPC。</p></article>
-        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy 自带规划器。CBAP 观察状态、投递 prompt、停止；不冒充低层动作驱动。</p></article>
-        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>只接 Mineflayer bridge：state / exec / forward / say / stop。1.21.1 真实 bridge 8/8；本地 Qwen 自治循环 3/3；上游 Voyager agents + CBAP 三任务 3/3。</p></article>
+        <article class="card card-small card-accent"><span class="card-num">OURS</span><h3>Cyberdyne</h3><p>旧脑保留，默认经 <code>bridge_cbap.py</code> 走 CPNC；root 直连 shim 已移除，旧源码冻结归档。</p></article>
+        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>真实 MCP body。公开 MCP tools → CPNC read / write / poll / estop，MCPDriver 走 stdio JSON-RPC。</p></article>
+        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy 自带规划器。CPNC 观察状态、投递 prompt、停止；不冒充低层动作驱动。</p></article>
+        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>只接 Mineflayer bridge：state / exec / forward / say / stop。1.21.1 真实 bridge 8/8；本地 Qwen 自治循环 3/3；上游 Voyager agents + CPNC 三任务 3/3。</p></article>
         <article class="card card-small"><span class="card-num">ARCHIVE</span><h3>Alice</h3><p>Forge 1.20.1 最小 bridge 源码。未编译、未跑真实服务器，不假装是活跃子仓。</p></article>
         <article class="card card-small"><span class="card-num">NEXT</span><h3>别优化项圈</h3><p>协议桥开销亚毫秒。真正慢的是 Minecraft 动作、Agent 规划和 LLM。</p></article>
       </div>
@@ -450,8 +450,8 @@
 
   <footer class="site-footer">
     <div>
-      <span class="footer-brand">CYBERDYNE / BRIDGE</span>
-      <span>赛博戴恩之桥 · <a href="https://cyberdyne-bridge.com">cyberdyne-bridge.com</a></span>
+      <span class="footer-brand">NEKXSR / CORE</span>
+      <span>临界协议：中枢核 · <a href="https://cyberdyne-bridge.com">cyberdyne-bridge.com</a></span>
     </div>
     <div class="footer-meta">
       <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI 协作</span>

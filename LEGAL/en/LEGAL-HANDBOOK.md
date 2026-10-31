@@ -1,4 +1,4 @@
-# Cyberdyne Bridge / CBAP — English Legal Pack
+# Critical Protocol: NEKXSR Core (CPNC) — English Legal Pack
 
 **Version:** 2026-10-24  
 **Status:** Complete English translation for convenience and review  
@@ -42,7 +42,7 @@
 
 ### 1. Experimental software, provided "as is"
 
-Cyberdyne Bridge / CBAP is research and experimental software. To the maximum extent permitted by applicable law, the authors and contributors provide the project **"AS IS"**, without any express or implied warranty, including but not limited to:
+Critical Protocol: NEKXSR Core (CPNC) is research and experimental software. To the maximum extent permitted by applicable law, the authors and contributors provide the project **"AS IS"**, without any express or implied warranty, including but not limited to:
 
 ```text
 merchantability
@@ -164,7 +164,7 @@ This document provides risk information only and is not legal advice. If you nee
 > Source: `LEGAL/en/TERMS.md`
 
 **Version:** 2026-10-24  
-**Applies to:** Cyberdyne Bridge / CBAP code, documentation, websites, and releases  
+**Applies to:** Critical Protocol: NEKXSR Core (CPNC) code, documentation, websites, and releases  
 **Important:** This is a risk-allocation draft, not legal advice. Have counsel review it before commercial use or distribution.
 
 ---
@@ -1075,7 +1075,7 @@ This document flags risks only. It is not an export, sanctions, or encryption co
 > Source: `LEGAL/en/COUNSEL-CHECKLIST.md`
 
 **Purpose:** An intake checklist for counsel, not legal advice.  
-**Project:** Cyberdyne Bridge / CBAP
+**Project:** Critical Protocol: NEKXSR Core (CPNC)
 
 ---
 
@@ -1230,7 +1230,7 @@ They reduce ambiguity and risk, but **do not replace counsel** and cannot guaran
 
 > Source: `THIRD_PARTY_NOTICES.en.md`
 
-Cyberdyne Bridge's original Kernel, protocol, drivers, and tests are **MIT**-licensed (see [`LICENSE`](../../LICENSE)). The third-party components, patches, runtime dependencies, and names below are not covered by that MIT grant and are used under their own terms.
+Critical Protocol: NEKXSR Core's original Kernel, protocol, drivers, and tests are **MIT**-licensed (see [`LICENSE`](../../LICENSE)). The third-party components, patches, runtime dependencies, and names below are not covered by that MIT grant and are used under their own terms.
 
 **This is not legal advice.** If you distribute a combined product, have counsel review it.
 
@@ -1369,7 +1369,7 @@ do not write "compatible with" as "official"
 do not remove upstream copyright or license notices
 ```
 
-The names **Cyberdyne Bridge / CBAP** are used by this project's maintainers; third parties must not use them to impersonate an official release.
+The names **Critical Protocol: NEKXSR Core (CPNC)** are used by this project's maintainers; third parties must not use them to impersonate an official release.
 
 If you believe a name is used improperly, contact the maintainers through a repository issue.
 

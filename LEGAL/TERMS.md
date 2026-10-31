@@ -1,7 +1,7 @@
 # Terms of Use / 使用条款
 
 **版本：** 2026-10-24  
-**适用对象：** Cyberdyne Bridge / CBAP 的代码、文档、网站和发布物  
+**适用对象：** Critical Protocol: NEKXSR Core (CPNC) 的代码、文档、网站和发布物  
 **重要：** 本文是风险分配草稿，不是法律意见；商用/发行前请律师审阅。
 
 ---

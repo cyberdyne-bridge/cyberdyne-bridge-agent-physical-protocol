@@ -6,7 +6,7 @@
 
 ## 1. Experimental software, provided "as is"
 
-Cyberdyne Bridge / CBAP is research and experimental software. To the maximum extent permitted by applicable law, the authors and contributors provide the project **"AS IS"**, without any express or implied warranty, including but not limited to:
+Critical Protocol: NEKXSR Core (CPNC) is research and experimental software. To the maximum extent permitted by applicable law, the authors and contributors provide the project **"AS IS"**, without any express or implied warranty, including but not limited to:
 
 ```text
 merchantability

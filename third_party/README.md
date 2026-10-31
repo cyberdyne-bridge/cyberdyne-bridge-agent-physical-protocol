@@ -1,7 +1,7 @@
 # Third-party components
 
 This directory contains license texts and notices for code, patches, runtime
-dependencies, and names referenced by Cyberdyne Bridge.
+dependencies, and names referenced by Critical Protocol: NEKXSR Core.
 
 The CBAP Kernel/protocol code is MIT-licensed (see the root `LICENSE`).  This
 does **not** relicense third-party material.  Exact upstream terms are in

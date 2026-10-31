@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-label="CBAP architecture: agents, CBAP-U, Kernel, CBAP-D, drivers, bodies and server facts">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-label="CPNC architecture: agents, CPNC-U, Kernel, CPNC-D, drivers, bodies and server facts">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#070a0f"/>
@@ -17,7 +17,7 @@
   <rect width="1400" height="900" fill="url(#bg)"/>
   <rect width="1400" height="900" fill="url(#grid)"/>
 
-  <text x="48" y="54" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="15" letter-spacing="4">CBAP v1 / REFERENCE ARCHITECTURE</text>
+  <text x="48" y="54" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="15" letter-spacing="4">CPNC v1 / REFERENCE ARCHITECTURE</text>
   <text x="48" y="92" fill="#e8f0f2" font-family="DejaVu Sans, sans-serif" font-size="30" font-weight="700">Agent above. Facts below.</text>
   <text x="48" y="118" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="16">One protocol between heterogeneous agents and physical bodies. Completion is verified from server facts, not result.ok.</text>
 
@@ -41,16 +41,16 @@
     <text x="876" y="233" fill="#8aa0a8" font-size="13">state / exec / stop</text>
   </g>
 
-  <!-- CBAP-U -->
+  <!-- CPNC-U -->
   <line x1="700" y1="250" x2="700" y2="282" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="420" y="286" width="560" height="50" rx="3" fill="#0a2926" stroke="#2e8b7d"/>
-  <text x="700" y="309" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CBAP-U / UNIX SOCKET · NDJSON · ONE JSON PER LINE</text>
+  <text x="700" y="309" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CPNC-U / UNIX SOCKET · NDJSON · ONE JSON PER LINE</text>
   <text x="700" y="327" text-anchor="middle" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">identity · open · lease · read · write · cancel · release · estop</text>
 
   <!-- Kernel -->
   <line x1="700" y1="336" x2="700" y2="368" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="270" y="372" width="860" height="166" rx="4" fill="#0a1117" stroke="#2e8b7d" stroke-width="2"/>
-  <text x="294" y="400" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">02 / CBAP KERNEL · CONTROL PLANE</text>
+  <text x="294" y="400" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">02 / CPNC KERNEL · CONTROL PLANE</text>
   <g font-family="DejaVu Sans, sans-serif" font-size="14" fill="#d7e2e6">
     <text x="294" y="430">identity / tokens</text>
     <text x="294" y="454">leases · FIFO · fencing</text>
@@ -64,10 +64,10 @@
   </g>
   <text x="294" y="512" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="13">The Kernel does not trust an agent's self-declared safety.</text>
 
-  <!-- CBAP-D -->
+  <!-- CPNC-D -->
   <line x1="700" y1="538" x2="700" y2="570" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="420" y="574" width="560" height="50" rx="3" fill="#0a2926" stroke="#2e8b7d"/>
-  <text x="700" y="597" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CBAP-D / DRIVER ADAPTERS</text>
+  <text x="700" y="597" text-anchor="middle" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="13">CPNC-D / DRIVER ADAPTERS</text>
   <text x="700" y="615" text-anchor="middle" fill="#8aa0a8" font-family="DejaVu Sans, sans-serif" font-size="12">one adapter per body · no agent planning inside the Kernel</text>
 
   <!-- Drivers -->

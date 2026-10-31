@@ -1,4 +1,4 @@
-# CBAP v1 · Cyberdyne Bridge Agent Protocol
+# CPNC v1 · Critical Protocol: NEKXSR Core
 
 - **状态**：**Implemented profile 1.0**（已实现并通过 129 条测试）；超出 1.0 的能力见 [`implementation-matrix.md`](implementation-matrix.md)
 - **版本**：1.0.0
@@ -6,8 +6,10 @@
 - **范围**：Agent ↔ Kernel 的系统调用 ABI（CBAP-U），以及 Kernel ↔ Driver 的驱动 ABI（CBAP-D）
 - **不包含**：Minecraft 动作语义、驱动实现、包管理器、具体调度算法
 
+> 命名说明：公开项目与协议名现为 **CPNC（Critical Protocol: NEKXSR Core / 临界协议：中枢核）**。本文继续使用 `CBAP-U` / `CBAP-D` / `CBAP` 作为 v1 的历史线协议与技术命名空间，以保持兼容；新文档、UI 与项目品牌统一使用 CPNC。完整约定见仓库根目录 [`NAMING.md`](../NAMING.md)。
+
 > 本文中与当前实现不同的条目，统一以 [`implementation-matrix.md`](implementation-matrix.md) 为准。
-> 未出现在 1.0 矩阵中的功能，不得用于 “CBAP v1 compatible” 声明。
+> 未出现在 1.0 矩阵中的功能，不得用于 “CPNC v1 compatible” 声明。
 
 > 本文用 RFC 2119 的关键词：**MUST / MUST NOT / SHOULD / SHOULD NOT / MAY**。
 

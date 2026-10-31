@@ -1,6 +1,6 @@
 # Third-Party Notices / 第三方许可声明
 
-Cyberdyne Bridge 的原创 Kernel、协议、驱动和测试代码采用 **MIT**（见根目录
+Critical Protocol: NEKXSR Core 的原创 Kernel、协议、驱动和测试代码采用 **MIT**（见根目录
 [`LICENSE`](LICENSE)）。下列第三方组件、补丁、运行时依赖和名称不属于该 MIT
 授权，按各自条款使用。
 

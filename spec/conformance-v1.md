@@ -1,4 +1,4 @@
-# CBAP v1 conformance
+# CPNC v1 conformance
 
 - **Status**: Implemented profile 1.0
 - **Date**: 2026-10-24
@@ -69,7 +69,7 @@ tests/cbap/test_transport.py     2  TCP/TLS/mTLS
 ## Current status
 
 ```text
-CBAP conformance: 129/129 passed
+CPNC conformance: 129/129 passed
 ```
 
 Not claimed as passed:

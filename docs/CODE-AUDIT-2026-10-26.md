@@ -1,4 +1,4 @@
-# Cyberdyne Bridge / CBAP 代码审计
+# Critical Protocol: NEKXSR Core (CPNC) 代码审计
 
 - 日期：2026-10-26
 - 审计对象：CBAP `kernel/legacy_runtime`、MC driver、legacy brain、hand/body、插件编组、测试与配置

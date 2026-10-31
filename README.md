@@ -1,8 +1,8 @@
 <div align="center">
 
-# Cyberdyne Bridge
+# Critical Protocol: NEKXSR Core
 
-### 赛博戴恩之桥 · CBAP v1
+### 临界协议：中枢核 · CPNC v1
 
 > **UNOFFICIAL OPEN-SOURCE PROTOCOL**
 > Not affiliated with or endorsed by Mojang, Microsoft, NetEase, DeepSeek,
@@ -10,11 +10,13 @@
 
 **把异构 Minecraft Agent，变成同一个协议下的外设。**
 
-[![CBAP](https://img.shields.io/badge/CBAP-v1-0f766e?style=flat-square)](spec/README.md)
+> 现名 **Critical Protocol: NEKXSR Core / 临界协议：中枢核**，简称 **CPNC**。旧名 Cyberdyne Bridge / CBAP；v1 代码、环境变量、历史契约文件中的 `CBAP` 命名空间保留兼容，详见 [`NAMING.md`](NAMING.md)。
+
+[![CPNC](https://img.shields.io/badge/CPNC-v1-0f766e?style=flat-square)](spec/README.md)
 [![Release](https://img.shields.io/badge/release-v1.7.5-0f766e?style=flat-square)](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/releases)
 [![Conformance](https://img.shields.io/badge/conformance-129%2F129-14b8a6?style=flat-square)](tools/cbap_conformance.py)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](kernel/)
-[![Transport](https://img.shields.io/badge/CBAP--U-Unix%20socket-334155?style=flat-square)](spec/README.md)
+[![Transport](https://img.shields.io/badge/CPNC--U-Unix%20socket-334155?style=flat-square)](spec/README.md)
 [![No paid API](https://img.shields.io/badge/LLM-local%20friendly-6b7280?style=flat-square)](#)
 [![License](https://img.shields.io/badge/license-MIT-111827?style=flat-square)](LICENSE)
 
@@ -26,7 +28,7 @@
 >
 > 缺的是一个**能换身体、能验收、能急停**的协议。
 
-Cyberdyne Bridge 是 **CBAP v1** 的参考实现：Agent 申请设备、执行动作，最后用**服务端事实**验收，而不是相信一句 `result.ok`。
+Critical Protocol: NEKXSR Core 是 **CPNC v1** 的参考实现：Agent 申请设备、执行动作，最后用**服务端事实**验收，而不是相信一句 `result.ok`。
 
 Minecraft 只是沙盒。真正想验证的是：
 
@@ -43,11 +45,11 @@ Agent 到底需要什么样的接口与判据。
 
 ```text
 Agent
-  │  CBAP-U：Unix socket / 一行一条 JSON
+  │  CPNC-U：Unix socket / 一行一条 JSON
   ▼
-CBAP Kernel
+CPNC Kernel
   │  租约 · FIFO · 安全 · 急停 · 取消 · 审计
-  │  CBAP-D：每个 Agent 自己的 adapter
+  │  CPNC-D：每个 Agent 自己的 adapter
   ▼
 MCP / Mindcraft / Voyager / Cyberdyne
   │
@@ -59,7 +61,7 @@ Minecraft 服务端（事实源）
 
 > **Agent 可以换，身体可以换，验收判据不能换。**
 
-这也是为什么主仓只保留 CBAP、Kernel、租约、安全、审计和 conformance；具体 Agent 放进独立子仓，不写死进内核。
+这也是为什么主仓只保留 CPNC、Kernel、租约、安全、审计和 conformance；具体 Agent 放进独立子仓，不写死进内核。
 
 ## 10 分钟跑通
 
@@ -82,7 +84,7 @@ clone 7s + conformance 118s + host demo <2s
 MC 计划已切到：
 
 ```text
-自研 Mineflayer Body + 外部 Agent Brain + CBAP 控制面
+自研 Mineflayer Body + 外部 Agent Brain + CPNC 控制面
 ```
 
 已落地：
@@ -102,7 +104,7 @@ docs/VOYAGER-STATUS.md         Voyager bridge 评估
 docs/VOYAGER-1.21.1.md         Voyager 1.21.1 bridge 实测
 docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
 docs/VOYAGER-AUTONOMY.md       Voyager-style 3/3 自治循环
-docs/VOYAGER-UPSTREAM-BENCH.md 上游 Voyager agents + CBAP 三任务 3/3
+docs/VOYAGER-UPSTREAM-BENCH.md 上游 Voyager agents + CPNC 三任务 3/3
 docs/VOYAGER-BUGS.md           Voyager 最小复现与 PoC
 docs/VOYAGER-LEGACY-GPT-TRIAGE.md  GPT 遗留 bug 查重与归档规则
 poc/mcp_scope_fork_poc.py      MCP same-scope fork / instructions PoC
@@ -139,7 +141,7 @@ done
 
 ## 它解决什么
 
-| 常见做法 | 问题 | CBAP 的做法 |
+| 常见做法 | 问题 | CPNC 的做法 |
 |---|---|---|
 | 让 LLM 直接调 Minecraft API | 幻觉、越权、失败后不知道停 | Agent 只能通过协议申请设备、提交动作 |
 | 命令返回 200 就算完成 | 「发出去了」不等于「真做到了」 | 用位置、背包、方块、任务终态验收 |
@@ -149,7 +151,7 @@ done
 
 ## 架构
 
-![CBAP 中文架构图](docs/diagrams/cbap-structure-zh.png)
+![CPNC 中文架构图](docs/diagrams/cbap-structure-zh.png)
 
 图例：
 
@@ -176,7 +178,7 @@ done
 
 ## 安全边界
 
-CBAP 不假设 Agent 可信，也不假设“命令发出去了”等于完成。安全是分层控制，不是一句“已加密”。
+CPNC 不假设 Agent 可信，也不假设“命令发出去了”等于完成。安全是分层控制，不是一句“已加密”。
 
 | 层 | 已实现 |
 |---|---|
@@ -224,7 +226,7 @@ resume 是单 operator 流程，没有双人 resume
 
 | 子仓 | 归属 | 设备 | 控制面 |
 |---|---|---|---|
-| [`agents/cyberdyne`](agents/cyberdyne/) | 我们自己的 MC Agent | `mc://bot/DeepSeek` | 旧脑经 `bridge_cbap.py` 走 CBAP；旧直连已冻结 |
+| [`agents/cyberdyne`](agents/cyberdyne/) | 我们自己的 MC Agent | `mc://bot/DeepSeek` | 旧脑经 `bridge_cbap.py` 走 CPNC；旧直连已冻结 |
 | [`agents/mcp-mineflayer`](agents/mcp-mineflayer/) | 外部 | `mcp://mc/MCPBody` | MCP stdio JSON-RPC |
 | [`agents/mindcraft`](agents/mindcraft/) | 外部 | `mc://mind/Mindy` | state / prompt / stop |
 | [`agents/voyager`](agents/voyager/) | 外部 | `mc://voyager/bot` | state / exec / forward / say / stop |
@@ -252,7 +254,7 @@ python3 tools/cbap_conformance.py --target fake
 你会看到：
 
 ```text
-CBAP v1 conformance · target=fake · cases=129
+CPNC v1 conformance · target=fake · cases=129
 Ran 129 tests
 
 OK
@@ -277,7 +279,7 @@ done
 
 ## 操作员控制台
 
-CBAP 协议本身不带 UI；`console/` 是一个独立的本地 Host：
+CPNC 协议本身不带 UI；`console/` 是一个独立的本地 Host：
 
 ```bash
 python3 console/server.py --socket ./cbap.sock --audit ./logs/cbap-audit.jsonl
@@ -305,16 +307,16 @@ SLA 通知 / 可选 webhook
 默认只绑 `127.0.0.1`，校验 Host / Origin；登录使用独立 operator token，页面里不嵌 token。
 远程 bind 必须 TLS，可选 mTLS。Kernel 的 estop 仍然锁存，resume 必须显式确认。
 
-![CBAP Operator Console](docs/diagrams/cbap-console.jpg)
+![CPNC Operator Console](docs/diagrams/cbap-console.jpg)
 
 详细说明见 [`console/README.md`](console/README.md)。
 
 ## 仓库结构
 
 ```text
-kernel/       CBAP Kernel：会话 / 租约 / 安全 / 急停 / 审计
+kernel/       CPNC Kernel：会话 / 租约 / 安全 / 急停 / 审计
 console/      本地操作员控制台：状态 / 租约 / facts / estop / 审计
-spec/         CBAP 协议与设备契约
+spec/         CPNC 协议与设备契约
 tests/        conformance
 tools/        通用工装（conformance / 并发 / 故障 / 恢复）
 docs/         协议文档、迁移说明、中文架构图
@@ -325,22 +327,22 @@ archive/      Alice 归档
 ## 当前状态
 
 ```text
-CBAP conformance       129/129
+CPNC conformance       129/129
 活跃 Agent 子仓        4
 Alice                  源码归档，未构建
-CBAP OS 0.1            live ISO / 版本选择 / host bridge 实测
+CPNC OS 0.1            live ISO / 版本选择 / host bridge 实测
 Host device surface    5 个 device_id / 输入默认关闭
 控制面 p50             0.2–0.3 ms（本地 UDS）
 旧套件                 已归档，不再进主 CI
 ```
 
-旧套件已移到 `archive/legacy-bridge/跑全部.sh`，不再属于主 CI；旧直连路径已冻结，默认脑入口是 CBAP wrapper。详见 [`docs/REPO_LAYOUT.md`](docs/REPO_LAYOUT.md) 和 [`docs/M4-Legacy-Decision.md`](docs/M4-Legacy-Decision.md)。
+旧套件已移到 `archive/legacy-bridge/跑全部.sh`，不再属于主 CI；旧直连路径已冻结，默认脑入口是 CPNC wrapper。详见 [`docs/REPO_LAYOUT.md`](docs/REPO_LAYOUT.md) 和 [`docs/M4-Legacy-Decision.md`](docs/M4-Legacy-Decision.md)。
 
 ## MCP 上游状态
 
 ```text
 SEP #3452        OPEN
-CBAP v1.7.5      local definition pin mitigation
+CPNC v1.7.5      local definition pin mitigation
 3D authority     not solved
 ```
 
@@ -351,7 +353,7 @@ CBAP v1.7.5      local definition pin mitigation
 
 ## 协议地图与长期安排
 
-CBAP 不是“通用 Agent 协议”，也不准备复制 OpenAI / MCP / A2A / AG-UI。
+CPNC 不是“通用 Agent 协议”，也不准备复制 OpenAI / MCP / A2A / AG-UI。
 
 ![Agent protocol layers](docs/diagrams/protocol-map.svg)
 
@@ -359,7 +361,7 @@ CBAP 不是“通用 Agent 协议”，也不准备复制 OpenAI / MCP / A2A / A
 L1 模型/运行时    OpenAI Responses / Agents SDK / Qwen / Mindcraft  不碰
 L2 工具/上下文    MCP                                               adapter
 L3 Agent ↔ Agent  A2A / task handoff                                adapter
-L4 设备控制       CBAP                                              core
+L4 设备控制       CPNC                                              core
 L5 证据/身份      audit / OTel / OAuth / attestation                integrate
 ```
 
@@ -377,7 +379,7 @@ v1.7.2  Detailed Legal Pack    114/114
 v1.7.1  Legal & Notices        114/114
 v1.7.0  Device Parity P0–P6  114/114
 v1.6.0  Host Device Surface   101/101
-v1.5.0  CBAP OS & Host Bridge 101/101
+v1.5.0  CPNC OS & Host Bridge 101/101
 v1.4.0  Legacy Boundary       101/101
 v1.3.0  Operator Infra        100/100
 v1.2.0  Operator Product      98/98
@@ -396,8 +398,9 @@ v1.7.5 / v1.7.4 / v1.7.3 / v1.7.2 / v1.7.1 / v1.7.0 / v1.6.0 / v1.5.0 / v1.4.0 �
 
 ```text
 docs/diagrams/cbap-structure-zh.png    中文架构图
+NAMING.md                              正式名称 / CPNC / 历史 CBAP 兼容命名
 docs/REPO_LAYOUT.md                    主仓 / 子仓 / shim / 迁移
-spec/README.md                         CBAP 协议
+spec/README.md                         CPNC 协议
 spec/conformance-v1.md                 conformance 契约
 docs/CBAP-内核化设计-2026-10-23.md     Kernel 设计
 docs/CBAP-同设备竞争与故障注入.md      竞争与故障
@@ -413,8 +416,8 @@ docs/CBAP-参数手册.md                  协议 / Kernel / 驱动 / Console �
 docs/M1-Trust-Boundary.md              M1 信任边界 / 隔离 / 审计锚点 / 恢复策略
 docs/M2-Protocol-1.1.md                M2 特性协商 / poll 过滤 / TCP/TLS
 docs/M3-Operator-Productization.md     M3 lease / 审批 / MCP onboarding / probe
-docs/M4-Legacy-Decision.md             M4 legacy bridge freeze / CBAP wrapper
-docs/CBAP-OS-Host-Bridge.md            CBAP OS VM -> host allowlisted CBAP test
+docs/M4-Legacy-Decision.md             M4 legacy bridge freeze / legacy CBAP wrapper
+docs/CBAP-OS-Host-Bridge.md            CPNC OS VM -> host allowlisted CPNC test
 docs/DEVICE-PARITY.md                  Device Contract / policy / quotas / trust / portal
 docs/START-10MIN.md                    10 分钟跑通 / 实测耗时 / 验收标准
 docs/MC-BODY-ADR.md                    MC Body 决策：自研 hand + 外部 brain
@@ -432,17 +435,17 @@ agents/*/docs/                         各 Agent 自己的接入文档
 
 - [`agents/cyberdyne/docs/LEGACY.md`](agents/cyberdyne/docs/LEGACY.md)
 
-这是 Cyberdyne MC Agent 的子链档案，不是 CBAP 主链。
+这是 Cyberdyne MC Agent 的子链档案，不是 CPNC 主链。
 
 ## GitHub About（复制用）
 
-> **CBAP v1：Agent ↔ 物理世界的参考协议桥。主仓只放协议、Kernel、租约、安全、审计；Cyberdyne / MCP / Mindcraft / Voyager 是四个 Agent 子仓。Minecraft 只是沙盒。**
+> **CPNC v1（Critical Protocol: NEKXSR Core / 临界协议：中枢核）：Agent ↔ 物理世界的参考协议桥。主仓只放协议、Kernel、租约、安全、审计；Cyberdyne / MCP / Mindcraft / Voyager 是四个 Agent 子仓。Minecraft 只是沙盒。**
 
 可直接复制到 GitHub 仓库 About 的短描述，另见 [`REPO_DESCRIPTION.md`](REPO_DESCRIPTION.md)。
 
 ## 许可
 
-原创 CBAP Kernel / 协议 / 驱动 / 测试代码和原创文档采用 **MIT**，见 [`LICENSE`](LICENSE)。
+原创 CPNC Kernel / 协议 / 驱动 / 测试代码和原创文档采用 **MIT**，见 [`LICENSE`](LICENSE)。
 
 第三方组件、补丁、运行时依赖、外部项目和名称**不因本仓引用而变成 MIT**：
 
@@ -455,7 +458,7 @@ LEGAL/                        使用条款 / AUP / 隐私 / 滥用 / 风险 / �
 
 其中 `agents/mcp-mineflayer/driver/patches/mineflayer-mcp-place.patch`
 来自 **GPL-3.0** 的 `mineflayer-mcp`，该补丁按 GPL-3.0 分发，不属于 MIT
-核心。CBAP 只通过独立 stdio 进程与它通信。
+核心。CPNC 只通过独立 stdio 进程与它通信。
 
 Minecraft 是 Mojang Studios 的商标。本项目与 Mojang、Microsoft、网易、
 DeepSeek、Qwen、Mindcraft、Voyager、mineflayer-mcp 均无官方关联。

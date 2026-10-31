@@ -1,7 +1,7 @@
 # Counsel Review Checklist / 律师审阅清单
 
 **用途：** 给律师的 intake 清单，不是法律意见。  
-**项目：** Cyberdyne Bridge / CBAP
+**项目：** Critical Protocol: NEKXSR Core (CPNC)
 
 ---
 

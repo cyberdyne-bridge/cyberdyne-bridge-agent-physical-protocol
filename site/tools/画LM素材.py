@@ -42,7 +42,7 @@ def 架构图(出):
     W, H = 2400, 1320
     img = QImage(W, H, QImage.Format.Format_ARGB32); img.fill(底)
     p = QPainter(img); p.setRenderHint(QPainter.Antialiasing); p.setRenderHint(QPainter.TextAntialiasing)
-    字(p, 90, 112, "CBAP v1  /  ARCHITECTURE", 26, 蓝, True, 5, True)
+    字(p, 90, 112, "CPNC v1  /  ARCHITECTURE", 26, 蓝, True, 5, True)
     字(p, 90, 205, "Agent 在上面，事实在下面。", 62, 墨, True)
     p.setPen(QPen(线, 2)); p.drawLine(QPointF(90, 230), QPointF(W - 90, 230))
 
@@ -54,9 +54,9 @@ def 架构图(出):
 
     # 中间：三层
     字(p, 90, 500, "协议层", 24, 浅, False, 3, True)
-    框(p, 90, 520, 1590, 120, "CBAP-U  /  Agent 面", "Unix socket · 一行一条 JSON · 请求 / 取消", 面, 线)
-    框(p, 90, 660, 1590, 150, "CBAP KERNEL  /  控制面", "租约 · 安全 · 急停 · 审计 · 幂等 · 服务端事实校验", 蓝, 蓝, QColor("#ffffff"))
-    框(p, 90, 830, 1590, 120, "CBAP-D  /  设备面", "MCP · Mindcraft · Voyager adapter · 设备契约", 面, 线)
+    框(p, 90, 520, 1590, 120, "CPNC-U  /  Agent 面", "Unix socket · 一行一条 JSON · 请求 / 取消", 面, 线)
+    框(p, 90, 660, 1590, 150, "CPNC KERNEL  /  控制面", "租约 · 安全 · 急停 · 审计 · 幂等 · 服务端事实校验", 蓝, 蓝, QColor("#ffffff"))
+    框(p, 90, 830, 1590, 120, "CPNC-D  /  设备面", "MCP · Mindcraft · Voyager adapter · 设备契约", 面, 线)
 
     # 下层：身体
     字(p, 90, 1010, "身体 / 事实源", 24, 浅, False, 3, True)
@@ -79,14 +79,14 @@ def 架构图(出):
 
     字(p, 90, 1192, "→ 动作 / 请求        ← 事实 / 校验        蓝 = 控制面与事实源", 18, 浅, 等宽=True)
     p.setPen(QPen(线, 2)); p.drawLine(QPointF(90, 1212), QPointF(2310, 1212))
-    字(p, 90, 1256, "CBAP v1  ·  129/129 CONFORMANCE  ·  P0 AUDIT IN PROGRESS", 17, 蓝, True, 3, True)
+    字(p, 90, 1256, "CPNC v1  ·  129/129 CONFORMANCE  ·  P0 AUDIT IN PROGRESS", 17, 蓝, True, 3, True)
     p.end(); img.save(出); print("已存：", 出)
 
 def 截图框(出):
     W, H = 2000, 1180
     img = QImage(W, H, QImage.Format.Format_ARGB32); img.fill(底)
     p = QPainter(img); p.setRenderHint(QPainter.Antialiasing); p.setRenderHint(QPainter.SmoothPixmapTransform)
-    字(p, 60, 70, "CBAP OS 0.1  /  SYSTEM IMAGES", 16, 蓝, True, 3, True)
+    字(p, 60, 70, "CPNC OS 0.1  /  SYSTEM IMAGES", 16, 蓝, True, 3, True)
     for i, (f, t) in enumerate([("cbap-os-desktop.png", "DESKTOP"), ("cbap-os-control.png", "CONTROL CENTER")]):
         x = 60 + i * 950
         图 = QImage(os.path.join(os.path.dirname(__file__), "..", "assets", f))
@@ -95,11 +95,11 @@ def 截图框(出):
             s = 图.scaled(860, 860, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             p.drawImage(QPointF(x + (880 - s.width()) / 2, 110 + (880 - s.height()) / 2), s)
         字(p, x, 1030, t, 15, 墨, True, 3, True)
-        字(p, x, 1058, "CBAP / DSH runtime", 13, 浅, 等宽=True)
+        字(p, x, 1058, "CPNC / DSH runtime", 13, 浅, 等宽=True)
     p.setPen(QPen(蓝, 4)); p.drawLine(QPointF(60, 1090), QPointF(W - 60, 1090))
     字(p, 90, 1192, "→ 动作 / 请求        ← 事实 / 校验        蓝 = 控制面与事实源", 18, 浅, 等宽=True)
     p.setPen(QPen(线, 2)); p.drawLine(QPointF(90, 1212), QPointF(2310, 1212))
-    字(p, 90, 1256, "CBAP v1  ·  129/129 CONFORMANCE  ·  P0 AUDIT IN PROGRESS", 17, 蓝, True, 3, True)
+    字(p, 90, 1256, "CPNC v1  ·  129/129 CONFORMANCE  ·  P0 AUDIT IN PROGRESS", 17, 蓝, True, 3, True)
     p.end(); img.save(出); print("已存：", 出)
 
 if __name__ == "__main__":

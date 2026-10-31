@@ -1,4 +1,4 @@
-## Cyberdyne Bridge
+## Critical Protocol: NEKXSR Core
 
 - [Home](Home)
 - [README](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/README.md)

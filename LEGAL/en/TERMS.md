@@ -1,7 +1,7 @@
 # Terms of Use
 
 **Version:** 2026-10-24  
-**Applies to:** Cyberdyne Bridge / CBAP code, documentation, websites, and releases  
+**Applies to:** Critical Protocol: NEKXSR Core (CPNC) code, documentation, websites, and releases  
 **Important:** This is a risk-allocation draft, not legal advice. Have counsel review it before commercial use or distribution.
 
 ---

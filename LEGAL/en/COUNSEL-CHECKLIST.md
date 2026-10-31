@@ -1,7 +1,7 @@
 # Counsel Review Checklist
 
 **Purpose:** An intake checklist for counsel, not legal advice.  
-**Project:** Cyberdyne Bridge / CBAP
+**Project:** Critical Protocol: NEKXSR Core (CPNC)
 
 ---
 

@@ -11,13 +11,13 @@
   <rect width="1200" height="520" fill="url(#bg)"/>
   <rect width="1200" height="520" fill="url(#grid)"/>
   <text x="54" y="56" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="15" letter-spacing="4">AGENT PROTOCOL LANDSCAPE</text>
-  <text x="54" y="92" fill="#e8f0f2" font-family="DejaVu Sans, sans-serif" font-size="26" font-weight="700">CBAP is not the whole stack.</text>
+  <text x="54" y="92" fill="#e8f0f2" font-family="DejaVu Sans, sans-serif" font-size="26" font-weight="700">CPNC is not the whole stack.</text>
 
   <g font-family="DejaVu Sans, sans-serif" font-size="15">
     <rect x="54" y="126" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
     <text x="74" y="150" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L1 / MODEL + RUNTIME</text>
     <text x="74" y="170" fill="#d7e2e6">Responses API · Agents SDK · AgentKit · Qwen · Mindcraft</text>
-    <text x="980" y="164" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">NOT CBAP</text>
+    <text x="980" y="164" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="12">NOT CPNC</text>
 
     <rect x="54" y="194" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>
     <text x="74" y="218" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="12">L2 / TOOL + CONTEXT</text>
@@ -31,7 +31,7 @@
 
     <rect x="54" y="330" width="1092" height="54" rx="3" fill="#0a2926" stroke="#2e8b7d" stroke-width="2"/>
     <text x="74" y="354" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">L4 / DEVICE CONTROL</text>
-    <text x="74" y="374" fill="#e8f0f2">CBAP · device contract · lease · cancellation · policy · estop · facts</text>
+    <text x="74" y="374" fill="#e8f0f2">CPNC · device contract · lease · cancellation · policy · estop · facts</text>
     <text x="980" y="368" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="12">CORE</text>
 
     <rect x="54" y="398" width="1092" height="54" rx="3" fill="#101b22" stroke="#2b4650"/>

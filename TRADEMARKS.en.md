@@ -27,6 +27,8 @@ do not write "compatible with" as "official"
 do not remove upstream copyright or license notices
 ```
 
-The names **Cyberdyne Bridge / CBAP** are used by this project's maintainers; third parties must not use them to impersonate an official release.
+The names **Critical Protocol: NEKXSR Core / CPNC** are used by this project's maintainers.
+The historical names **Cyberdyne Bridge / CBAP** are retained as compatibility identifiers.
+Third parties must not use these names to impersonate an official release.
 
 If you believe a name is used improperly, contact the maintainers through a repository issue.

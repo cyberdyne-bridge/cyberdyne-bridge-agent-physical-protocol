@@ -5,7 +5,7 @@
   "status": "active",
   "ownership": "ours",
   "kind": "legacy-brain-over-cbap",
-  "summary": "Legacy brain migrated to the CBAP wrapper; direct root entrypoint archived.",
+  "summary": "Legacy brain migrated to the CPNC wrapper; direct root entrypoint archived.",
   "runtime": {
     "brain": "agents/cyberdyne/brain/bridge_cbap.py",
     "hand": "agents/cyberdyne/hand/node/server.js",

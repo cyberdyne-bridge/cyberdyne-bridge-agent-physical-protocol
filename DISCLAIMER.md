@@ -7,7 +7,7 @@
 
 ## 1. 实验性软件，按“原样”提供
 
-Cyberdyne Bridge / CBAP 是研究性、实验性软件。  
+Critical Protocol: NEKXSR Core (CPNC) 是研究性、实验性软件。  
 在适用法律允许的最大范围内，作者和贡献者按 **“AS IS”** 提供本项目，
 不提供任何明示或暗示的保证，包括但不限于：
 
@@ -140,7 +140,7 @@ LEGAL/COUNSEL-CHECKLIST.md     律师审阅清单
 
 ## English (summary)
 
-Cyberdyne Bridge / CBAP is experimental research software provided **AS IS**,
+Critical Protocol: NEKXSR Core (CPNC) is experimental research software provided **AS IS**,
 without warranties of merchantability, fitness, non-infringement, or
 uninterrupted operation. To the maximum extent permitted by law, the authors
 and contributors are not liable for any direct, indirect, incidental, special,

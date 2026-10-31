@@ -2,7 +2,7 @@
 
 > **Important:** These files are risk disclosures and compliance drafts, **not legal advice**. Before commercial use, binary distribution, providing a service, processing other people's data, or use in a regulated industry, have qualified counsel review them for your entity, jurisdiction, and business model.
 
-This is the English legal pack for Cyberdyne Bridge / CBAP.  
+This is the English legal pack for Critical Protocol: NEKXSR Core (CPNC).  
 The Chinese documents in `LEGAL/` remain the source text; this English set is a complete translation for convenience and review.
 
 ## Documents

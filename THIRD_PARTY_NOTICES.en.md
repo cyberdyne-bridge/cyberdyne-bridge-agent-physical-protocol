@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Cyberdyne Bridge's original Kernel, protocol, drivers, and tests are **MIT**-licensed (see [`LICENSE`](LICENSE)). The third-party components, patches, runtime dependencies, and names below are not covered by that MIT grant and are used under their own terms.
+Critical Protocol: NEKXSR Core's original Kernel, protocol, drivers, and tests are **MIT**-licensed (see [`LICENSE`](LICENSE)). The third-party components, patches, runtime dependencies, and names below are not covered by that MIT grant and are used under their own terms.
 
 **This is not legal advice.** If you distribute a combined product, have counsel review it.
 

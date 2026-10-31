@@ -1,4 +1,8 @@
-# Cyberdyne-Bridge
+# Critical Protocol: NEKXSR Core
+
+### 临界协议：中枢核 · CPNC v1
+
+> Current name: **Critical Protocol: NEKXSR Core (CPNC)**. Legacy name: Cyberdyne Bridge / CBAP; the `CBAP` / `cbap` technical namespace is retained for v1 compatibility. See [`NAMING.md`](NAMING.md).
 
 > **M4 archive note:** the root `bridge.py` / `node` / `外挂` shims are removed.
 > The default legacy-brain entrypoint is
@@ -145,7 +149,7 @@ docs/日记/             the agent's own diaries (first person, Chinese)
 
 ```bash
 cd node && npm install && cd ..
-bash tools/cbap_conformance.py --target fake   # main CBAP gate
+bash tools/cbap_conformance.py --target fake   # main CPNC gate
 ```
 
 The red-line file `bridge.py` is fingerprint-checked (`658c947ec7f33d37`) at the
@@ -156,7 +160,7 @@ Running it for real needs a local Minecraft server (RCON, offline mode):
 ```bash
 bash agents/cyberdyne/tools/启动服务端.sh   # server
 bash agents/cyberdyne/tools/启动手.sh       # body
-bash agents/cyberdyne/tools/启动大脑.sh      # legacy brain over CBAP
+bash agents/cyberdyne/tools/启动大脑.sh      # legacy brain over CPNC
 MC_RCON_PASSWORD=your-password python3 tools/rcon.py "list"
 ```
 

@@ -1,4 +1,4 @@
-# Cyberdyne Bridge · CBAP
+# Critical Protocol: NEKXSR Core · CPNC
 
 > **UNOFFICIAL OPEN-SOURCE PROTOCOL** — 与 Mojang/Microsoft/网易/DeepSeek/Qwen/Mindcraft/Voyager/mineflayer-mcp 无官方关联。
 > 这是 **Home 索引**，不是第二份主文档。
@@ -14,7 +14,7 @@
 | 安全控制与残余风险 | [docs/SECURITY-HARDENING.md](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/SECURITY-HARDENING.md) |
 | 参数手册 | [docs/CBAP-参数手册.md](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/CBAP-参数手册.md) |
 | 发行版 | [RELEASES.md](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/RELEASES.md) |
-| CBAP OS / Host Bridge | [CBAP OS VM → host](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/CBAP-OS-Host-Bridge.md) |
+| CPNC OS / Host Bridge | [CPNC OS VM → host](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/CBAP-OS-Host-Bridge.md) |
 | Host device IDs | `host://fs` / `display` / `input/*` (input gated) |
 | Device parity P0–P6 | [Device parity](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/DEVICE-PARITY.md) |
 | GitHub Releases | [最新发行版](https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/releases) |
@@ -22,9 +22,9 @@
 ## 当前状态
 
 ```text
-CBAP conformance: 129/129
+CPNC conformance: 129/129
 最新源码发行版: v1.7.5
-协议版本: CBAP v1
+协议版本: CPNC v1
 主传输: Unix socket NDJSON
 可选: TCP / TLS / mTLS
 ```
@@ -33,11 +33,11 @@ CBAP conformance: 129/129
 
 ```text
 Agent
-  │ CBAP-U
+  │ CPNC-U
   ▼
-CBAP Kernel
+CPNC Kernel
   │ 租约 / fencing / 审计 / estop / approval
-  │ CBAP-D
+  │ CPNC-D
   ▼
 Driver
   ▼
@@ -53,7 +53,7 @@ MCP / Minecraft / Device
 
 ```text
 README.md                 项目入口 / 安全摘要 / 快速开始
-spec/                     CBAP 协议
+spec/                     CPNC 协议
 docs/                     设计、审计、参数手册、里程碑
 RELEASES.md               源码发行版与兼容性
 docs/releases/            每个版本的 release notes
