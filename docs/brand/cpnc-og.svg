@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<rect width="1200" height="630" fill="#070809"/>
+<rect x="1" y="1" width="1198" height="628" fill="none" stroke="#20242a" stroke-width="1"/>
+<g transform="translate(150 235) scale(0.85)"><g transform="translate(0 0)"><path d="M0 20H96L62 58H34Z" fill="#f2f3f5"/><path d="M30 70H66L48 120Z" fill="#f2f3f5"/></g><text x="48" y="141" font-family="DejaVu Sans Mono" font-size="9" font-weight="normal" fill="#9aa1aa" letter-spacing="2" text-anchor="middle">CPNC</text><text x="130" y="20" font-family="DejaVu Sans Mono" font-size="21" font-weight="normal" fill="#9aa1aa" letter-spacing="6">CRITICAL PROTOCOL</text><rect x="455" y="7" width="4" height="4" fill="#9aa1aa"/><rect x="455" y="17" width="4" height="4" fill="#9aa1aa"/><g transform="translate(130 141) scale(1 1.12) translate(-130 -141)"><text x="130" y="141" font-family="DejaVu Sans" font-size="120" font-weight="bold" fill="#f2f3f5" letter-spacing="2">NEKXSRCORE</text></g></g>
+<line x1="150" y1="505" x2="1050" y2="505" stroke="#20242a" stroke-width="1"/>
+<text x="600" y="548" text-anchor="middle" font-family="DejaVu Sans Mono" font-size="13" fill="#8b939d" letter-spacing="4">CPNC / CRITICAL PROTOCOL / NEKXSR CORE</text>
+<text x="600" y="580" text-anchor="middle" font-family="DejaVu Sans Mono" font-size="10" fill="#5b6470" letter-spacing="3">UNOFFICIAL OPEN-SOURCE PROTOCOL</text>
+</svg>

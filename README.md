@@ -1,6 +1,9 @@
 <div align="center">
 
-# Critical Protocol: NEKXSR Core
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/brand/cpnc-horizontal-lockup-dark.png">
+  <img src="docs/brand/cpnc-horizontal-lockup-light.png" alt="Critical Protocol: NEKXSR Core (CPNC)" width="900">
+</picture>
 
 ### 临界协议：中枢核 · CPNC
 
@@ -437,6 +440,13 @@ agents/*/docs/                         各 Agent 自己的接入文档
 - [`agents/cyberdyne/docs/LEGACY.md`](agents/cyberdyne/docs/LEGACY.md)
 
 这是 Cyberdyne MC Agent 的子链档案，不是 CPNC 的主链。
+
+## 品牌 / Brand
+
+<p align="center">
+  <img src="docs/brand/cpnc-inverted-triangle-logo.png" width="320" alt="CPNC 倒三角 Logo：NEKXSRCORE / CRITICALPROTOCOL">
+</p>
+<p align="center"><sub>CPNC / INVERTED TRIANGLE / CUT 04</sub></p>
 
 ## GitHub About（复制用）
 

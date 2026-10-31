@@ -431,3 +431,22 @@ html[dir="rtl"] .lang-select {
   padding: .3rem 1.5rem .3rem .55rem;
 }
 html[dir="rtl"] .lm-boot-inner { text-align: right; }
+
+@media (max-width: 980px) {
+  .site-header { flex-wrap: wrap; }
+  .site-nav { justify-content: flex-end; }
+  .site-footer { flex-wrap: wrap; }
+  .footer-meta { text-align: left; }
+}
+
+/* CPNC triangle mark in the dark header */
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  background: #0033a0;
+  box-shadow: none;
+}
+.brand-mark img { width: 28px; height: 28px; image-rendering: auto; }

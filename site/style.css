@@ -117,7 +117,6 @@ code {
 .brand-mark img {
   width: 30px;
   height: 30px;
-  image-rendering: pixelated;
   display: block;
 }
 
@@ -632,6 +631,9 @@ main, .site-footer {
 }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--accent); }
+.footer-brand-block { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; min-width: 0; }
+.footer-lockup { display: block; width: min(520px, 100%); height: auto; }
+.footer-domain { color: var(--dim); font-size: .62rem; letter-spacing: .08em; }
 .footer-brand { color: var(--text); letter-spacing: .1em; margin-right: 1rem; }
 .footer-meta { text-align: right; }
 .footer-meta a { margin-left: 1rem; }
