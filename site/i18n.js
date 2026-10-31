@@ -165,7 +165,7 @@
   function 应用全文() {
     const 表 = window.LM_I18N_FULL || {};
     if (!Object.keys(表).length) return;
-    const skip = 'script,style,select,option,code,pre,.lm-boot-overlay,.lm-lock-overlay';
+    const skip = 'script,style,select,option,code,pre,.lm-boot-overlay,.lm-lock-overlay,.wm-panel';
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode(n) {
         const p = n.parentElement;
