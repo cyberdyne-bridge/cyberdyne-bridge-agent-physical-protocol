@@ -53,5 +53,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Require audit banner while audit report is open
         run: |
-          grep -q '代码审计中' site/index.html
-          grep -q 'Code audit in progress' site/en.html
+          grep -q '代码审计中' site/zh.html
+          grep -q 'Code audit in progress' site/index.html
