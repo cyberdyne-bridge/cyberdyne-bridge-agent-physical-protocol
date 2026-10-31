@@ -451,7 +451,7 @@ html[dir="rtl"] .lm-boot-inner { text-align: right; }
 }
 .brand-mark img { width: 28px; height: 28px; image-rendering: auto; }
 
-/* Fixed monochrome watermark: full inverted-triangle logo, visible on light sections. */
+/* Fixed monochrome watermark: gray on light sections, white on dark sections. */
 .cpnc-watermark {
   position: fixed;
   inset: 0;
@@ -459,84 +459,27 @@ html[dir="rtl"] .lm-boot-inner { text-align: right; }
   display: grid;
   place-items: center;
   pointer-events: none;
-  mix-blend-mode: multiply;
 }
 .cpnc-watermark img {
+  grid-area: 1 / 1;
   width: clamp(280px, 38vw, 560px);
   height: auto;
-  opacity: var(--wm-opacity, .12);
   user-select: none;
+  pointer-events: none;
+}
+.cpnc-watermark .wm-light {
+  mix-blend-mode: multiply;
+  opacity: .25;
+}
+.cpnc-watermark .wm-dark {
+  mix-blend-mode: screen;
+  opacity: .25;
+  filter: brightness(0) invert(1);
 }
 .site-footer { position: relative; z-index: 30; }
 @media (max-width: 760px) {
-  .cpnc-watermark img { width: 78vw; opacity: var(--wm-opacity, .075); }
+  .cpnc-watermark img { width: 78vw; }
 }
 @media print {
   .cpnc-watermark { display: none; }
-}
-
-/* Watermark tuning panel; shown with ?wm=1 */
-.wm-panel[hidden] { display: none !important; }
-.wm-panel {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 100;
-  width: 224px;
-  padding: 12px 14px 10px;
-  border: 1px solid #2a2f38;
-  background: #0b0d10;
-  color: #e9ecf1;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, .45);
-  font-family: var(--mono);
-}
-.wm-panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #20242a;
-  font-size: .62rem;
-  letter-spacing: .18em;
-  color: #8b93a0;
-}
-.wm-panel-head button {
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #8b93a0;
-  font: inherit;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.wm-panel-head button:hover { color: #fff; }
-.wm-panel label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin: 12px 0 8px;
-  font-size: .62rem;
-  letter-spacing: .12em;
-  color: #9aa4b2;
-}
-.wm-panel output { color: #9fb6ff; font-size: .78rem; }
-.wm-panel input[type="range"] {
-  display: block;
-  width: 100%;
-  margin: 0;
-  accent-color: #4d7cff;
-  cursor: ew-resize;
-}
-.wm-scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 3px;
-  color: #5b6470;
-  font-size: .55rem;
-}
-@media (max-width: 760px) {
-  .wm-panel { right: 12px; bottom: 12px; width: min(224px, calc(100vw - 24px)); }
 }

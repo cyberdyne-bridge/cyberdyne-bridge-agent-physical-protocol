@@ -34,17 +34,9 @@
 </head>
 <body>
   <div class="cpnc-watermark" aria-hidden="true">
-    <img src="./assets/cpnc-inverted-triangle-watermark.png" alt="">
+    <img class="wm-light" src="./assets/cpnc-inverted-triangle-watermark.png" alt="">
+    <img class="wm-dark" src="./assets/cpnc-inverted-triangle-watermark.png" alt="">
   </div>
-  <aside class="wm-panel" id="wm-panel" hidden aria-label="Watermark opacity control">
-    <div class="wm-panel-head">
-      <span>WATERMARK</span>
-      <button type="button" id="wm-close" aria-label="Close watermark control">×</button>
-    </div>
-    <label for="wm-range">OPACITY <output id="wm-value" for="wm-range">12%</output></label>
-    <input id="wm-range" type="range" min="0" max="20" step="1" value="12">
-    <div class="wm-scale"><span>0</span><span>20</span></div>
-  </aside>
   <div class="lm-lock-overlay" aria-hidden="true">
     <div class="lm-lock-ring"></div>
     <div class="lm-lock-cross"></div>
@@ -481,6 +473,5 @@
   <script src="./motion-lm.js"></script>
   <script src="./enter-lm.js"></script>
   <script src="./i18n.js"></script>
-  <script src="./watermark-control.js"></script>
 </body>
 </html>
