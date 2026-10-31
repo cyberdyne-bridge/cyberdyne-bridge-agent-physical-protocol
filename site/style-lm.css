@@ -450,3 +450,27 @@ html[dir="rtl"] .lm-boot-inner { text-align: right; }
   box-shadow: none;
 }
 .brand-mark img { width: 28px; height: 28px; image-rendering: auto; }
+
+/* Fixed monochrome watermark: full inverted-triangle logo, visible on light sections. */
+.cpnc-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+.cpnc-watermark img {
+  width: clamp(280px, 38vw, 560px);
+  height: auto;
+  opacity: .07;
+  user-select: none;
+}
+.site-footer { position: relative; z-index: 30; }
+@media (max-width: 760px) {
+  .cpnc-watermark img { width: 78vw; opacity: .045; }
+}
+@media print {
+  .cpnc-watermark { display: none; }
+}
