@@ -464,12 +464,12 @@ html[dir="rtl"] .lm-boot-inner { text-align: right; }
 .cpnc-watermark img {
   width: clamp(280px, 38vw, 560px);
   height: auto;
-  opacity: .07;
+  opacity: .12;
   user-select: none;
 }
 .site-footer { position: relative; z-index: 30; }
 @media (max-width: 760px) {
-  .cpnc-watermark img { width: 78vw; opacity: .045; }
+  .cpnc-watermark img { width: 78vw; opacity: .075; }
 }
 @media print {
   .cpnc-watermark { display: none; }
