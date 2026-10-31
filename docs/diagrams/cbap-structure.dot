@@ -52,17 +52,17 @@ digraph CPNC {
   }
 
   subgraph cluster_u {
-    label=<<B>CPNC-U</B>   ·   agent-facing>;
+    label=<<B>CBAP-U</B>   ·   agent-facing>;
     style="rounded"; color="#23614f"; fontcolor="#7dd3b0";
     uds_u [shape=box, style="rounded,filled", fillcolor="#0d1c19", color="#47a980",
            label=<<B>Unix socket</B><BR/>newline-delimited JSON<BR/><FONT POINT-SIZE="9">open · read · write · poll</FONT><BR/><FONT POINT-SIZE="9">lease · release · estop · stat</FONT>>];
   }
 
-  kernel [label=<<B>CPNC KERNEL</B><BR/><FONT POINT-SIZE="9">single Python process · stdlib only · no broker / DB</FONT><BR/><BR/><FONT POINT-SIZE="10">sessions / fds</FONT><BR/><FONT POINT-SIZE="10">per-device lease + FIFO waiters</FONT><BR/><FONT POINT-SIZE="10">pending · idempotency · cancel</FONT><BR/><FONT POINT-SIZE="10">per-device safe mode · estop</FONT><BR/><FONT POINT-SIZE="10">state cache · poll · facts</FONT><BR/><FONT POINT-SIZE="10">audit.jsonl</FONT>>,
+  kernel [label=<<B>CBAP KERNEL</B><BR/><FONT POINT-SIZE="9">single Python process · stdlib only · no broker / DB</FONT><BR/><BR/><FONT POINT-SIZE="10">sessions / fds</FONT><BR/><FONT POINT-SIZE="10">per-device lease + FIFO waiters</FONT><BR/><FONT POINT-SIZE="10">pending · idempotency · cancel</FONT><BR/><FONT POINT-SIZE="10">per-device safe mode · estop</FONT><BR/><FONT POINT-SIZE="10">state cache · poll · facts</FONT><BR/><FONT POINT-SIZE="10">audit.jsonl</FONT>>,
           fillcolor="#103129", color="#48a77f", penwidth=2.2, fontsize=13];
 
   subgraph cluster_d {
-    label=<<B>CPNC-D</B>   ·   device-facing adapters>;
+    label=<<B>CBAP-D</B>   ·   device-facing adapters>;
     style="rounded"; color="#24515b"; fontcolor="#83c7d3";
     mc_drv   [label=<<B>McDriver</B><BR/>line-JSON<BR/><FONT POINT-SIZE="9">legacy hand · max_inflight=1</FONT>>, fillcolor="#0f2026", color="#3f7f8a"];
     mcp_drv  [label=<<B>MCPDriver</B><BR/>stdio JSON-RPC 2.0<BR/><FONT POINT-SIZE="9">real MCP tool calls</FONT>>, fillcolor="#0f2026", color="#3f7f8a"];
@@ -110,7 +110,7 @@ digraph CPNC {
   alice -> uds_u [style=dashed, color="#b58b3e", label=" future", fontcolor="#c9a85e"];
 
   // UDS → kernel
-  uds_u -> kernel [label=" CPNC-U requests\n  (one JSON line)", color="#5fa88f", penwidth=1.4];
+  uds_u -> kernel [label=" CBAP-U requests\n  (one JSON line)", color="#5fa88f", penwidth=1.4];
 
   // kernel → adapters
   kernel -> mc_drv   [label=" route", color="#5fa88f"];

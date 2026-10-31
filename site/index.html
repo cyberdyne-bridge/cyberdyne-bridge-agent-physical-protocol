@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Critical Protocol: NEKXSR Core · CPNC</title>
-  <meta name="description" content="CPNC v1: an open-source reference protocol for agents that acquire devices, execute actions, and verify outcomes through server-authoritative facts.">
+  <meta name="description" content="CPNC / CBAP v1: an open-source reference protocol for agents that acquire devices, execute actions, and verify outcomes through server-authoritative facts.">
   <meta name="theme-color" content="#070a0f">
   <meta property="og:title" content="Critical Protocol: NEKXSR Core · CPNC">
   <meta property="og:description" content="Agent ↔ physical world: leases, server facts, audit, estop, MCP least privilege, and explicit recovery.">
@@ -37,14 +37,14 @@
     <div class="lm-boot-inner">
       <p class="lm-boot-word">NEKXSR <em>/</em> CORE</p>
       <div class="lm-boot-line"></div>
-      <div class="lm-boot-meta"><span>CPNC v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
+      <div class="lm-boot-meta"><span>CPNC / CBAP v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
       <div class="lm-boot-steps">
         <span>INITIALIZING CONTROL PLANE</span>
         <span>SYNCING FACTS</span>
         <span>READY</span>
       </div>
     </div>
-    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC v1</span><span>v1.7.5</span></div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.5</span></div>
   </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
@@ -84,7 +84,7 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="signal" aria-hidden="true"></span>AGENT ↔ PHYSICAL WORLD / CPNC v1</p>
+        <p class="eyebrow"><span class="signal" aria-hidden="true"></span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</p>
         <p class="unofficial-tag">UNOFFICIAL OPEN-SOURCE PROTOCOL</p>
         <h1>Critical<br><span>Protocol</span></h1>
         <p class="hero-cn">NEKXSR Core · 临界协议：中枢核</p>
@@ -98,7 +98,7 @@
         <dl class="stats">
           <div><dt>4</dt><dd>active agent subrepos</dd></div>
           <div><dt>v1.7.5</dt><dd>source release</dd></div>
-          <div><dt>129/129</dt><dd>CPNC conformance</dd></div>
+          <div><dt>129/129</dt><dd>CBAP conformance</dd></div>
           <div><dt>0.2ms</dt><dd>control-plane p50 (local UDS)</dd></div>
           <div><dt>facts</dt><dd>completion criterion</dd></div>
         </dl>
@@ -111,9 +111,9 @@
         </div>
         <div class="layer-stack">
           <div class="layer"><span class="layer-id">05</span><div class="layer-copy"><strong>Agents</strong><small>Cyberdyne · MCP · Mindcraft · Voyager</small></div><span class="layer-tag">external</span></div>
-          <div class="layer"><span class="layer-id">04</span><div class="layer-copy"><strong>CPNC-U</strong><small>Unix socket · one JSON per line</small></div><span class="layer-tag">agent side</span></div>
-          <div class="layer layer-hot"><span class="layer-id">03</span><div class="layer-copy"><strong>CPNC Kernel</strong><small>lease · safety · estop · audit</small></div><span class="layer-tag">control</span></div>
-          <div class="layer"><span class="layer-id">02</span><div class="layer-copy"><strong>CPNC-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div><span class="layer-tag">device side</span></div>
+          <div class="layer"><span class="layer-id">04</span><div class="layer-copy"><strong>CBAP-U</strong><small>Unix socket · one JSON per line</small></div><span class="layer-tag">agent side</span></div>
+          <div class="layer layer-hot"><span class="layer-id">03</span><div class="layer-copy"><strong>CBAP Kernel</strong><small>lease · safety · estop · audit</small></div><span class="layer-tag">control</span></div>
+          <div class="layer"><span class="layer-id">02</span><div class="layer-copy"><strong>CBAP-D</strong><small>MCP / Mindcraft / Voyager adapter</small></div><span class="layer-tag">device side</span></div>
           <div class="layer"><span class="layer-id">01</span><div class="layer-copy"><strong>Bodies / Minecraft</strong><small>real bodies · server facts</small></div><span class="layer-tag">physical</span></div>
         </div>
         <div class="panel-foot"><span>UDS · JSON</span><span>facts + verify</span></div>
@@ -140,10 +140,10 @@
         <p class="kicker">02 / ARCHITECTURE</p>
         <div>
           <h2>Agents above.<br>Facts below.</h2>
-          <p class="section-lede">CPNC-U faces agents; CPNC-D faces devices; the Kernel owns leases, safety, cancellation, and audit. The canonical diagram is in the repository.</p>
+          <p class="section-lede">CBAP-U faces agents; CBAP-D faces devices; the Kernel owns leases, safety, cancellation, and audit. The canonical diagram is in the repository.</p>
         </div>
       </div>
-      <img class="arch-image" src="./assets/cbap-structure-en.svg" alt="CPNC architecture: agents, CPNC-U, Kernel, CPNC-D, drivers, bodies, and server facts">
+      <img class="arch-image" src="./assets/cbap-structure-en.svg" alt="CPNC / CBAP architecture: agents, CBAP-U, Kernel, CBAP-D, drivers, bodies, and server facts">
       <p class="arch-image-note">Solid cyan = control / facts flow; gold dashed = legacy or partial path. The Kernel controls access and evidence; it does not plan or execute the agent's strategy.</p>
     </section>
 
@@ -187,13 +187,13 @@
       <div class="section-head">
         <p class="kicker">MCP / UPSTREAM STATUS</p>
         <div>
-          <h2>Upstream is not fixed.<br>CPNC only mitigates locally.</h2>
+          <h2>Upstream is not fixed.<br>CBAP only mitigates locally.</h2>
           <p class="section-lede">SEP #3452 is still discussing tool-definition integrity. CPNC v1.7.5 adds a full JCS pin and same-connection drift checks, but this is not an official MCP fix and does not solve 3D execution authority.</p>
         </div>
       </div>
-      <figure class="status-figure"><img src="./assets/mcp-upstream-status.svg" alt="MCP upstream status: SEP 3452 open, CPNC v1.7.5 local mitigation, 3D execution authority not solved" loading="lazy"></figure>
+      <figure class="status-figure"><img src="./assets/mcp-upstream-status.svg" alt="MCP upstream status: SEP 3452 open, CBAP local mitigation in CPNC v1.7.5, 3D execution authority not solved" loading="lazy"></figure>
       <div class="cards cards-six">
-        <article class="card card-small card-accent"><span class="card-num">01 / UPSTREAM</span><h3>SEP #3452 is OPEN</h3><p>Definition, instructions, and scope integrity are still under discussion. CPNC does not present thread discussion as an official conclusion.</p></article>
+        <article class="card card-small card-accent"><span class="card-num">01 / UPSTREAM</span><h3>SEP #3452 is OPEN</h3><p>Definition, instructions, and scope integrity are still under discussion. CBAP does not present thread discussion as an official conclusion.</p></article>
         <article class="card card-small"><span class="card-num">02 / LOCAL</span><h3>v1.7.5 local pin</h3><p>Complete tool objects, serverInfo, instructions, RFC 8785 JCS; legacy pins fail closed; tools/list is rechecked before actions.</p></article>
         <article class="card card-small"><span class="card-num">03 / 3D</span><h3>Execution authority remains</h3><p>A digest detects a changed menu, not whether a remote server follows it. Facts, approval UI, attestation, and sandboxing remain boundaries.</p></article>
       </div>
@@ -204,17 +204,17 @@
       <div class="section-head">
         <p class="kicker">PROTOCOL / LONG-TERM</p>
         <div>
-          <h2>CPNC is not the<br>whole agent stack.</h2>
-          <p class="section-lede">Model calls, tool discovery, agent-to-agent tasks, and UI rendering each have their own standards. CPNC holds the device-control, authorization, facts, and evidence layer; other layers get adapters, not copies.</p>
+          <h2>CBAP is not the<br>whole agent stack.</h2>
+          <p class="section-lede">Model calls, tool discovery, agent-to-agent tasks, and UI rendering each have their own standards. CBAP holds the device-control, authorization, facts, and evidence layer; other layers get adapters, not copies.</p>
         </div>
       </div>
-      <figure class="status-figure"><img src="./assets/protocol-map.svg" alt="Agent protocol layers: model/runtime, tools/context, agent-to-agent, CPNC device control, evidence/identity" loading="lazy"></figure>
+      <figure class="status-figure"><img src="./assets/protocol-map.svg" alt="Agent protocol layers: model/runtime, tools/context, agent-to-agent, CBAP device control, evidence/identity" loading="lazy"></figure>
       <div class="cards cards-six">
-        <article class="card card-small card-accent"><span class="card-num">L4 / CORE</span><h3>Device control plane</h3><p>CPNC core: device contract, lease, cancel, estop, policy, facts, audit. Other layers do not get stuffed into the Kernel.</p></article>
-        <article class="card card-small"><span class="card-num">ADAPTER</span><h3>MCP / A2A / OpenAI</h3><p>MCP for tools, A2A for agent tasks, OpenAI Responses / Agents SDK for model calls. CPNC connects through adapters and does not rewrite them.</p></article>
+        <article class="card card-small card-accent"><span class="card-num">L4 / CORE</span><h3>Device control plane</h3><p>CBAP core: device contract, lease, cancel, estop, policy, facts, audit. Other layers do not get stuffed into the Kernel.</p></article>
+        <article class="card card-small"><span class="card-num">ADAPTER</span><h3>MCP / A2A / OpenAI</h3><p>MCP for tools, A2A for agent tasks, OpenAI Responses / Agents SDK for model calls. CBAP connects through adapters and does not rewrite them.</p></article>
         <article class="card card-small"><span class="card-num">LONG TERM</span><h3>H1 → H3</h3><p>H1 fixes boundaries and interop; H2 adds async, signed envelopes, and OTel; H3 adds attestation hooks, multi-tenancy, and certification.</p></article>
       </div>
-      <div class="arch-note"><strong>Rule: adapter before core.</strong> Do not copy MCP, A2A, or AG-UI. CPNC's value is device control and evidence, not protocol count. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">Read the roadmap ↗</a></div>
+      <div class="arch-note"><strong>Rule: adapter before core.</strong> Do not copy MCP, A2A, or AG-UI. CBAP's value is device control and evidence, not protocol count. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/AGENT-PROTOCOL-ROADMAP.md" target="_blank" rel="noopener">Read the roadmap ↗</a></div>
     </section>
 
     <section class="section section-arch" id="os">
@@ -249,14 +249,14 @@
       <div class="carriage-stats">
         <div><strong>4</strong><span>active subrepos</span></div>
         <div><strong>1</strong><span>archived: Alice</span></div>
-        <div><strong>129/129</strong><span>CPNC tests</span></div>
+        <div><strong>129/129</strong><span>CBAP tests</span></div>
         <div><strong>0.2ms</strong><span>control p50 (local UDS)</span></div>
       </div>
       <div class="cards cards-six">
         <article class="card card-small card-accent"><span class="card-num">OURS</span><h3>Cyberdyne</h3><p>Legacy brain retained; the default path goes through <code>bridge_cbap.py</code>. The root direct shim is removed and old source is frozen in the archive.</p></article>
-        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>A real MCP body. Public MCP tools map to CPNC read/write/poll/estop; MCPDriver speaks stdio JSON-RPC.</p></article>
-        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy brings its own planner. CPNC observes state, delivers prompts, and stops; it does not pretend to be a low-level action driver.</p></article>
-        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>Mineflayer bridge only: state / exec / forward / say / stop. Real 1.21.1 bridge passes 8/8; local-Qwen loop 3/3; upstream Voyager agents over CPNC complete a 3-task sequence 3/3.</p></article>
+        <article class="card card-small"><span class="card-num">MCP</span><h3>MCP Mineflayer</h3><p>A real MCP body. Public MCP tools map to CBAP read/write/poll/estop; MCPDriver speaks stdio JSON-RPC.</p></article>
+        <article class="card card-small"><span class="card-num">AUTONOMOUS</span><h3>Mindcraft</h3><p>Mindy brings its own planner. CBAP observes state, delivers prompts, and stops; it does not pretend to be a low-level action driver.</p></article>
+        <article class="card card-small"><span class="card-num">BRIDGE</span><h3>Voyager</h3><p>Mineflayer bridge only: state / exec / forward / say / stop. Real 1.21.1 bridge passes 8/8; local-Qwen loop 3/3; upstream Voyager agents over CBAP complete a 3-task sequence 3/3.</p></article>
         <article class="card card-small"><span class="card-num">ARCHIVE</span><h3>Alice</h3><p>Forge 1.20.1 minimal bridge source. Not compiled and not run against a real server; not presented as active.</p></article>
         <article class="card card-small"><span class="card-num">NEXT</span><h3>Don't optimize the collar</h3><p>Bridge overhead is sub-millisecond. The real latency is Minecraft actions, agent planning, and the LLM.</p></article>
       </div>

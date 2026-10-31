@@ -18,19 +18,19 @@
 <g id="clust2" class="cluster">
 <title>cluster_own</title>
 <path fill="#0b1012" stroke="#8f7338" stroke-dasharray="5,2" d="M885,-118.77C885,-118.77 1245,-118.77 1245,-118.77 1251,-118.77 1257,-124.77 1257,-130.77 1257,-130.77 1257,-310.79 1257,-310.79 1257,-316.79 1251,-322.79 1245,-322.79 1245,-322.79 885,-322.79 885,-322.79 879,-322.79 873,-316.79 873,-310.79 873,-310.79 873,-130.77 873,-130.77 873,-124.77 879,-118.77 885,-118.77"/>
-<text xml:space="preserve" text-anchor="start" x="881.25" y="-307.44" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#d8c28c">OUR OWN LEGACY STACK</text>
-<text xml:space="preserve" text-anchor="start" x="1065.75" y="-307.44" font-family="DejaVu Sans" font-size="13.00" fill="#d8c28c"> &#160;&#160;· &#160;&#160;direct UDS · NOT CPNC</text>
+<text xml:space="preserve" text-anchor="start" x="880.88" y="-307.44" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#d8c28c">OUR OWN LEGACY STACK</text>
+<text xml:space="preserve" text-anchor="start" x="1065.38" y="-307.44" font-family="DejaVu Sans" font-size="13.00" fill="#d8c28c"> &#160;&#160;· &#160;&#160;direct UDS · NOT CPNC</text>
 </g>
 <g id="clust3" class="cluster">
 <title>cluster_u</title>
 <path fill="#0b1012" stroke="#23614f" d="M325,-511.06C325,-511.06 486,-511.06 486,-511.06 492,-511.06 498,-517.06 498,-523.06 498,-523.06 498,-591.08 498,-591.08 498,-597.08 492,-603.08 486,-603.08 486,-603.08 325,-603.08 325,-603.08 319,-603.08 313,-597.08 313,-591.08 313,-591.08 313,-523.06 313,-523.06 313,-517.06 319,-511.06 325,-511.06"/>
-<text xml:space="preserve" text-anchor="start" x="321.12" y="-587.73" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#7dd3b0">CPNC&#45;U</text>
+<text xml:space="preserve" text-anchor="start" x="321.12" y="-587.73" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#7dd3b0">CBAP&#45;U</text>
 <text xml:space="preserve" text-anchor="start" x="375.12" y="-587.73" font-family="DejaVu Sans" font-size="13.00" fill="#7dd3b0"> &#160;&#160;· &#160;&#160;agent&#45;facing</text>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_d</title>
 <path fill="#0b1012" stroke="#24515b" d="M20,-239.03C20,-239.03 806,-239.03 806,-239.03 812,-239.03 818,-245.03 818,-251.03 818,-251.03 818,-310.05 818,-310.05 818,-316.05 812,-322.05 806,-322.05 806,-322.05 20,-322.05 20,-322.05 14,-322.05 8,-316.05 8,-310.05 8,-310.05 8,-251.03 8,-251.03 8,-245.03 14,-239.03 20,-239.03"/>
-<text xml:space="preserve" text-anchor="start" x="294.5" y="-306.7" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#83c7d3">CPNC&#45;D</text>
+<text xml:space="preserve" text-anchor="start" x="294.5" y="-306.7" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#83c7d3">CBAP&#45;D</text>
 <text xml:space="preserve" text-anchor="start" x="348.5" y="-306.7" font-family="DejaVu Sans" font-size="13.00" fill="#83c7d3"> &#160;&#160;· &#160;&#160;device&#45;facing adapters</text>
 </g>
 <g id="clust5" class="cluster">
@@ -172,7 +172,7 @@
 <g id="node9" class="node">
 <title>kernel</title>
 <path fill="#103129" stroke="#48a77f" stroke-width="2.2" d="M517.08,-464.56C517.08,-464.56 292.92,-464.56 292.92,-464.56 286.92,-464.56 280.92,-458.56 280.92,-452.56 280.92,-452.56 280.92,-370.04 280.92,-370.04 280.92,-364.04 286.92,-358.04 292.92,-358.04 292.92,-358.04 517.08,-358.04 517.08,-358.04 523.08,-358.04 529.08,-364.04 529.08,-370.04 529.08,-370.04 529.08,-452.56 529.08,-452.56 529.08,-458.56 523.08,-464.56 517.08,-464.56"/>
-<text xml:space="preserve" text-anchor="start" x="354.75" y="-447.45" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#dcebe5">CPNC KERNEL</text>
+<text xml:space="preserve" text-anchor="start" x="354.75" y="-447.45" font-family="DejaVu Sans" font-weight="bold" font-size="13.00" fill="#dcebe5">CBAP KERNEL</text>
 <text xml:space="preserve" text-anchor="start" x="291" y="-438.25" font-family="DejaVu Sans" font-size="9.00" fill="#dcebe5">single Python process · stdlib only · no broker / DB</text>
 <text xml:space="preserve" text-anchor="start" x="372" y="-415.3" font-family="DejaVu Sans" font-size="10.00" fill="#dcebe5">sessions / fds</text>
 <text xml:space="preserve" text-anchor="start" x="326.62" y="-405.3" font-family="DejaVu Sans" font-size="10.00" fill="#dcebe5">per&#45;device lease + FIFO waiters</text>
@@ -186,7 +186,7 @@
 <title>uds_u&#45;&gt;kernel</title>
 <path fill="none" stroke="#5fa88f" stroke-width="1.4" d="M405,-518.46C405,-505.57 405,-489.29 405,-473.38"/>
 <polygon fill="#5fa88f" stroke="#5fa88f" stroke-width="1.4" points="407.1,-473.74 405,-467.74 402.9,-473.74 407.1,-473.74"/>
-<text xml:space="preserve" text-anchor="middle" x="444" y="-494.51" font-family="DejaVu Sans" font-size="9.00" fill="#8fb7af"> CPNC&#45;U requests</text>
+<text xml:space="preserve" text-anchor="middle" x="444" y="-494.51" font-family="DejaVu Sans" font-size="9.00" fill="#8fb7af"> CBAP&#45;U requests</text>
 <text xml:space="preserve" text-anchor="middle" x="444" y="-483.26" font-family="DejaVu Sans" font-size="9.00" fill="#8fb7af"> &#160;(one JSON line)</text>
 </g>
 <!-- kernel&#45;&gt;uds_u -->
@@ -291,7 +291,7 @@
 <g id="node22" class="node">
 <title>dashboard</title>
 <path fill="#10232a" stroke="#4f8f9d" stroke-width="1.2" d="M1144.58,-681.85C1144.58,-681.85 1037.42,-681.85 1037.42,-681.85 1031.42,-681.85 1025.42,-675.85 1025.42,-669.85 1025.42,-669.85 1025.42,-653.33 1025.42,-653.33 1025.42,-647.33 1031.42,-641.33 1037.42,-641.33 1037.42,-641.33 1144.58,-641.33 1144.58,-641.33 1150.58,-641.33 1156.58,-647.33 1156.58,-653.33 1156.58,-653.33 1156.58,-669.85 1156.58,-669.85 1156.58,-675.85 1150.58,-681.85 1144.58,-681.85"/>
-<text xml:space="preserve" text-anchor="start" x="1039.62" y="-666.64" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#dcebe5">CPNC Dashboard</text>
+<text xml:space="preserve" text-anchor="start" x="1039.25" y="-666.64" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#dcebe5">CPNC Dashboard</text>
 <text xml:space="preserve" text-anchor="start" x="1035.5" y="-657.54" font-family="DejaVu Sans" font-size="9.00" fill="#dcebe5">tools/mcp_dashboard.py</text>
 <text xml:space="preserve" text-anchor="start" x="1053.5" y="-648.54" font-family="DejaVu Sans" font-size="9.00" fill="#dcebe5">our observability</text>
 </g>

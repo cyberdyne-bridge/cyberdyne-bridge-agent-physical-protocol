@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="MCP upstream status: SEP 3452 open, CPNC local mitigation, execution authority not solved">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="MCP upstream status: SEP 3452 open, CBAP local mitigation (CPNC), execution authority not solved">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#070a0f"/>
@@ -14,7 +14,7 @@
   <text x="58" y="82" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="16" letter-spacing="4">MCP / UPSTREAM STATUS</text>
   <text x="58" y="136" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="34" font-weight="700">SEP #3452 · OPEN</text>
   <text x="58" y="174" fill="#d7e2e6" font-family="DejaVu Sans, sans-serif" font-size="18">Tool definition integrity is still being discussed upstream.</text>
-  <text x="58" y="202" fill="#d7e2e6" font-family="DejaVu Sans, sans-serif" font-size="18">CPNC ships a local mitigation, not an official fix.</text>
+  <text x="58" y="202" fill="#d7e2e6" font-family="DejaVu Sans, sans-serif" font-size="18">CBAP ships a local mitigation, not an official fix.</text>
   <line x1="58" y1="230" x2="1140" y2="230" stroke="#25414a"/>
   <text x="58" y="268" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="17">1D/2D  DEFINITION PIN   GUARDED  v1.7.5</text>
   <text x="58" y="298" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="17">3D     EXECUTION AUTH   NOT SOLVED</text>

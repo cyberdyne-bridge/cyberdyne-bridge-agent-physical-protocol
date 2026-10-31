@@ -22,9 +22,9 @@
 ## 当前状态
 
 ```text
-CPNC conformance: 129/129
+CBAP conformance: 129/129
 最新源码发行版: v1.7.5
-协议版本: CPNC v1
+协议版本: CBAP v1
 主传输: Unix socket NDJSON
 可选: TCP / TLS / mTLS
 ```
@@ -33,11 +33,11 @@ CPNC conformance: 129/129
 
 ```text
 Agent
-  │ CPNC-U
+  │ CBAP-U
   ▼
-CPNC Kernel
+CBAP Kernel
   │ 租约 / fencing / 审计 / estop / approval
-  │ CPNC-D
+  │ CBAP-D
   ▼
 Driver
   ▼

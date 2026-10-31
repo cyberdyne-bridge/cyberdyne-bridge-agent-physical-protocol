@@ -28,7 +28,7 @@ do not remove upstream copyright or license notices
 ```
 
 The names **Critical Protocol: NEKXSR Core / CPNC** are used by this project's maintainers.
-The historical names **Cyberdyne Bridge / CBAP** are retained as compatibility identifiers.
+**CBAP** is the Agent–device control subprotocol under CPNC. The historical project name **Cyberdyne Bridge** is retired.
 Third parties must not use these names to impersonate an official release.
 
 If you believe a name is used improperly, contact the maintainers through a repository issue.

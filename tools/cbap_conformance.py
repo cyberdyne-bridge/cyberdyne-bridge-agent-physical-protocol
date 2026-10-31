@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Run the executable CPNC v1 conformance suite against the fake hand.
+"""Run the executable CBAP v1 conformance suite against the fake hand.
 
 Usage:
   python3 tools/cbap_conformance.py
@@ -74,9 +74,9 @@ def main() -> int:
         for test in walk(suite):
             print(test.id())
         return 0
-    print(f"CPNC v1 conformance · target={args.target} · cases={suite.countTestCases()}")
+    print(f"CBAP v1 conformance · target={args.target} · cases={suite.countTestCases()}")
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    print(f"\nCPNC conformance: run={result.testsRun} "
+    print(f"\nCBAP conformance: run={result.testsRun} "
           f"failures={len(result.failures)} errors={len(result.errors)} "
           f"skipped={len(result.skipped)}")
     return 0 if result.wasSuccessful() else 1

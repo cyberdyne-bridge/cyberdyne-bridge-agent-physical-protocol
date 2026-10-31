@@ -12,7 +12,8 @@
 | 参数 | 值 |
 |---|---|
 | 协议版本 `v` | `"1.0"` |
-| 协议名 | CPNC / Critical Protocol: NEKXSR Core |
+| 项目 | CPNC / Critical Protocol: NEKXSR Core |
+| 子协议 | CBAP（Agent ↔ 设备控制面） |
 | 传输 | Unix domain socket（实现只支持 UDS） |
 | 分帧 | UTF-8 NDJSON，一行一个 JSON object |
 | 单帧上限 | `64 * 1024 = 65536` bytes |

@@ -1,14 +1,15 @@
-# CPNC v1 规范包
+# CPNC · CBAP v1 规范包
 
 - **状态**：Implemented profile 1.0（129/129 tests）
-- **公开名**：Critical Protocol: NEKXSR Core / 临界协议：中枢核（CPNC）
-- **兼容命名**：`CBAP` / `cbap` 保留为 v1 技术命名空间，详见 [`../NAMING.md`](../NAMING.md)
+- **项目**：Critical Protocol: NEKXSR Core / 临界协议：中枢核（CPNC）
+- **子协议**：CBAP v1（Agent ↔ 设备控制面）；`CBAP` / `cbap` 是该子协议的技术命名空间
+- **命名层级**：详见 [`../NAMING.md`](../NAMING.md)
 - **日期**：2026-10-24
 
 ## 读的顺序
 
 1. [`cbap-v1.md`](cbap-v1.md) —— 规范正文：角色、传输、消息、系统调用、驱动 ABI、错误、安全、版本。
-2. [`schema/message.schema.json`](schema/message.schema.json) —— CPNC-U（历史命名空间 `CBAP-U`）消息的 JSON Schema。
+2. [`schema/message.schema.json`](schema/message.schema.json) —— CBAP-U 消息的 JSON Schema。
 3. [`schema/device.schema.json`](schema/device.schema.json) —— 驱动描述符 `device.json` 的 Schema。
 4. [`schema/mapping.schema.json`](schema/mapping.schema.json) —— 动作映射 `mapping.json` 的 Schema。
 5. [`examples/`](examples/) —— MC / 机械臂描述符、MC 映射、一次完整会话。

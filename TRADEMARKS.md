@@ -29,7 +29,7 @@
 ```
 
 本项目名称 **Critical Protocol: NEKXSR Core / CPNC / 临界协议：中枢核** 由本项目维护者使用；
-历史名称 **Cyberdyne Bridge / CBAP / 赛博戴恩之桥** 保留为兼容标识。
+**CBAP** 是 CPNC 下的 Agent ↔ 设备控制子协议。历史项目名 **Cyberdyne Bridge / 赛博戴恩之桥** 已停用。
 第三方不得用上述名称冒充官方发行版。
 
 如你认为某处名称使用不当，请通过仓库 Issue 联系维护者。

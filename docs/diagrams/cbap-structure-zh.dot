@@ -52,17 +52,17 @@ digraph CPNC {
   }
 
   subgraph cluster_u {
-    label=<<B>CPNC-U</B>   ·   面向智能体>;
+    label=<<B>CBAP-U</B>   ·   面向智能体>;
     style="rounded"; color="#23614f"; fontcolor="#7dd3b0";
     uds_u [shape=box, style="rounded,filled", fillcolor="#0d1c19", color="#47a980",
            label=<<B>Unix 套接字</B><BR/>逐行 JSON<BR/><FONT POINT-SIZE="9">打开 · 读 · 写 · 轮询</FONT><BR/><FONT POINT-SIZE="9">租约 · 释放 · 急停 · 状态</FONT>>];
   }
 
-  kernel [label=<<B>CPNC 内核</B><BR/><FONT POINT-SIZE="9">单 Python 进程 · 仅标准库 · 无消息队列 / 数据库</FONT><BR/><BR/><FONT POINT-SIZE="10">会话 / 文件描述符</FONT><BR/><FONT POINT-SIZE="10">每设备租约 + FIFO 等待</FONT><BR/><FONT POINT-SIZE="10">在途请求 · 幂等 · 取消</FONT><BR/><FONT POINT-SIZE="10">每设备安全模式 · 急停</FONT><BR/><FONT POINT-SIZE="10">状态缓存 · 轮询 · 事实</FONT><BR/><FONT POINT-SIZE="10">审计.jsonl</FONT>>,
+  kernel [label=<<B>CBAP 内核</B><BR/><FONT POINT-SIZE="9">单 Python 进程 · 仅标准库 · 无消息队列 / 数据库</FONT><BR/><BR/><FONT POINT-SIZE="10">会话 / 文件描述符</FONT><BR/><FONT POINT-SIZE="10">每设备租约 + FIFO 等待</FONT><BR/><FONT POINT-SIZE="10">在途请求 · 幂等 · 取消</FONT><BR/><FONT POINT-SIZE="10">每设备安全模式 · 急停</FONT><BR/><FONT POINT-SIZE="10">状态缓存 · 轮询 · 事实</FONT><BR/><FONT POINT-SIZE="10">审计.jsonl</FONT>>,
           fillcolor="#103129", color="#48a77f", penwidth=2.2, fontsize=13];
 
   subgraph cluster_d {
-    label=<<B>CPNC-D</B>   ·   面向设备的适配器>;
+    label=<<B>CBAP-D</B>   ·   面向设备的适配器>;
     style="rounded"; color="#24515b"; fontcolor="#83c7d3";
     mc_drv   [label=<<B>McDriver</B><BR/>行 JSON<BR/><FONT POINT-SIZE="9">旧手 · 最大在途=1</FONT>>, fillcolor="#0f2026", color="#3f7f8a"];
     mcp_drv  [label=<<B>MCP 驱动</B><BR/>stdio JSON-RPC 2.0<BR/><FONT POINT-SIZE="9">真实 MCP 工具调用</FONT>>, fillcolor="#0f2026", color="#3f7f8a"];
@@ -110,7 +110,7 @@ digraph CPNC {
   alice -> uds_u [style=dashed, color="#b58b3e", label=" 未来", fontcolor="#c9a85e"];
 
   // UDS → kernel
-  uds_u -> kernel [label=" CPNC-U 请求\n  （一行 JSON）", color="#5fa88f", penwidth=1.4];
+  uds_u -> kernel [label=" CBAP-U 请求\n  （一行 JSON）", color="#5fa88f", penwidth=1.4];
 
   // kernel → adapters
   kernel -> mc_drv   [label=" 路由", color="#5fa88f"];
