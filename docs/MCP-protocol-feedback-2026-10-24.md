@@ -43,3 +43,7 @@ or keep it tool-only and open a separate scope. No vulnerability claim and no
 duplicate issue were made.
 
 Next: wait for maintainer direction before opening anything else.
+
+Follow-up (2026-10-26): #3452 was closed for SEP process reasons (WG/IG
+engagement first); no PR and no spec change landed. The topic moved to the
+Security IG. See `MCP-UPSTREAM-STATUS.md`.

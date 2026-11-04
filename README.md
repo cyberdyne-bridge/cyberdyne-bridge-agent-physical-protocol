@@ -103,7 +103,7 @@ tests/body/                SDK 测试
 docs/MCP-SEP-3452-TESTS.md MCP 授权范围 / instructions digest 测试
 docs/MCP-OFFICIAL-MATRIX.md    7 台官方 reference × 5 次矩阵
 docs/MCP-3D-TESTS.md           MCP 执行授权 / 定义 pin 修复测试
-docs/MCP-UPSTREAM-STATUS.md    MCP 上游状态 / 等待官方修复
+docs/MCP-UPSTREAM-STATUS.md    MCP 上游状态 / #3452 已关闭，规范未改
 docs/VOYAGER-STATUS.md         Voyager bridge 评估
 docs/VOYAGER-1.21.1.md         Voyager 1.21.1 bridge 实测
 docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
@@ -121,7 +121,7 @@ python3 -m unittest -q tests.body.test_mc_body_sdk
 
 真实 Mineflayer hand 还需要 Node 20+ 和本地 1.21.1 服务器。
 
-MCP #3452 的认证 HTTP / scope 测试：
+原 #3452 线程的认证 HTTP / scope 测试：
 
 ```bash
 python3 -m unittest -v tests.mcp.test_jcs tests.mcp.test_http_scope_integrity
@@ -345,14 +345,14 @@ Host device surface    5 个 device_id / 输入默认关闭
 ## MCP 上游状态
 
 ```text
-SEP #3452        OPEN
+SEP #3452        CLOSED (2026-10-26, process; no spec change)
 CPNC v1.7.5      CBAP local definition pin mitigation
 3D authority     not solved
 ```
 
 ![MCP upstream status](docs/diagrams/mcp-upstream-status.svg)
 
-我们不等同于官方修复，也不在 #3452 重复开 issue。
+我们不等同于官方修复，也不在上游重复开 issue。
 完整边界和链接见 [`docs/MCP-UPSTREAM-STATUS.md`](docs/MCP-UPSTREAM-STATUS.md)。
 
 ## 协议地图与长期安排
