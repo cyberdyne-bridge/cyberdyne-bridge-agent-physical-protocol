@@ -412,6 +412,7 @@ docs/CBAP-同设备竞争与故障注入.md      竞争与故障
 docs/CBAP-cancel与MCP恢复.md           cancel / MCP 恢复
 drivers/mcp_device/README.md            通用 MCP 设备驱动 / facts 校验
 tools/mcp_device_probe.py               单个 MCP 设备的事实探针
+tools/mcp_order_probe.py                tools/list 顺序 / 定义稳定性探针
 docs/MCP-device-audit-2026-10-24.md     MCP 回执 vs 事实审计
 docs/MCP-audit-report-2026-10-24.md     独立 MCP 审计报告（PDF 版同目录）
 docs/MCP-protocol-security-2026-10-24.md  MCP 协议级安全审计（PDF 版同目录）

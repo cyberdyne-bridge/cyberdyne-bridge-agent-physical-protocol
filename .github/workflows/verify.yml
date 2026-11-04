@@ -22,6 +22,10 @@ jobs:
         env:
           PYTHONPATH: .
         run: python -m unittest discover -s tests/cbap -p 'test_*.py'
+      - name: MCP definition, scope, and order tests
+        env:
+          PYTHONPATH: .
+        run: python -m unittest discover -s tests/mcp -p 'test_*.py'
       - name: Native task guards
         env:
           PYTHONPATH: .

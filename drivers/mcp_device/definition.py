@@ -60,3 +60,48 @@ def definition_digest(server_info: dict | None,
 def instructions_sha256(server_info: dict | None) -> str:
     text = str((server_info or {}).get("instructions") or "")
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def tool_order(tools: list[dict] | None) -> tuple[str, ...]:
+    """Return the wire order of tool names.
+
+    Order is deliberately not part of ``definition_digest``: the digest must be
+    comparable across servers that choose different (but stable) orders.  This
+    helper feeds a separate order-stability check.
+    """
+    return tuple(str(t.get("name") or "") for t in (tools or [])
+                 if isinstance(t, dict))
+
+
+def order_stability(sequences: list[tuple[str, ...]] | None) -> dict:
+    """Check whether repeated ``tools/list`` calls keep the same order.
+
+    Status:
+      pass    - same order in every probe
+      warning - order changed between probes (spec SHOULD deterministic)
+      info    - fewer than two probes, fewer than two tools, or the tool set
+                changed (order is not comparable; the digest handles the set)
+    """
+    seqs = [tuple(s) for s in (sequences or [])]
+    distinct: list[tuple[str, ...]] = []
+    for seq in seqs:
+        if seq not in distinct:
+            distinct.append(seq)
+    base = {
+        "distinct": [list(s) for s in distinct],
+    }
+    if len(seqs) < 2:
+        return {**base, "status": "info", "stable": None,
+                "reason": "need at least two probes"}
+    first_set = set(seqs[0])
+    if any(set(seq) != first_set for seq in seqs[1:]):
+        return {**base, "status": "info", "stable": None,
+                "reason": "tool set changed across probes; order not comparable"}
+    if len(seqs[0]) < 2:
+        return {**base, "status": "info", "stable": True,
+                "reason": "fewer than two tools; order is not observable"}
+    if len(distinct) == 1:
+        return {**base, "status": "pass", "stable": True,
+                "reason": "same order across probes"}
+    return {**base, "status": "warning", "stable": False,
+            "reason": "order changed across probes"}

@@ -55,6 +55,7 @@
 | 1D | `instructions` 是否被当作不可信输入 | **否**（只警告 `serverInfo`） |
 | 2D | 1.x 官方矩阵 7 台 × 5 次 | **35/35 成功，7/7 digest 稳定** |
 | 2D | 2.x 官方矩阵 7 台 × 3 次（Node 24） | **21/21 成功，7/7 digest 稳定** |
+| 2D | 顺序稳定性（1.x / 2.x 官方矩阵） | **7/7 + 7/7 无 warning** |
 | 2D | CPNC JCS profile（7 台 × 1.x/2.x/modern） | **21/21 可计算，跨 era 6/7 相同** |
 | 2D | 认证 HTTP scope fixture | **8/8** |
 | 2D | JCS 向量 + number edge cases | **10/10** |
@@ -193,6 +194,43 @@ fetch / git / time                         digest 相同
 
 所以比较键必须是 `scope × protocolVersion`；只按 scope 比 digest，会把 `everything` 的合法 era 差异误判为分叉。
 
+### 4.6 顺序稳定性（2026-11-04 追加）
+
+定义 digest 按 name 排序，故意不把顺序算进去；顺序另做一个独立检查，避免把“内容变化”和“顺序变化”混在一起。
+
+```text
+tool_order(tools)                  wire order of names
+order_stability(sequences)         pass / warning / info
+definition_digest                  full object, order-normalized
+```
+
+实测：
+
+```text
+官方 1.x 7 台 × 3 次 × 3 probes    0 order warning
+官方 2.x 7 台 × 3 次 × 3 probes    0 order warning
+官方 rotated-order fixture         order WARNING, definition STABLE
+我们的 drift fixture               order INFO (1 tool), definition CHANGED
+4 tools × 24 permutations          24/24 fixed order pass
+```
+
+新增：
+
+```text
+drivers/mcp_device/definition.py   tool_order / order_stability
+tools/mcp_official_matrix.py       --order-probes / --fail-on-order
+tools/mcp_order_probe.py           HTTP 扫描器
+tests/mcp/test_order_stability.py  24 permutations + 边界
+```
+
+命令：
+
+```bash
+PYTHONPATH=. python3 tools/mcp_order_probe.py --url http://127.0.0.1:3018/mcp
+```
+
+注意：固定任意一种排列都算稳定；只有跨调用变化才是 WARNING；少于 2 个工具时是 INFO。
+
 ---
 
 ## 5. 3D：执行授权
@@ -231,8 +269,10 @@ fetch / git / time                         digest 相同
 ```bash
 cd ~/cyberdyne-bridge
 
-# 1) JCS + scope
-PYTHONPATH=. python3 -m unittest -v tests.mcp.test_jcs tests.mcp.test_http_scope_integrity
+# 1) JCS + scope + order
+PYTHONPATH=. python3 -m unittest -v \
+  tests.mcp.test_jcs tests.mcp.test_http_scope_integrity \
+  tests.mcp.test_order_stability
 
 # 2) fork / instructions-only PoC
 PYTHONPATH=. python3 poc/mcp_scope_fork_poc.py
@@ -242,14 +282,18 @@ PYTHONPATH=. python3 tools/mcp_official_matrix.py \
   --node ~/.local/node/bin/node \
   --modules /tmp/mcp-official/node_modules \
   --python-bin /tmp/mcp-official/.venv/bin \
-  --repeat 5
+  --repeat 5 --order-probes 3
 
 # 4) 官方 2.x 矩阵（Node 24）
 PYTHONPATH=. python3 tools/mcp_official_matrix.py \
   --node /tmp/node24/bin/node \
   --modules /tmp/mcp-v2/node_modules \
   --python-bin /tmp/mcp-official/.venv/bin \
-  --repeat 3
+  --repeat 3 --order-probes 3
+
+# 4.5) HTTP 顺序 / 定义探针
+PYTHONPATH=. python3 tools/mcp_order_probe.py \
+  --url http://127.0.0.1:3018/mcp --probes 3
 
 # 5) CBAP 定义 pin / 3D / 设备驱动
 PYTHONPATH=. python3 -m unittest -v \
