@@ -1,0 +1,379 @@
+{
+  "date": "2026-11-04",
+  "profile": "mcp-tool-definition/v1 (RFC 8785 JCS, SHA-256, domain separated)",
+  "environment": {
+    "node_legacy": "22.23.3",
+    "node_modern": "24.22.2",
+    "python": "3.14.4",
+    "mcp_sdk": "2.3.0",
+    "python_servers": "2026.10.28"
+  },
+  "legacy_1x": {
+    "everything": {
+      "version": "1.0.0",
+      "tools_count": 13,
+      "instructions_len": 2004,
+      "jcs_digest": "sha256:f37382d3596f530cbb5c4741e1fe87399d24a56356e07f8c1e23d3d2ec8d8e63",
+      "matrix_digest": "b9136ee65067aba5",
+      "tools": [
+        "echo",
+        "get-annotated-message",
+        "get-env",
+        "get-resource-links",
+        "get-resource-reference",
+        "get-structured-content",
+        "get-sum",
+        "get-tiny-image",
+        "gzip-file-as-resource",
+        "simulate-research-query",
+        "toggle-simulated-logging",
+        "toggle-subscriber-updates",
+        "trigger-long-running-operation"
+      ]
+    },
+    "filesystem": {
+      "version": "1.0.0",
+      "tools_count": 14,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:83ff2ac782cbb23f59e6f11b33d39189fde2c116d91e2ce5d29925c1524b4359",
+      "matrix_digest": "a6932e5fcd524b64",
+      "tools": [
+        "create_directory",
+        "directory_tree",
+        "edit_file",
+        "get_file_info",
+        "list_allowed_directories",
+        "list_directory",
+        "list_directory_with_sizes",
+        "move_file",
+        "read_file",
+        "read_media_file",
+        "read_multiple_files",
+        "read_text_file",
+        "search_files",
+        "write_file"
+      ]
+    },
+    "memory": {
+      "version": "1.0.0",
+      "tools_count": 9,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:f5e5defc938b8db2c433996be024d7eecc1d73fc771e863fbc70c34e6ce875c6",
+      "matrix_digest": "052bdf215e7c72cf",
+      "tools": [
+        "add_observations",
+        "create_entities",
+        "create_relations",
+        "delete_entities",
+        "delete_observations",
+        "delete_relations",
+        "open_nodes",
+        "read_graph",
+        "search_nodes"
+      ]
+    },
+    "sequentialthinking": {
+      "version": "1.0.0",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:0ad87c9b950c0e07556a37f04387180839486798b5c813a76d22d78376fd9eec",
+      "matrix_digest": "ae51c64678ab9035",
+      "tools": [
+        "sequentialthinking"
+      ]
+    },
+    "fetch": {
+      "version": "2026.10.28",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:eba178463466679e2b3907366913c99703cc24f67064e3e827e41136b72d5de1",
+      "matrix_digest": "f8c8e598924d3f14",
+      "tools": [
+        "fetch"
+      ]
+    },
+    "git": {
+      "version": "2026.10.28",
+      "tools_count": 12,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:47470b1cf3d14e1855a5a349dd83ba14b6f523d118ae4f0d691dfd85929e28c3",
+      "matrix_digest": "07976ec5b0db86d8",
+      "tools": [
+        "git_add",
+        "git_branch",
+        "git_checkout",
+        "git_commit",
+        "git_create_branch",
+        "git_diff",
+        "git_diff_staged",
+        "git_diff_unstaged",
+        "git_log",
+        "git_reset",
+        "git_show",
+        "git_status"
+      ]
+    },
+    "time": {
+      "version": "2026.10.28",
+      "tools_count": 2,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:642b70041251f0c11100d7295931244e9d31685e2c67c0bd35565eb8552ec311",
+      "matrix_digest": "7928c3571fd20ba5",
+      "tools": [
+        "convert_time",
+        "get_current_time"
+      ]
+    }
+  },
+  "legacy_2x": {
+    "everything": {
+      "version": "2.1.0",
+      "tools_count": 16,
+      "instructions_len": 3537,
+      "jcs_digest": "sha256:2ee17baad6c501c596a141c0efb816743cd78ec62bb7ab0e300ffcbf546397ab",
+      "matrix_digest": "8116edea249eaf81",
+      "tools": [
+        "echo",
+        "get-annotated-message",
+        "get-env",
+        "get-header-params",
+        "get-resource-links",
+        "get-resource-reference",
+        "get-structured-content",
+        "get-sum",
+        "get-tiny-image",
+        "gzip-file-as-resource",
+        "toggle-simulated-logging",
+        "toggle-subscriber-updates",
+        "trigger-list-changed",
+        "trigger-log-messages",
+        "trigger-long-running-operation",
+        "trigger-resource-update"
+      ]
+    },
+    "filesystem": {
+      "version": "2.1.0",
+      "tools_count": 14,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:ee6cde6cefd25c1609f7c63b47c5e7fc0fd1ef05368f596442c3fd32a8c967c3",
+      "matrix_digest": "8df523dd768c9643",
+      "tools": [
+        "create_directory",
+        "directory_tree",
+        "edit_file",
+        "get_file_info",
+        "list_allowed_directories",
+        "list_directory",
+        "list_directory_with_sizes",
+        "move_file",
+        "read_file",
+        "read_media_file",
+        "read_multiple_files",
+        "read_text_file",
+        "search_files",
+        "write_file"
+      ]
+    },
+    "memory": {
+      "version": "2.0.1",
+      "tools_count": 9,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:12d8abe210363ebbdca4500f0ea47b04b55ad33730252573ade25f986312ddab",
+      "matrix_digest": "a1e818f037a946f1",
+      "tools": [
+        "add_observations",
+        "create_entities",
+        "create_relations",
+        "delete_entities",
+        "delete_observations",
+        "delete_relations",
+        "open_nodes",
+        "read_graph",
+        "search_nodes"
+      ]
+    },
+    "sequentialthinking": {
+      "version": "2.0.0",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:ca34327c5a8331c36280e09791532cdd81f7f258e38c0fce5e08ba8c8a81ec76",
+      "matrix_digest": "99e4afc5ae52802a",
+      "tools": [
+        "sequentialthinking"
+      ]
+    },
+    "fetch": {
+      "version": "2026.10.28",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:eba178463466679e2b3907366913c99703cc24f67064e3e827e41136b72d5de1",
+      "matrix_digest": "f8c8e598924d3f14",
+      "tools": [
+        "fetch"
+      ]
+    },
+    "git": {
+      "version": "2026.10.28",
+      "tools_count": 12,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:47470b1cf3d14e1855a5a349dd83ba14b6f523d118ae4f0d691dfd85929e28c3",
+      "matrix_digest": "07976ec5b0db86d8",
+      "tools": [
+        "git_add",
+        "git_branch",
+        "git_checkout",
+        "git_commit",
+        "git_create_branch",
+        "git_diff",
+        "git_diff_staged",
+        "git_diff_unstaged",
+        "git_log",
+        "git_reset",
+        "git_show",
+        "git_status"
+      ]
+    },
+    "time": {
+      "version": "2026.10.28",
+      "tools_count": 2,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:642b70041251f0c11100d7295931244e9d31685e2c67c0bd35565eb8552ec311",
+      "matrix_digest": "7928c3571fd20ba5",
+      "tools": [
+        "convert_time",
+        "get_current_time"
+      ]
+    }
+  },
+  "modern_2x": {
+    "everything": {
+      "version": "2.1.0",
+      "tools_count": 22,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:7c70f93829d3fd2a3fb91bcab1fe95edec53d4218b50f0bd36d8811d6f538368",
+      "matrix_digest": null,
+      "tools": [
+        "echo",
+        "get-annotated-message",
+        "get-env",
+        "get-header-params",
+        "get-resource-links",
+        "get-resource-reference",
+        "get-roots-list",
+        "get-structured-content",
+        "get-sum",
+        "get-tiny-image",
+        "gzip-file-as-resource",
+        "simulate-research-query",
+        "trigger-elicitation-request",
+        "trigger-elicitation-request-async",
+        "trigger-list-changed",
+        "trigger-log-messages",
+        "trigger-long-running-operation",
+        "trigger-multi-step-elicitation",
+        "trigger-resource-update",
+        "trigger-sampling-request",
+        "trigger-sampling-request-async",
+        "trigger-url-elicitation"
+      ]
+    },
+    "filesystem": {
+      "version": "2.1.0",
+      "tools_count": 14,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:ee6cde6cefd25c1609f7c63b47c5e7fc0fd1ef05368f596442c3fd32a8c967c3",
+      "matrix_digest": null,
+      "tools": [
+        "create_directory",
+        "directory_tree",
+        "edit_file",
+        "get_file_info",
+        "list_allowed_directories",
+        "list_directory",
+        "list_directory_with_sizes",
+        "move_file",
+        "read_file",
+        "read_media_file",
+        "read_multiple_files",
+        "read_text_file",
+        "search_files",
+        "write_file"
+      ]
+    },
+    "memory": {
+      "version": "2.0.1",
+      "tools_count": 9,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:12d8abe210363ebbdca4500f0ea47b04b55ad33730252573ade25f986312ddab",
+      "matrix_digest": null,
+      "tools": [
+        "add_observations",
+        "create_entities",
+        "create_relations",
+        "delete_entities",
+        "delete_observations",
+        "delete_relations",
+        "open_nodes",
+        "read_graph",
+        "search_nodes"
+      ]
+    },
+    "sequentialthinking": {
+      "version": "2.0.0",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:ca34327c5a8331c36280e09791532cdd81f7f258e38c0fce5e08ba8c8a81ec76",
+      "matrix_digest": null,
+      "tools": [
+        "sequentialthinking"
+      ]
+    },
+    "fetch": {
+      "version": "2026.10.28",
+      "tools_count": 1,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:eba178463466679e2b3907366913c99703cc24f67064e3e827e41136b72d5de1",
+      "matrix_digest": null,
+      "tools": [
+        "fetch"
+      ]
+    },
+    "git": {
+      "version": "2026.10.28",
+      "tools_count": 12,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:47470b1cf3d14e1855a5a349dd83ba14b6f523d118ae4f0d691dfd85929e28c3",
+      "matrix_digest": null,
+      "tools": [
+        "git_add",
+        "git_branch",
+        "git_checkout",
+        "git_commit",
+        "git_create_branch",
+        "git_diff",
+        "git_diff_staged",
+        "git_diff_unstaged",
+        "git_log",
+        "git_reset",
+        "git_show",
+        "git_status"
+      ]
+    },
+    "time": {
+      "version": "2026.10.28",
+      "tools_count": 2,
+      "instructions_len": 0,
+      "jcs_digest": "sha256:642b70041251f0c11100d7295931244e9d31685e2c67c0bd35565eb8552ec311",
+      "matrix_digest": null,
+      "tools": [
+        "convert_time",
+        "get_current_time"
+      ]
+    }
+  },
+  "notes": [
+    "matrix_digest is the matrix runner's 16-hex sorted-JSON fingerprint, not the JCS profile",
+    "modern_2x is server/discover + per-request _meta on a fresh connection",
+    "2.x packages declare engines node>=24; Node 22 produced identical digests but is unsupported"
+  ]
+}

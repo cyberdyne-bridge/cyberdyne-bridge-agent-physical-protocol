@@ -168,6 +168,7 @@ JCS profile
 WG #36      https://github.com/modelcontextprotocol/transports-wg/issues/36
 Security IG https://modelcontextprotocol.io/community/interest-groups/security
 Draft       https://gist.github.com/gautamgb/1e12c07f466389caf5af6715ee367873
+Checkup     docs/MCP-CHECKUP-2026-11-04.md
 3D tests    docs/MCP-3D-TESTS.md
 Gist        https://gist.github.com/6750432/43837d3355de826dfb83f04acbda9139
 ```

@@ -104,6 +104,7 @@ docs/MCP-SEP-3452-TESTS.md MCP 授权范围 / instructions digest 测试
 docs/MCP-OFFICIAL-MATRIX.md    7 台官方 reference × 5 次矩阵
 docs/MCP-3D-TESTS.md           MCP 执行授权 / 定义 pin 修复测试
 docs/MCP-UPSTREAM-STATUS.md    MCP 上游状态 / #3452 已关闭，规范未改
+docs/MCP-CHECKUP-2026-11-04.md MCP 全身体检 / 1.x·2.x·双 era 基线
 docs/VOYAGER-STATUS.md         Voyager bridge 评估
 docs/VOYAGER-1.21.1.md         Voyager 1.21.1 bridge 实测
 docs/VOYAGER-LOCAL-QWEN.md     Voyager prompt + 本地 Qwen 实测
