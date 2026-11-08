@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-accent="pet">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,8 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
+  <link rel="stylesheet" href="./style-research.css">
+  <link rel="stylesheet" href="./theme.css">
   <script>
     (function(){try{
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -31,6 +33,7 @@
     }catch(e){}})();
   </script>
 
+  <script src="./theme.js"></script>
 </head>
 <body>
   <div class="cpnc-watermark" aria-hidden="true">
@@ -76,6 +79,7 @@
       <a href="./zh.html#os">CPNC OS</a>
       <a href="./zh.html#agents">Agent 子仓</a>
       <a href="./research.html">其他研究</a>
+      <button class="theme-toggle" type="button" aria-pressed="false"><span class="tt-sun" aria-hidden="true">☀</span><span class="tt-moon" aria-hidden="true">☾</span></button>
       <label class="lang-wrap"><span class="sr-only">Language</span>
         <select class="lang-select" aria-label="Language">
           <option value="en" lang="en">English</option>
@@ -94,12 +98,34 @@
       <div class="section-head">
         <p class="kicker">OTHER RESEARCH / 04</p>
         <div>
-          <h2>同一个内核，<br>第二个身体。</h2>
-          <p class="section-lede">四个 agent 全部指向 Minecraft，host_desktop 是控制面（文件/显示/输入）而不是表现面。桌宠补的是「表现面身体」这一格：本地事件流进，回环动作出。</p>
+          <h2>同一个内核，第二个身体。</h2>
+          <p class="section-lede">四个 agent 全部指向 Minecraft，host_desktop 是控制面（文件/显示/输入）而不是表现面。桌宠补的是「表现面身体」这一格。</p>
         </div>
       </div>
-      <div class="carriage-stats"><div><strong>6</strong><span>状态词汇</span></div><div><strong>23</strong><span>单元测试</span></div><div><strong>1</strong><span>cbap-device-v1</span></div><div><strong>hidden</strong><span>estop 安全态</span></div></div><div class="cards cards-six"><article class="card card-small card-accent"><span class="card-num">01</span><h3>入：事件流</h3><p>&lt;config&gt;/agent-events/&lt;agent&gt;.jsonl，字节偏移增量读：不回放、半行缓冲、单次 64KB 有界。</p></article><article class="card card-small"><span class="card-num">02</span><h3>六态</h3><p>thinking / working / attention / error / idle / sleeping；显式 state 优先于 event。</p></article><article class="card card-small"><span class="card-num">03</span><h3>出：回环</h3><p>POST http://127.0.0.1:&lt;port&gt;/api/respond；非回环地址直接拒绝。</p></article><article class="card card-small"><span class="card-num">04</span><h3>设备契约</h3><p>cbap-device-v1：class=presence，capabilities 含 estop，resources 限 5Hz。</p></article><article class="card card-small"><span class="card-num">05</span><h3>estop = 隐藏</h3><p>发 hide 并锁存 paused，之后 send() 一律 False——「急停必须有 safe-state 证据」。</p></article><article class="card card-small"><span class="card-num">06</span><h3>现状</h3><p>draft：单元测试过，未接真桌宠、未跑 kernel 端到端。</p></article></div>
-      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/cbap-pet-body" target="_blank" rel="noopener">cbap-pet-body 仓库 <span aria-hidden="true">↗</span></a></div>
+      <div class="carriage-stats"><div><strong>6</strong><span>状态词汇</span></div><div><strong>23</strong><span>单元测试</span></div><div><strong>1</strong><span>cbap-device-v1</span></div><div><strong>hidden</strong><span>estop 安全态</span></div></div>
+      <div class="pet-states">
+        <div class="pet-state"><b>thinking</b><span>思考中 / 刚接到指令</span></div>
+        <div class="pet-state"><b>working</b><span>执行中</span></div>
+        <div class="pet-state"><b>attention</b><span>需要人看一眼</span></div>
+        <div class="pet-state"><b>error</b><span>出错</span></div>
+        <div class="pet-state"><b>idle</b><span>空闲，触发「干完活啦」</span></div>
+        <div class="pet-state"><b>sleeping</b><span>休眠</span></div>
+      </div>
+
+      <figure class="pet-json">
+        <header>device.json · cbap-device-v1</header>
+        <pre>{
+  <span class="k">"device_id"</span>: "pet://desktop/desk-pet",
+  <span class="k">"class"</span>: "presence",
+  <span class="k">"capabilities"</span>: ["read", "write", "lease", "estop"],
+  <span class="k">"safety"</span>: { "estop": true, "watchdog_ms": 15000,
+              "safe_state": "hidden" }
+}</pre>
+      </figure>
+
+      <div class="section-foot">
+        <a class="text-link" href="https://github.com/cyberdyne-bridge/cbap-pet-body" target="_blank" rel="noopener">cbap-pet-body 仓库 <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
   </main>
 
