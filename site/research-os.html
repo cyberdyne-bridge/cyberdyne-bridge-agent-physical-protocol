@@ -54,7 +54,7 @@
         <span>READY</span>
       </div>
     </div>
-    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.5</span></div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.6</span></div>
   </div>
 
   <a class="skip-link" href="#main">跳到正文</a>
@@ -102,19 +102,19 @@
         <header><i></i><i></i><i></i></header>
         <pre><span class="p">$</span> <span class="c">cbap-os list</span>
 cbap:
-  v1.7.5    /opt/cbap-os/versions/cbap/v1.7.5
+  v1.7.6    /opt/cbap-os/versions/cbap/v1.7.6
   v1.4.0    /opt/cbap-os/versions/cbap/v1.4.0
 python:
   3.12      /opt/cbap-os/versions/python/3.12
 
-<span class="p">$</span> <span class="c">cbap-os use --cbap v1.7.5 --python 3.12</span>
+<span class="p">$</span> <span class="c">cbap-os use --cbap v1.7.6 --python 3.12</span>
 <span class="m">[ok]</span> stopped cbap.service
-<span class="m">[ok]</span> remounted current/cbap -&gt; v1.7.5
+<span class="m">[ok]</span> remounted current/cbap -&gt; v1.7.6
 <span class="m">[ok]</span> started cbap.service</pre>
       </figure>
 
       <div class="os-slots">
-        <div class="os-slot"><b>versions/cbap</b><span>不可变源码槽，一个 tag 一个目录</span><em>v1.7.5 / v1.4.0</em></div>
+        <div class="os-slot"><b>versions/cbap</b><span>不可变源码槽，一个 tag 一个目录</span><em>v1.7.6 / v1.4.0</em></div>
         <div class="os-slot"><b>current</b><span>bind mount，不是副本；切换 = 重挂载</span><em>→ 选中槽</em></div>
         <div class="os-slot"><b>cbap.service</b><span>等 socket 出现才启动；没有 hand 就跳过</span><em>ExecCondition</em></div>
       </div>

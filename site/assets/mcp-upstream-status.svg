@@ -16,7 +16,7 @@
   <text x="58" y="174" fill="#d7e2e6" font-family="DejaVu Sans, sans-serif" font-size="18">Closed for SEP process; no spec change landed.</text>
   <text x="58" y="202" fill="#d7e2e6" font-family="DejaVu Sans, sans-serif" font-size="18">CBAP ships a local mitigation, not an official fix.</text>
   <line x1="58" y1="230" x2="1140" y2="230" stroke="#25414a"/>
-  <text x="58" y="268" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="17">1D/2D  DEFINITION PIN   GUARDED  v1.7.5</text>
+  <text x="58" y="268" fill="#5eead4" font-family="DejaVu Sans Mono, monospace" font-size="17">1D/2D  DEFINITION PIN   GUARDED  v1.7.6</text>
   <text x="58" y="298" fill="#f3c969" font-family="DejaVu Sans Mono, monospace" font-size="17">3D     EXECUTION AUTH   NOT SOLVED</text>
   <text x="58" y="328" fill="#8aa0a8" font-family="DejaVu Sans Mono, monospace" font-size="14">NO SPEC CHANGE / NO DUPLICATE ISSUES / LOCAL TESTS ONLY</text>
   <rect x="896" y="64" width="248" height="40" rx="3" fill="#2a2110" stroke="#7a5a1a"/>
