@@ -6,6 +6,8 @@
   <title>Critical Protocol: NEKXSR Core · CPNC</title>
   <meta name="description" content="CPNC / CBAP v1: an open-source reference protocol for agents that acquire devices, execute actions, and verify outcomes through server-authoritative facts.">
   <meta name="theme-color" content="#070a0f">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:title" content="Critical Protocol: NEKXSR Core · CPNC">
   <meta property="og:description" content="Agent ↔ physical world: leases, server facts, audit, estop, MCP least privilege, and explicit recovery.">
   <meta property="og:type" content="website">
@@ -27,16 +29,7 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
   <link rel="stylesheet" href="./theme.css">
-  <script>
-    (function(){try{
-      var q=new URLSearchParams(location.search).get('lang');
-      if(q==='ar'){document.documentElement.dir='rtl';document.documentElement.lang='ar';}
-      if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-        var m = new URLSearchParams(location.search).get('enter') === 'b' ? 'lm-lock' : 'lm-boot';
-        document.documentElement.classList.add(m);
-      }
-    }catch(e){}})();
-  </script>
+  <script src="./boot.js"></script>
 
   <script src="./theme.js"></script>
 </head>
@@ -299,6 +292,7 @@
     </div>
     <div class="footer-meta">
       <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI-ASSISTED</span>
+      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a>
       <a href="./legal-en.html">Legal</a>
       <a href="./zh.html" hreflang="zh-CN">中文</a>
       <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a>

@@ -6,6 +6,8 @@
   <title>桌宠身体 · cbap-pet-body · CPNC</title>
   <meta name="description" content="把桌宠当作 CBAP 的第二个身体：本地 JSONL 事件 + 回环 HTTP 动作，estop 安全态为隐藏。">
   <meta name="theme-color" content="#070a0f">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta property="og:title" content="桌宠身体 · cbap-pet-body · CPNC">
   <meta property="og:description" content="Agent ↔ 物理世界协议：服务端事实校验、每设备租约、审计锚点、MCP 最小权限、operator 急停与显式恢复。">
   <meta property="og:type" content="website">
@@ -24,14 +26,7 @@
   <link rel="stylesheet" href="./style-lm.css">
   <link rel="stylesheet" href="./style-research.css">
   <link rel="stylesheet" href="./theme.css">
-  <script>
-    (function(){try{
-      if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-        var m = new URLSearchParams(location.search).get('enter') === 'b' ? 'lm-lock' : 'lm-boot';
-        document.documentElement.classList.add(m);
-      }
-    }catch(e){}})();
-  </script>
+  <script src="./boot.js"></script>
 
   <script src="./theme.js"></script>
 </head>
@@ -136,6 +131,7 @@
     </div>
     <div class="footer-meta">
       <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI 协作</span>
+      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/SECURITY.md" target="_blank" rel="noopener">安全 / Security</a>
       <a href="./legal.html">法律 / Legal</a>
       <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">第三方声明</a>
       <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
