@@ -153,7 +153,16 @@
       const 原文 = 规整(el.innerText || el.textContent);
       const 译 = 表[原文];
       if (!译) return;
-      if (译.includes('<')) el.innerHTML = 译; else el.textContent = 译;
+      // 只允许 <br>：译文里只用到换行，其余一律按纯文本处理
+      if (译.includes('<')) {
+        el.textContent = '';
+        译.split(/<br\s*\/?>/i).forEach((段, i) => {
+          if (i) el.appendChild(document.createElement('br'));
+          el.appendChild(document.createTextNode(段));
+        });
+      } else {
+        el.textContent = 译;
+      }
     });
     const 注 = document.createElement('div');
     注.className = 'i18n-note';
