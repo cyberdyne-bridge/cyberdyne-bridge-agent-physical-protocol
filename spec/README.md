@@ -15,7 +15,8 @@
 5. [`examples/`](examples/) —— MC / 机械臂描述符、MC 映射、一次完整会话。
 6. [`conformance-v1.md`](conformance-v1.md) —— 129 条一致性用例。
 7. [`implementation-matrix.md`](implementation-matrix.md) —— implemented / planned / removed 矩阵。
-8. [`../docs/AGENT-PROTOCOL-ROADMAP.md`](../docs/AGENT-PROTOCOL-ROADMAP.md) —— 协议分层、长期边界、非目标。
+8. [`body-selfcheck.md`](body-selfcheck.md) —— 身体层自检：输入区 / 资源增长 / 渲染输出 三探针。
+9. [`../docs/AGENT-PROTOCOL-ROADMAP.md`](../docs/AGENT-PROTOCOL-ROADMAP.md) —— 协议分层、长期边界、非目标。
 
 ## 已验证
 
@@ -45,6 +46,15 @@
 - 本地 Qwen 控制 Voyager：`docs/CBAP-Qwen控制Voyager.md`，结果 `docs/voyager-qwen.json`；4 步 forward×2/say/done，无 GPT-4/API；
 - Qwen 生成 JS + Voyager exec：`docs/CBAP-Qwen-exec-Voyager.md`，结果 `docs/voyager-qwen-exec.json`；4B 生成 jump+chat JS，onChat 验证通过，无付费 API；
 - Alice 最小 bridge：`docs/CBAP-Alice-minimal-bridge.md`，源码 `archive/alice/bridge/CbapBridge.java`，probe `archive/alice/tools/alice_bridge_probe.py`；未编译/未跑 Forge。
+
+### 身体层（Draft 0.1）
+
+协议 conformance 证明"命令发得对"，身体自检证明"身体还在"。两者互补，不能互相替代。
+
+- [`body-selfcheck.md`](body-selfcheck.md)：三条可执行探针 + fail-closed 判定 + 报告格式；
+- `tools/body_selfcheck.py --target fake|broken`：可直接跑，四类坏身体各有对照；
+- `tests/body/test_body_selfcheck.py`：12 条（含缺 `rss_kb` / 缺 `frame_hash` / 抛异常都判失败）；
+- 现状：**尚未接真实身体**。真实身体要实现 `send()` / `snapshot()` 两个方法（`snapshot` 至少给 `frame_hash`、`rss_kb`），缺失即失败，不是跳过。
 
 ## 还没做
 

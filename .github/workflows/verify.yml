@@ -30,6 +30,10 @@ jobs:
         env:
           PYTHONPATH: .
         run: python -m unittest discover -s tests/native -p 'test_*.py'
+      - name: Body self-check and MC body SDK
+        env:
+          PYTHONPATH: .
+        run: python -m unittest discover -s tests/body -p 'test_*.py'
 
   node-syntax:
     runs-on: ubuntu-latest
