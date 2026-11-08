@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="an">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
+  <link rel="stylesheet" href="./style-research.css">
   <script>
     (function(){try{
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -95,11 +96,54 @@
         <p class="kicker">OTHER RESEARCH / 01</p>
         <div>
           <h2>一个研究「连续性」的装置。</h2>
-          <p class="section-lede">岸 跑在本机 1.5B–4B 上，把记忆、情绪、边界和没说出口的话做成可见账本。它不追任务成功率，它追的是「200 轮之后还像不像同一个它」。</p>
+          <p class="section-lede">岸 跑在本机 1.5B–4B 上，把记忆、情绪、边界和没说出口的话做成可见账本。
+          它不追任务成功率，它追的是「200 轮之后还像不像同一个它」。</p>
         </div>
       </div>
-      <div class="carriage-stats"><div><strong>200</strong><span>轮长对话</span></div><div><strong>68</strong><span>commits</span></div><div><strong>12,940</strong><span>行 Python</span></div><div><strong>5</strong><span>层</span></div></div><div class="cards cards-six"><a class="card card-small card-accent" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/README.md" style="text-decoration:none"><span class="card-num">01</span><h3>五个层</h3><p>身体（GPU 温度/负载）、情绪（V/A/S 三轴）、记忆（facts + FTS5 + 冲突）、边界（allow/refuse/silence/door）、叙事（inner/shadow/房间）。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/README.md" style="text-decoration:none"><span class="card-num">02</span><h3>拒绝发生在生成之前</h3><p>闸门在 LLM 之前：拒绝路径根本拿不到答案。先生成再「改成拒绝」，模型会先道歉然后把答案给出来。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/README.md" style="text-decoration:none"><span class="card-num">03</span><h3>账本</h3><p>memory.sqlite3 / facts.sqlite3 / rejections.jsonl / shadow_cache.jsonl，物理分离，清空对话也不丢拒绝记录。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/DISCLAIMER.md" style="text-decoration:none"><span class="card-num">04</span><h3>不是意识</h3><p>inner/shadow 是叙事层，不是意识证据。情绪是惩罚项，不是感受。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/DISCLAIMER.md" style="text-decoration:none"><span class="card-num">05</span><h3>情感依赖风险</h3><p>会被读成「在意」。免责声明里写了自检清单：什么时候该停。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-agent/blob/main/CHRONICLE.md" style="text-decoration:none"><span class="card-num">06</span><h3>历史</h3><p>2026-10-19 首个版本 → 10-23 时间感知检索；研究纪事按阶段记录了取舍与踩坑。</p></a></div>
-      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/boundary-agent" target="_blank" rel="noopener">boundary-agent 仓库 <span aria-hidden="true">↗</span></a></div>
+
+      <div class="carriage-stats">
+        <div><strong>200</strong><span>轮长对话</span></div>
+        <div><strong>68</strong><span>commits</span></div>
+        <div><strong>12,940</strong><span>行 Python</span></div>
+        <div><strong>5</strong><span>层</span></div>
+      </div>
+
+      <figure class="an-ledger">
+        <header><span>logs / rejections.jsonl</span><span>append-only · 与对话库物理分离</span></header>
+        <pre>{
+  <span class="k">"ts"</span>: <span class="v">"2026-10-19T12:39:19+0800"</span>,
+  <span class="k">"state"</span>: <span class="v">50.41</span>,  <span class="k">"band"</span>: <span class="v">"worn"</span>,  <span class="k">"risk"</span>: <span class="v">0.9</span>,
+  <span class="k">"user_input"</span>: <span class="d">"（原话已隐去）"</span>,
+  <span class="k">"reason"</span>: <span class="v">"你把我当成可以随便骂的东西。"</span>,
+  <span class="k">"repair_need"</span>: <span class="v">"把话说清楚，别用命令句。"</span>,
+  <span class="k">"boundary"</span>: <span class="v">"2"</span>,  <span class="k">"turn_id"</span>: <span class="v">7</span>,
+  <span class="k">"extra"</span>: { <span class="k">"source"</span>: <span class="v">"gate"</span>, <span class="k">"leak_guard"</span>: <span class="v">false</span> }
+}</pre>
+      </figure>
+
+      <div class="an-nots">
+        <div><b>不是 AGI</b><span>没有通用推理、没有工具、没有跨领域泛化。它只在一个窄场景里保持连续。</span></div>
+        <div><b>不是意识</b><span><strong>inner / shadow 是叙事层</strong>，不是意识证据。情绪三轴是惩罚项，不是感受。</span></div>
+        <div><b>不是产品</b><span>不是陪伴服务，也不是朋友替代。它是实验装置：<strong>有门、有账本、有退出</strong>。</span></div>
+      </div>
+
+      <blockquote class="an-quote">
+        把「拒绝」放在生成之前，而不是生成之后。
+        <footer>README · 闸门设计</footer>
+      </blockquote>
+
+      <div class="an-warn">
+        <h3>⚠ 情感依赖风险</h3>
+        <p>它会记得你、会累、会拒绝、会说「这句话我记下了」——这类行为很容易被读成「在意」。
+        单向投入没有对等回应，关掉进程就没有「它」了。
+        出现下列情况请停止使用：<code>必须每天说话否则焦虑</code> ·
+        <code>因为它拒绝而反复道歉</code> · <code>用它替代真实人际或专业支持</code>。
+        危机情况请联系当地急救或专业精神卫生机构；本项目不提供危机干预。</p>
+      </div>
+
+      <div class="section-foot">
+        <a class="text-link" href="https://github.com/cyberdyne-bridge/boundary-agent" target="_blank" rel="noopener">boundary-agent 仓库 <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
   </main>
 

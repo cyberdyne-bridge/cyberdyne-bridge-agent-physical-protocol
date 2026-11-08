@@ -1,0 +1,59 @@
+/* 研究页签名模块：只加主题与少量专属组件，不改主骨架。
+   原则：一个 [data-theme] 只改 accent / 标题字体 / 节奏，布局仍走 style.css。 */
+
+[data-theme="an"] {
+  --accent: #9db8d6;
+  --line-strong: rgba(157, 184, 214, .34);
+  --accent-soft: rgba(157, 184, 214, .10);
+}
+[data-theme="an"] h2,
+[data-theme="an"] .an-quote {
+  font-family: "Noto Serif CJK SC", "Songti SC", Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -.01em;
+}
+[data-theme="an"] .section-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.9rem); line-height: 1.28; }
+
+/* 账本：一条记录的样子 */
+.an-ledger {
+  margin: 0 0 1.4rem;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+.an-ledger header {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: .62rem .95rem; border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .08em;
+  color: var(--dim); text-transform: uppercase;
+}
+.an-ledger pre {
+  margin: 0; padding: .95rem; overflow-x: auto;
+  font-family: var(--mono); font-size: .74rem; line-height: 1.75; color: var(--muted);
+}
+.an-ledger .k { color: var(--accent); }
+.an-ledger .v { color: var(--text); }
+.an-ledger .d { color: var(--dim); }
+
+/* 三条「不是」 */
+.an-nots { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 1.4rem; }
+.an-nots div { background: var(--bg-soft); padding: 1rem 1.15rem; display: flex; gap: .9rem; align-items: baseline; }
+.an-nots b { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; color: var(--dim); min-width: 4.5rem; }
+.an-nots span { color: var(--muted); font-size: .88rem; line-height: 1.7; }
+.an-nots strong { color: var(--text); font-weight: 500; }
+
+/* 风险提示：整页唯一一块高对比 */
+.an-warn {
+  margin: 0 0 1.4rem; padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(243, 201, 105, .45);
+  background: rgba(243, 201, 105, .07);
+}
+.an-warn h3 { margin: .15rem 0 .55rem; font-size: .95rem; color: var(--amber); font-weight: 500; }
+.an-warn p { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.75; }
+.an-warn code { color: var(--text); }
+
+.an-quote {
+  margin: 0 0 1.4rem; padding: 1.2rem 1.3rem;
+  border-left: 2px solid var(--line-strong);
+  color: var(--text); font-size: 1.02rem; line-height: 1.9;
+}
+.an-quote footer { margin-top: .8rem; font-family: var(--mono); font-size: .62rem; color: var(--dim); letter-spacing: .06em; }
