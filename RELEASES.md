@@ -5,6 +5,7 @@ CBAP 目前是**源码发行版**，没有预编译服务端/客户端二进制�
 
 | 版本 | 主题 | Git 快照 | 关键内容 |
 |---|---|---|---|
+| **v1.7.6** | Body Self-Check & Research Pages | `v1.7.6` | 身体自检三探针、只读车厢文档、官网研究页、129/129 |
 | **v1.7.5** | MCP Definition Pin Fix | `v1.7.5` | full JCS definition pin、legacy fail closed、same-connection drift、129/129 |
 | **v1.7.4** | 10-Minute Path | `v1.7.4` | clean clone、118/118、host allowlist demo、实测 2.5 分钟 |
 | **v1.7.3** | Technical Hardening | `v1.7.3` | 随机 token、默认 loopback、裸 X11 拒绝、118/118 |
@@ -35,6 +36,7 @@ v1.7.2  Detailed Legal Pack：TERMS / AUP / Privacy / Abuse / Risk
 v1.7.3  Technical Hardening：random token / loopback / isolated input
 v1.7.4  10-Minute Path：clean clone / conformance / host allowlist demo
 v1.7.5  MCP Definition Pin Fix：full JCS / legacy fail closed / 3D tests
+v1.7.6  Body Self-Check：输入区 / 资源增长 / 渲染输出 三探针 + 自我模型车厢文档 + 官网研究页
 ```
 
 “CBAP v1” 是协议版本；`v1.x` 是仓库源码发行版。  
