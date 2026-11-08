@@ -49,7 +49,7 @@
         <span>READY</span>
       </div>
     </div>
-    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.5</span></div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.6</span></div>
   </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
@@ -104,7 +104,7 @@
         </div>
         <dl class="stats">
           <div><dt>4</dt><dd>active agent subrepos</dd></div>
-          <div><dt>v1.7.5</dt><dd>source release</dd></div>
+          <div><dt>v1.7.6</dt><dd>source release</dd></div>
           <div><dt>129/129</dt><dd>CBAP conformance</dd></div>
           <div><dt>0.2ms</dt><dd>control-plane p50 (local UDS)</dd></div>
           <div><dt>facts</dt><dd>completion criterion</dd></div>
@@ -195,13 +195,13 @@
         <p class="kicker">MCP / UPSTREAM STATUS</p>
         <div>
           <h2>Upstream is not fixed.<br>CBAP only mitigates locally.</h2>
-          <p class="section-lede">SEP #3452 was closed on 2026-10-26 for SEP process; no spec change landed. CPNC v1.7.5 still adds a full JCS pin and same-connection drift checks, but this is not an official MCP fix and does not solve 3D execution authority.</p>
+          <p class="section-lede">SEP #3452 was closed on 2026-10-26 for SEP process; no spec change landed. CPNC v1.7.6 still adds a full JCS pin and same-connection drift checks, but this is not an official MCP fix and does not solve 3D execution authority.</p>
         </div>
       </div>
-      <figure class="status-figure"><img src="./assets/mcp-upstream-status.svg" alt="MCP upstream status: SEP 3452 closed without spec change, CBAP local mitigation in CPNC v1.7.5, 3D execution authority not solved" loading="lazy"></figure>
+      <figure class="status-figure"><img src="./assets/mcp-upstream-status.svg" alt="MCP upstream status: SEP 3452 closed without spec change, CBAP local mitigation in CPNC v1.7.6, 3D execution authority not solved" loading="lazy"></figure>
       <div class="cards cards-six">
         <article class="card card-small card-accent"><span class="card-num">01 / UPSTREAM</span><h3>SEP #3452 is CLOSED (no spec change)</h3><p>The proposal was closed because SEPs require WG/IG engagement first; the topic moved to the Security IG. No normative change landed.</p></article>
-        <article class="card card-small"><span class="card-num">02 / LOCAL</span><h3>v1.7.5 local pin</h3><p>Complete tool objects, serverInfo, instructions, RFC 8785 JCS; legacy pins fail closed; tools/list is rechecked before actions.</p></article>
+        <article class="card card-small"><span class="card-num">02 / LOCAL</span><h3>v1.7.6 local pin</h3><p>Complete tool objects, serverInfo, instructions, RFC 8785 JCS; legacy pins fail closed; tools/list is rechecked before actions.</p></article>
         <article class="card card-small"><span class="card-num">03 / 3D</span><h3>Execution authority remains</h3><p>A digest detects a changed menu, not whether a remote server follows it. Facts, approval UI, attestation, and sandboxing remain boundaries.</p></article>
       </div>
       <div class="arch-note"><strong>The upstream proposal is closed and the spec is unchanged; do not open duplicate issues.</strong> Local tests, PoCs, and 3D boundary records stay here. <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/docs/MCP-UPSTREAM-STATUS.md" target="_blank" rel="noopener">Read the MCP status note ↗</a></div>
