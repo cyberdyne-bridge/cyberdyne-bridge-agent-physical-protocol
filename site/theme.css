@@ -1,0 +1,80 @@
+/* 夜间模式：叠在 style-lm.css 的亮色皮肤上。
+   hero / header / footer / cta 本来就是深色，不动；只翻正文、卡片、代码块、表格。 */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #070a0f;
+  --bg-soft: #0a1017;
+  --panel: #0d141d;
+  --panel-solid: #0d141d;
+  --line: rgba(146, 166, 184, .16);
+  --line-strong: rgba(94, 234, 212, .34);
+  --text: #e8eef4;
+  --muted: #93a2b1;
+  --dim: #5e6d7b;
+  --accent: #5eead4;
+  --accent-soft: rgba(94, 234, 212, .10);
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body { background: #070a0f; color: var(--text); }
+
+html[data-theme="dark"] .section { background: #070a0f; }
+html[data-theme="dark"] .section-arch {
+  background: #0a1017;
+  border-top-color: var(--line);
+  border-bottom-color: var(--line);
+}
+
+html[data-theme="dark"] .cards { background: var(--line); border-color: var(--line); }
+html[data-theme="dark"] .card { background: #0a1017; }
+html[data-theme="dark"] .card:hover { background: #0f1822; }
+html[data-theme="dark"] .card-accent { background: #0d1a24; }
+html[data-theme="dark"] .arch-image { background: #0a1017; border-color: var(--line); }
+
+html[data-theme="dark"] code {
+  background: #0f1822;
+  border-color: var(--line);
+  color: var(--accent);
+}
+html[data-theme="dark"] pre { background: #0a1017; border-color: var(--line); }
+
+html[data-theme="dark"] .carriage-stats { border-color: var(--line); }
+html[data-theme="dark"] .carriage-stats div { background: #0a1017; }
+
+/* 研究页签名模块 */
+html[data-theme="dark"] .an-ledger,
+html[data-theme="dark"] .an-nots div { background: #0a1017; }
+
+/* 切换按钮：放在导航里，跟语言选择同高 */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 26px; padding: 0; margin-left: .35rem;
+  border: 1px solid rgba(255, 255, 255, .25); border-radius: 2px;
+  background: transparent; color: #e9ecf1; cursor: pointer;
+  font-size: .82rem; line-height: 1; transition: background .2s ease, border-color .2s ease;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, .10); }
+.theme-toggle .tt-moon { display: none; }
+html[data-theme="dark"] .theme-toggle .tt-sun { display: none; }
+html[data-theme="dark"] .theme-toggle .tt-moon { display: inline; }
+
+/* 亮色皮肤里写死的深色文字/蓝色强调，深色模式下需要反转 */
+html[data-theme="dark"] .section h2,
+html[data-theme="dark"] .section h3,
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .principles h3,
+html[data-theme="dark"] .section-head h2 { color: var(--text); }
+
+html[data-theme="dark"] .section-lede,
+html[data-theme="dark"] .section p { color: var(--muted); }
+
+html[data-theme="dark"] .kicker { color: var(--accent) !important; }
+
+html[data-theme="dark"] .carriage-stats strong { color: var(--accent); }
+html[data-theme="dark"] .carriage-stats span { color: var(--dim); }
+html[data-theme="dark"] .card p { color: var(--muted); }
+
+/* 架构图是白底位图，深色下压一点亮度，别晃眼 */
+html[data-theme="dark"] .arch-image img,
+html[data-theme="dark"] .section-arch img { opacity: .92; }

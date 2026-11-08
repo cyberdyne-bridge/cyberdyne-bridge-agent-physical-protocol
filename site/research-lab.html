@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-accent="lab">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,8 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
+  <link rel="stylesheet" href="./style-research.css">
+  <link rel="stylesheet" href="./theme.css">
   <script>
     (function(){try{
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -31,6 +33,7 @@
     }catch(e){}})();
   </script>
 
+  <script src="./theme.js"></script>
 </head>
 <body>
   <div class="cpnc-watermark" aria-hidden="true">
@@ -76,6 +79,7 @@
       <a href="./zh.html#os">CPNC OS</a>
       <a href="./zh.html#agents">Agent 子仓</a>
       <a href="./research.html">其他研究</a>
+      <button class="theme-toggle" type="button" aria-pressed="false"><span class="tt-sun" aria-hidden="true">☀</span><span class="tt-moon" aria-hidden="true">☾</span></button>
       <label class="lang-wrap"><span class="sr-only">Language</span>
         <select class="lang-select" aria-label="Language">
           <option value="en" lang="en">English</option>
@@ -95,11 +99,35 @@
         <p class="kicker">OTHER RESEARCH / 02</p>
         <div>
           <h2>模型之外的那层框架。</h2>
-          <p class="section-lede">P 系列主线是 P1–P4，P-Mini 是外传。核心不是「模型变强」，而是一层层把世界模型、自我模型、语言层、验证器拆开测。</p>
+          <p class="section-lede">P 系列主线是 P1–P4，P-Mini 是外传。核心不是「模型变强」，而是一层层把世界模型、自我模型、语言层、验证器拆开测。负结果占了大半，这才是重点。</p>
         </div>
       </div>
-      <div class="carriage-stats"><div><strong>65</strong><span>脚手架</span></div><div><strong>75</strong><span>报告</span></div><div><strong>66</strong><span>组原始结果</span></div><div><strong>P1–P4</strong><span>主线</span></div></div><div class="cards cards-six"><a class="card card-small card-accent" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P1</span><h3>反转宇宙 3/3 死</h3><p>AIF 能看见预测误差，但「看见」不等于「改动作」。固定环境会活，规则一反转就学不动。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P2.0</span><h3>cue 2/3 vs blind 0/3</h3><p>给可见 cue 就能查表；P2.0d 把 6 个格子强制填满后 3/3、0 延迟 100%。但这是「会查表」，不是「知道自己有地图」。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P2.1</span><h3>四组分离</h3><p>accurate fitness 87/79/84，reckless 3 tick 全死。但风险函数、归因标签、C 惩罚都是人手写的。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P3</span><h3>0/3 自发审计</h3><p>4B 会翻译、会服从、会合理化，但不会自己把 8 和 10 放进同一个因果链。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P4</span><h3>Verifier 3/3</h3><p>外部 Verifier 能拒；4B 对误报的审计 0/3，会替校验器圆。模板 3/3 精确，但算术是底层给的。</p></a><a class="card card-small" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" style="text-decoration:none"><span class="card-num">P-Mini</span><h3>外传</h3><p>特征记忆能让行为变好；第一人称痛觉/内感受 0。</p></a></div>
-      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" target="_blank" rel="noopener">完整口径：docs/P-SERIES.md <span aria-hidden="true">↗</span></a></div>
+      <div class="carriage-stats"><div><strong>65</strong><span>脚手架</span></div><div><strong>75</strong><span>报告</span></div><div><strong>66</strong><span>组原始结果</span></div><div><strong>P1–P4</strong><span>主线</span></div></div>
+
+      <div class="lab-compare">
+        <div class="lab-cell"><span class="lab-tag">P1 反转宇宙</span><strong>3/3 死</strong>
+          <p>AIF 能看见预测误差，但「看见」不等于「改动作」。规则一反转，4–7 tick 内全埋。</p></div>
+        <div class="lab-arrow">→</div>
+        <div class="lab-cell lab-cell-good"><span class="lab-tag">P1.8 一次创伤</span><strong>3/3 活</strong>
+          <p>把 <code>C(read)</code> 直接打成 <code>-999</code>，创伤后 read 0 次——<b>但这是人手写的，不是学出来的</b>。</p></div>
+      </div>
+
+      <div class="lab-neg">
+        <h3>负结果：这些才是主要产出</h3>
+        <ul>
+          <li>P1 / P1.5 / P1.9 —— 环境反转后学不动</li>
+          <li>P2.1a —— internal state 只差 0.003–0.009，等于装饰</li>
+          <li>P2.1d —— accurate 与 depressed 完全同分</li>
+          <li>P2.1e —— 拆掉 base policy 后 accurate/blame 直接死</li>
+          <li>P3.1 / P3.2 —— 角色条件化，不是自发审计</li>
+          <li>P4.1 / P4.2 —— 不会质疑错误的 verifier</li>
+          <li>P-Mini 6–14 —— 行为变了，内感受没出来</li>
+        </ul>
+      </div>
+
+      <div class="section-foot">
+        <a class="text-link" href="https://github.com/cyberdyne-bridge/boundary-lab/blob/main/docs/P-SERIES.md" target="_blank" rel="noopener">完整口径：docs/P-SERIES.md <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
   </main>
 

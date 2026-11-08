@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-accent="tools">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,8 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
+  <link rel="stylesheet" href="./style-research.css">
+  <link rel="stylesheet" href="./theme.css">
   <script>
     (function(){try{
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -31,6 +33,7 @@
     }catch(e){}})();
   </script>
 
+  <script src="./theme.js"></script>
 </head>
 <body>
   <div class="cpnc-watermark" aria-hidden="true">
@@ -76,6 +79,7 @@
       <a href="./zh.html#os">CPNC OS</a>
       <a href="./zh.html#agents">Agent 子仓</a>
       <a href="./research.html">其他研究</a>
+      <button class="theme-toggle" type="button" aria-pressed="false"><span class="tt-sun" aria-hidden="true">☀</span><span class="tt-moon" aria-hidden="true">☾</span></button>
       <label class="lang-wrap"><span class="sr-only">Language</span>
         <select class="lang-select" aria-label="Language">
           <option value="en" lang="en">English</option>
@@ -94,12 +98,26 @@
       <div class="section-head">
         <p class="kicker">OTHER RESEARCH / 05</p>
         <div>
-          <h2>独立小工具，<br>不进协议。</h2>
+          <h2>独立小工具，不进协议。</h2>
           <p class="section-lede">与 CBAP 没有关系，也不依赖主仓任何代码——放在同一个组织下只是因为作者是同一个。</p>
         </div>
       </div>
-      <div class="carriage-stats"><div><strong>24→120</strong><span>fps</span></div><div><strong>alpha</strong><span>保留</span></div><div><strong>3</strong><span>端启动脚本</span></div><div><strong>0</strong><span>联网</span></div></div><div class="cards cards-six"><article class="card card-small card-accent"><span class="card-num">01</span><h3>插帧</h3><p>VP9 透明通道原样保留；带音轨的 webm 音轨不重编码直接搬。24 插到 48/72/90/120。</p></article><article class="card card-small"><span class="card-num">02</span><h3>音频快修</h3><p>去闷 / 响度 / 裁静音 / 降噪，外挂模型缺失时自动降级成 DSP，不影响插帧主流程。</p></article><article class="card card-small"><span class="card-num">03</span><h3>先自检</h3><p>一键自检会列出 ffmpeg / ffprobe / rife 的实际情况，报 bug 前先跑它。</p></article><article class="card card-small"><span class="card-num">04</span><h3>不联网</h3><p>只处理本地文件；输出默认落在工具目录的 output/。</p></article><article class="card card-small"><span class="card-num">05</span><h3>许可更正</h3><p>原仓 LICENSE 误抄了上游 Merzlin 的版权行，已更正为本项目作者；上游在 NOTICE 署名。</p></article><article class="card card-small"><span class="card-num">06</span><h3>边界</h3><p>它是周边生产线，不改主仓、不是官方补丁。</p></article></div>
-      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/tools" target="_blank" rel="noopener">tools 仓库 <span aria-hidden="true">↗</span></a></div>
+      <div class="carriage-stats"><div><strong>24→120</strong><span>fps</span></div><div><strong>alpha</strong><span>保留</span></div><div><strong>3</strong><span>端启动脚本</span></div><div><strong>0</strong><span>联网</span></div></div>
+      <div class="tool-bars">
+        <div class="tool-bar"><b>原素材</b><i style="width:20%"></i><em>24 fps</em></div>
+        <div class="tool-bar"><b>插帧后</b><i style="width:60%"></i><em>72 fps</em></div>
+        <div class="tool-bar"><b>激进档</b><i style="width:100%"></i><em>120 fps</em></div>
+      </div>
+
+      <div class="cards cards-six">
+        <article class="card card-small"><span class="card-num">ALPHA</span><h3>透明通道不丢</h3><p>VP9 + alpha 原样保留；不透明素材输出也不带多余 alpha。</p></article>
+        <article class="card card-small"><span class="card-num">AUDIO</span><h3>音轨不重编码</h3><p>带声音的 webm 直接把音轨搬过去，不二次压缩。</p></article>
+        <article class="card card-small"><span class="card-num">FALLBACK</span><h3>缺依赖就降级</h3><p>AI 音频模型不在/崩溃/超时，自动退回自带 DSP，不影响插帧主流程。</p></article>
+      </div>
+
+      <div class="section-foot">
+        <a class="text-link" href="https://github.com/cyberdyne-bridge/tools" target="_blank" rel="noopener">tools 仓库 <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
   </main>
 
