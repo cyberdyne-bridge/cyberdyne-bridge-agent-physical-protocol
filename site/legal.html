@@ -9,6 +9,7 @@
   <link rel="alternate" hreflang="zh-CN" href="https://www.cyberdyne-bridge.com/legal.html">
   <link rel="alternate" hreflang="en" href="https://www.cyberdyne-bridge.com/legal-en.html">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./theme.css">
   <style>
     .legal-wrap { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
     .legal-kicker { color: var(--accent); font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; }
@@ -29,6 +30,7 @@
     .legal-note { border-left: 2px solid var(--accent); padding-left: 1rem; color: var(--muted); }
     @media (max-width: 760px) { .legal-grid { grid-template-columns: 1fr; } }
   </style>
+  <script src="./theme.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -41,6 +43,7 @@
       <a href="./index.html#os">CPNC OS</a>
       <a href="./legal.html" aria-current="page">法律</a>
       <a class="lang-switch" href="./legal-en.html" hreflang="en" lang="en">EN</a>
+      <button class="theme-toggle" type="button" aria-pressed="false"><span class="tt-sun" aria-hidden="true">☀</span><span class="tt-moon" aria-hidden="true">☾</span></button>
       <a class="nav-cta" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
   </header>

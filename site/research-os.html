@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-accent="os">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,8 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-lm.css">
+  <link rel="stylesheet" href="./style-research.css">
+  <link rel="stylesheet" href="./theme.css">
   <script>
     (function(){try{
       if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -31,6 +33,7 @@
     }catch(e){}})();
   </script>
 
+  <script src="./theme.js"></script>
 </head>
 <body>
   <div class="cpnc-watermark" aria-hidden="true">
@@ -76,6 +79,7 @@
       <a href="./zh.html#os">CPNC OS</a>
       <a href="./zh.html#agents">Agent 子仓</a>
       <a href="./research.html">其他研究</a>
+      <button class="theme-toggle" type="button" aria-pressed="false"><span class="tt-sun" aria-hidden="true">☀</span><span class="tt-moon" aria-hidden="true">☾</span></button>
       <label class="lang-wrap"><span class="sr-only">Language</span>
         <select class="lang-select" aria-label="Language">
           <option value="en" lang="en">English</option>
@@ -94,15 +98,35 @@
       <div class="section-head">
         <p class="kicker">OTHER RESEARCH / 03</p>
         <div>
-          <h2>把协议装进<br>一个可启动的系统。</h2>
+          <h2>把协议装进一个可启动的系统。</h2>
           <p class="section-lede">Debian 13 + 一层 CBAP 运行时：多个版本槽并存，开机选一个，登录后还能换，换挂了能回滚。旧槽永远不被修改。</p>
         </div>
       </div>
-      <div class="carriage-stats"><div><strong>11</strong><span>单元测试</span></div><div><strong>3</strong><span>systemd 单元</span></div><div><strong>1</strong><span>条挂载链</span></div><div><strong>0</strong><span>复制协议代码</span></div></div><figure class="arch-note" style="margin:0 0 1.2rem">
-        <img src="./assets/cbap-os-desktop.png" alt="CBAP OS 桌面" style="width:100%;border:1px solid var(--line)">
-        <figcaption>CBAP OS 0.1：XFCE 底座 + 版本槽选择，GRUB 每个槽一项。</figcaption>
-      </figure><div class="cards cards-six"><article class="card card-small card-accent"><span class="card-num">01</span><h3>版本槽</h3><p>/opt/cbap-os/versions/cbap/&lt;version&gt;，不可变；current 是 bind mount，不是副本。</p></article><article class="card card-small"><span class="card-num">02</span><h3>开机选择</h3><p>GRUB 每槽一项，或内核参数 cbap.cbap=… cbap.python=…；无头机直接给参数。</p></article><article class="card card-small"><span class="card-num">03</span><h3>热切换与回滚</h3><p>停服务 → 切挂载 → 起服务；失败恢复旧槽。</p></article><article class="card card-small"><span class="card-num">04</span><h3>没 hand 也能起</h3><p>cbap.service 用 ExecCondition 等 socket，没有 hand 就跳过，不卡在 failed。</p></article><article class="card card-small"><span class="card-num">05</span><h3>诚实的未验证项</h3><p>tty1 菜单代码在，但没在 QEMU 镜像里验证成功；10-24 之后没重跑过完整镜像。</p></article><article class="card card-small"><span class="card-num">06</span><h3>三种「控制」不混</h3><p>cbap-control 管槽位（Tk）；Console 管 Kernel 状态（web，在主仓）；cbap-os 是 CLI。</p></article></div>
-      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/cbap-os" target="_blank" rel="noopener">cbap-os 仓库 <span aria-hidden="true">↗</span></a></div>
+      <div class="carriage-stats"><div><strong>11</strong><span>单元测试</span></div><div><strong>3</strong><span>systemd 单元</span></div><div><strong>1</strong><span>条挂载链</span></div><div><strong>0</strong><span>复制协议代码</span></div></div>
+      <figure class="os-term">
+        <header><i></i><i></i><i></i></header>
+        <pre><span class="p">$</span> <span class="c">cbap-os list</span>
+cbap:
+  v1.7.5    /opt/cbap-os/versions/cbap/v1.7.5
+  v1.4.0    /opt/cbap-os/versions/cbap/v1.4.0
+python:
+  3.12      /opt/cbap-os/versions/python/3.12
+
+<span class="p">$</span> <span class="c">cbap-os use --cbap v1.7.5 --python 3.12</span>
+<span class="m">[ok]</span> stopped cbap.service
+<span class="m">[ok]</span> remounted current/cbap -&gt; v1.7.5
+<span class="m">[ok]</span> started cbap.service</pre>
+      </figure>
+
+      <div class="os-slots">
+        <div class="os-slot"><b>versions/cbap</b><span>不可变源码槽，一个 tag 一个目录</span><em>v1.7.5 / v1.4.0</em></div>
+        <div class="os-slot"><b>current</b><span>bind mount，不是副本；切换 = 重挂载</span><em>→ 选中槽</em></div>
+        <div class="os-slot"><b>cbap.service</b><span>等 socket 出现才启动；没有 hand 就跳过</span><em>ExecCondition</em></div>
+      </div>
+
+      <div class="section-foot">
+        <a class="text-link" href="https://github.com/cyberdyne-bridge/cbap-os" target="_blank" rel="noopener">cbap-os 仓库 <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
   </main>
 
