@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CBAP OS · 可版本化运行底座 · CPNC</title>
+  <meta name="description" content="CBAP OS：Debian 13 + CBAP 运行时层，多版本槽、开机选择、热切换、失败回滚。">
+  <meta name="theme-color" content="#070a0f">
+  <meta property="og:title" content="CBAP OS · 可版本化运行底座 · CPNC">
+  <meta property="og:description" content="Agent ↔ 物理世界协议：服务端事实校验、每设备租约、审计锚点、MCP 最小权限、operator 急停与显式恢复。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.cyberdyne-bridge.com/zh.html">
+  <meta property="og:image" content="https://www.cyberdyne-bridge.com/assets/og-cpnc.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Critical Protocol: NEKXSR Core (CPNC)">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.cyberdyne-bridge.com/assets/og-cpnc.png">
+  <link rel="canonical" href="https://www.cyberdyne-bridge.com/research-os.html">
+  <link rel="alternate" hreflang="zh-CN" href="https://www.cyberdyne-bridge.com/zh.html">
+  <link rel="alternate" hreflang="en" href="https://www.cyberdyne-bridge.com/zh.htmlen.html">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style-lm.css">
+  <script>
+    (function(){try{
+      if(!sessionStorage.getItem('lm_seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+        var m = new URLSearchParams(location.search).get('enter') === 'b' ? 'lm-lock' : 'lm-boot';
+        document.documentElement.classList.add(m);
+      }
+    }catch(e){}})();
+  </script>
+
+</head>
+<body>
+  <div class="cpnc-watermark" aria-hidden="true">
+    <img class="wm-light" src="./assets/cpnc-inverted-triangle-watermark.png" alt="">
+    <img class="wm-dark" src="./assets/cpnc-inverted-triangle-watermark.png" alt="">
+  </div>
+  <div class="lm-lock-overlay" aria-hidden="true">
+    <div class="lm-lock-ring"></div>
+    <div class="lm-lock-cross"></div>
+    <span class="lm-lock-b b1"></span><span class="lm-lock-b b2"></span>
+    <span class="lm-lock-b b3"></span><span class="lm-lock-b b4"></span>
+    <div class="lm-lock-meta"><span>ACQUIRING</span><span>LOCK 04 / 1.0</span></div>
+    <div class="lm-lock-word">NEKXSR / CORE</div>
+  </div>
+  <div class="lm-boot-overlay" aria-hidden="true">
+    <div class="lm-boot-inner">
+      <p class="lm-boot-word">NEKXSR <em>/</em> CORE</p>
+      <div class="lm-boot-line"></div>
+      <div class="lm-boot-meta"><span>CPNC / CBAP v1 / <b>LINK</b></span><span><b>129</b> / 129</span></div>
+      <div class="lm-boot-steps">
+        <span>INITIALIZING CONTROL PLANE</span>
+        <span>SYNCING FACTS</span>
+        <span>READY</span>
+      </div>
+    </div>
+    <div class="lm-boot-foot"><span>AGENT ↔ PHYSICAL WORLD / CPNC / CBAP v1</span><span>v1.7.5</span></div>
+  </div>
+
+  <a class="skip-link" href="#main">跳到正文</a>
+
+  <header class="site-header">
+    <a class="brand" href="./zh.html" aria-label="Critical Protocol: NEKXSR Core 首页">
+      <span class="brand-mark"><img src="./assets/cpnc-mark.png" alt="" width="30" height="30"></span>
+      <span class="brand-text"><strong>NEKXSR</strong><em>CORE</em></span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="./zh.html#what">概览</a>
+      <a href="./zh.html#architecture">架构</a>
+      <a href="./zh.html#principles">协议</a>
+      <a href="./zh.html#security">安全</a>
+      <a href="./zh.html#mcp-status">MCP 状态</a>
+      <a href="./zh.html#protocol-map">协议地图</a>
+      <a href="./zh.html#os">CPNC OS</a>
+      <a href="./zh.html#agents">Agent 子仓</a>
+      <a href="./research.html">其他研究</a>
+      <label class="lang-wrap"><span class="sr-only">Language</span>
+        <select class="lang-select" aria-label="Language">
+          <option value="en" lang="en">English</option>
+          <option value="zh" lang="zh-CN">中文</option>
+          <option value="fr" lang="fr">Français</option>
+          <option value="ru" lang="ru">Русский</option>
+          <option value="es" lang="es">Español</option>
+          <option value="ar" lang="ar">العربية</option>
+        </select></label>
+      <a class="nav-cta" href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="section" id="os">
+      <div class="section-head">
+        <p class="kicker">OTHER RESEARCH / 03</p>
+        <div>
+          <h2>把协议装进<br>一个可启动的系统。</h2>
+          <p class="section-lede">Debian 13 + 一层 CBAP 运行时：多个版本槽并存，开机选一个，登录后还能换，换挂了能回滚。旧槽永远不被修改。</p>
+        </div>
+      </div>
+      <div class="carriage-stats"><div><strong>11</strong><span>单元测试</span></div><div><strong>3</strong><span>systemd 单元</span></div><div><strong>1</strong><span>条挂载链</span></div><div><strong>0</strong><span>复制协议代码</span></div></div><figure class="arch-note" style="margin:0 0 1.2rem">
+        <img src="./assets/cbap-os-desktop.png" alt="CBAP OS 桌面" style="width:100%;border:1px solid var(--line)">
+        <figcaption>CBAP OS 0.1：XFCE 底座 + 版本槽选择，GRUB 每个槽一项。</figcaption>
+      </figure><div class="cards cards-six"><article class="card card-small card-accent"><span class="card-num">01</span><h3>版本槽</h3><p>/opt/cbap-os/versions/cbap/&lt;version&gt;，不可变；current 是 bind mount，不是副本。</p></article><article class="card card-small"><span class="card-num">02</span><h3>开机选择</h3><p>GRUB 每槽一项，或内核参数 cbap.cbap=… cbap.python=…；无头机直接给参数。</p></article><article class="card card-small"><span class="card-num">03</span><h3>热切换与回滚</h3><p>停服务 → 切挂载 → 起服务；失败恢复旧槽。</p></article><article class="card card-small"><span class="card-num">04</span><h3>没 hand 也能起</h3><p>cbap.service 用 ExecCondition 等 socket，没有 hand 就跳过，不卡在 failed。</p></article><article class="card card-small"><span class="card-num">05</span><h3>诚实的未验证项</h3><p>tty1 菜单代码在，但没在 QEMU 镜像里验证成功；10-24 之后没重跑过完整镜像。</p></article><article class="card card-small"><span class="card-num">06</span><h3>三种「控制」不混</h3><p>cbap-control 管槽位（Tk）；Console 管 Kernel 状态（web，在主仓）；cbap-os 是 CLI。</p></article></div>
+      <div class="section-foot"><a class="text-link" href="https://github.com/cyberdyne-bridge/cbap-os" target="_blank" rel="noopener">cbap-os 仓库 <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand-block">
+      <img class="footer-lockup" src="./assets/cpnc-horizontal-lockup.png" alt="Critical Protocol: NEKXSR Core（CPNC）" width="2200" height="340">
+      <span class="footer-domain"><a href="https://www.cyberdyne-bridge.com/">cyberdyne-bridge.com</a></span>
+    </div>
+    <div class="footer-meta">
+      <span>UNOFFICIAL OPEN-SOURCE PROTOCOL · AS IS · AI 协作</span>
+      <a href="./legal.html">法律 / Legal</a>
+      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">第三方声明</a>
+      <a href="https://github.com/cyberdyne-bridge/cyberdyne-bridge-agent-physical-protocol/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+    </div>
+  </footer>
+  <script src="./motion-lm.js"></script>
+  <script src="./enter-lm.js"></script>
+  <script src="./i18n.js"></script>
+</body>
+</html>
