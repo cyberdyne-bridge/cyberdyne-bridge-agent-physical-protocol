@@ -248,6 +248,24 @@ upstream patch
 smoke test
 ```
 
+### 只读车厢：自我模型
+
+[`agents/cyberdyne/plugins/自我模型/`](agents/cyberdyne/plugins/自我模型/)（v0.2.1，车厢 113，可热拔）
+是一个**只观测、不决策**的插件，给协议补上身体层的自我观测。
+
+```text
+补丁点   任务栈.接 / _下一步 / _失败 / _看完成了没 / _下发
+只写     logs/自我模型.jsonl
+不写     任务栈、动作、veto、bridge.py、其它车厢
+记什么   predicted vs actual、物理体检报告、回执噪声（goto 打断 / dig 失败）、
+         requested_target / delivered_qty / owned_qty / chest_qty
+```
+
+它的价值不是"多一个功能"：conformance 证明**命令发得对**，这个车厢记录**计划说的和实际发生的差多少**。
+每个钩子第一件事都是回调原函数、原值返回——观察者自己出错只写账，不许拖垮主链。
+
+来源：`boundary-lab` 的 P2–P4 研究线，2026-10-22 经请示/批复接入，原则是"先当身体，不先当大脑"。
+
 ## 快速开始
 
 ### 只跑协议，不碰 Minecraft
