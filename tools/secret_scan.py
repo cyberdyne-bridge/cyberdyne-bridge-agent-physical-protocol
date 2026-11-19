@@ -26,13 +26,12 @@ PATTERNS = [
 
 
 def tracked_files() -> list[Path]:
-    try:
-        raw = subprocess.check_output(
-            ["git", "ls-files", "-z"], cwd=ROOT, stderr=subprocess.DEVNULL
-        )
-        names = raw.decode("utf-8", "replace").split("\0")
-    except (OSError, subprocess.CalledProcessError):
-        names = []
+    # CI always has git.  Let a missing git fail loudly instead of silently
+    # falling back to a partial scan.
+    raw = subprocess.check_output(
+        ["git", "ls-files", "-z"], cwd=ROOT, stderr=subprocess.DEVNULL
+    )
+    names = raw.decode("utf-8", "replace").split("\0")
     if names:
         return [ROOT / n for n in names if n]
     return [p for p in ROOT.rglob("*") if p.is_file()
@@ -45,10 +44,7 @@ def main() -> int:
         rel = path.relative_to(ROOT)
         if set(rel.parts) & SKIP_PARTS or not path.is_file():
             continue
-        try:
-            text = path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
         for lineno, line in enumerate(text.splitlines(), 1):
             for name, rx in PATTERNS:
                 if rx.search(line):
