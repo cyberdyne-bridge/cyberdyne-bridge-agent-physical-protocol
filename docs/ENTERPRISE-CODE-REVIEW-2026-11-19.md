@@ -276,3 +276,38 @@ lease 续租、命令去重、队列
 ```
 
 企业级结论：**可以有条件进入受控内测，不能直接对外生产；先处理 3 个部署 P0。**
+
+
+---
+
+## 7. 2026-11-19 release decision
+
+Native random-world acceptance passed and the public audit banner was removed.
+
+```text
+random spread -> cleared inventory -> food only
+memory_enable=false during reproduction
+chat "做个石镐"
+server inventory: stone_pickaxe 1
+```
+
+Security state at release:
+
+```text
+25565 -> 127.0.0.1 only
+25575 -> closed
+RCON -> disabled
+/tmp/honeypot -> stopped
+UFW -> still not enabled; loopback binding is the current mitigation
+```
+
+Residual, explicitly not hidden:
+
+```text
+P1-D still has 461 pure-silent sites in the scanner baseline
+69 of them are bridge.py main-chain redlines
+The native random acceptance proves the tech tree, not a zero-exception codebase.
+```
+
+The banner was removed because the user requested release after the native
+acceptance, not because every P1-D site was rewritten.

@@ -77,13 +77,3 @@ jobs:
             | xargs -0 -n1 node --check
       - name: JS behavior tests with coverage
         run: node --test --experimental-test-coverage tests/js/*.test.js
-
-  audit-banner-gate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-      - uses: actions/checkout@v4
-      - name: Require audit banner while audit report is open
-        run: |
-          grep -q '代码审计中' site/zh.html
-          grep -q 'Code audit in progress' site/index.html
