@@ -277,6 +277,7 @@ class MCPStdioClient:
                 try:
                     if stream:
                         stream.close()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[mcp] stream close failed: {type(e).__name__}: {e}",
+                          file=sys.stderr, flush=True)
             self.proc = None

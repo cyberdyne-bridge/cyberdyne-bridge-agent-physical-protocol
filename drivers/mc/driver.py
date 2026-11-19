@@ -17,6 +17,7 @@ import copy
 import json
 import os
 import socket
+import sys
 import threading
 import time
 from typing import Any, Callable
@@ -196,13 +197,14 @@ class McDriver:
         try:
             if sock:
                 sock.close()
-        except OSError:
-            pass
+        except OSError as e:
+            print(f"[mc] socket close failed: {e}", file=sys.stderr, flush=True)
         if self.on_disconnect:
             try:
                 self.on_disconnect(reason)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[mc] disconnect callback failed: {type(e).__name__}: {e}",
+                      file=sys.stderr, flush=True)
 
     def _dispatch(self, msg: dict) -> None:
         typ = msg.get("type")
@@ -215,8 +217,9 @@ class McDriver:
             if self.on_state:
                 try:
                     self.on_state(copy.deepcopy(msg))
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[mc] state callback failed: {type(e).__name__}: {e}",
+                          file=sys.stderr, flush=True)
             return
         if typ == "event" and msg.get("kind") == "cmdResult":
             cmd = str(msg.get("cmd") or "unknown")
@@ -229,8 +232,9 @@ class McDriver:
             if self.on_result:
                 try:
                     self.on_result(cmd, ok, why, extra)
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[mc] result callback failed: {type(e).__name__}: {e}",
+                          file=sys.stderr, flush=True)
             return
         if typ == "event":
             self._emit_event(msg)
@@ -239,8 +243,9 @@ class McDriver:
         if self.on_event:
             try:
                 self.on_event(msg)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[mc] event callback failed: {type(e).__name__}: {e}",
+                      file=sys.stderr, flush=True)
 
     # ── queries ───────────────────────────────────────────────
 

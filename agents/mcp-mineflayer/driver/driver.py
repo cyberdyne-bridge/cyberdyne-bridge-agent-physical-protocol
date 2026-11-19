@@ -17,6 +17,7 @@ import json
 import os
 import queue
 import shutil
+import sys
 import threading
 import time
 from typing import Any
@@ -292,6 +293,7 @@ class MCPDriver:
             "blocks": (self._latest_state or {}).get("blocks") or [],
             "scan": (self._latest_state or {}).get("scan"),
             "chat": (self._latest_state or {}).get("chat") or [],
+            "optional_errors": [],
             "seq": 0,
             "t": int(time.time() * 1000),
         }
@@ -300,8 +302,11 @@ class MCPDriver:
                 inv = self._call("inventory", {"action": "inspect"}, timeout=15)
                 state["items"] = self._inventory_to_dict(inv)
                 state["inventory_raw"] = inv
-            except MCPError:
-                pass
+            except MCPError as e:
+                state["optional_errors"].append({"source": "inventory",
+                                                "error": str(e)[:200]})
+                print(f"[mcp-mineflayer] inventory state failed: {e}",
+                      file=sys.stderr, flush=True)
             try:
                 blocks = self._call("observe", {
                     "target": "blocks",
@@ -309,14 +314,20 @@ class MCPDriver:
                     "maxDistance": 16, "maxCount": 8}, timeout=20)
                 state["blocks"] = (blocks or {}).get("blocks") or []
                 state["scan"] = {"blocks": state["blocks"]}
-            except MCPError:
-                pass
+            except MCPError as e:
+                state["optional_errors"].append({"source": "blocks",
+                                                "error": str(e)[:200]})
+                print(f"[mcp-mineflayer] blocks state failed: {e}",
+                      file=sys.stderr, flush=True)
             try:
                 chat = self._call("observe", {"target": "chat", "limit": 20},
                                   timeout=15)
                 state["chat"] = (chat or {}).get("messages") or []
-            except MCPError:
-                pass
+            except MCPError as e:
+                state["optional_errors"].append({"source": "chat",
+                                                "error": str(e)[:200]})
+                print(f"[mcp-mineflayer] chat state failed: {e}",
+                      file=sys.stderr, flush=True)
         with self._state_lock:
             self._state_seq += 1
             state["seq"] = self._state_seq

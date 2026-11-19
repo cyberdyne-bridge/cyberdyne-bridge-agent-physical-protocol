@@ -427,8 +427,10 @@ class ConsoleBackend:
             data = json.loads(path.read_text(encoding="utf-8"))
             if isinstance(data, dict) and isinstance(data.get("devices"), dict):
                 return data
-        except (OSError, ValueError):
-            pass
+        except (OSError, ValueError) as e:
+            if not isinstance(e, FileNotFoundError):
+                print(f"[console] registry read failed: {e}",
+                      file=sys.stderr, flush=True)
         return {"devices": {}}
 
     def _save_registry_state(self, state: dict) -> None:
@@ -685,8 +687,9 @@ class ConsoleBackend:
             if driver:
                 try:
                     driver.close()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[console] onboard driver close failed: {e}",
+                          file=sys.stderr, flush=True)
             self._onboard_lock.release()
 
     def _load_history(self) -> None:
@@ -709,8 +712,10 @@ class ConsoleBackend:
                     self._history.setdefault(dev, []).append(sample)
                     if len(self._history[dev]) > 300:
                         del self._history[dev][:-300]
-        except OSError:
-            pass
+        except OSError as e:
+            if not isinstance(e, FileNotFoundError):
+                print(f"[console] history read failed: {e}",
+                      file=sys.stderr, flush=True)
 
     def _append_history(self, rows: list[tuple[str, dict]]) -> None:
         if not self.history_path or not rows:
@@ -731,8 +736,9 @@ class ConsoleBackend:
                 os.fsync(fd)
             finally:
                 os.close(fd)
-        except OSError:
-            pass
+        except OSError as e:
+            print(f"[console] history append failed: {e}",
+                  file=sys.stderr, flush=True)
 
     def history(self, device_id: str, limit: int = 120) -> dict:
         limit = max(1, min(int(limit), 300))
