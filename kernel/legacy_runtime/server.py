@@ -28,6 +28,7 @@ import json
 import os
 import socket
 import ssl
+import sys
 import threading
 import time
 import traceback
@@ -964,10 +965,12 @@ class KernelServer:
                     error=str(e)[:500],
                     traceback=traceback.format_exc()[-4000:],
                 )
-            except Exception:
+            except Exception as _audit_exc:
                 # _audit already fails closed on write failure; never mask
                 # the original request failure with an audit exception.
-                pass
+                print(f"[kernel] request exception audit failed: "
+                      f"{type(_audit_exc).__name__}: {_audit_exc}",
+                      file=sys.stderr, flush=True)
             code = getattr(e, "code", "E_INTERNAL")
             message = (getattr(e, "message", None) if code != "E_INTERNAL"
                        else "internal error")
