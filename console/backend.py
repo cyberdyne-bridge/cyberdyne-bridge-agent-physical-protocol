@@ -13,6 +13,7 @@ import hmac
 import json
 import os
 import re
+import sys
 import threading
 import time
 import urllib.request
@@ -106,6 +107,8 @@ class ConsoleBackend:
                     self._fds[dev_id] = opened["payload"]["fd"]
             except Exception as e:
                 self._last_error = f"{dev_id}: {e}"
+                print(f"[console] open {dev_id} failed: {e}",
+                      file=sys.stderr, flush=True)
 
     # ── status ───────────────────────────────────────────────
     def _facts(self, frame: dict) -> Any:

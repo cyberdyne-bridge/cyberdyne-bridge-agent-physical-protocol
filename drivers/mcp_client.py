@@ -150,12 +150,14 @@ class MCPStdioClient:
                         continue
                     try:
                         resource.setrlimit(res, (int(value), int(value)))
-                    except (ValueError, OSError):
-                        pass
+                    except (ValueError, OSError) as e:
+                        print(f"[mcp] setrlimit {name} failed: {e}",
+                              file=sys.stderr, flush=True)
                 try:
                     os.umask(0o077)
-                except OSError:
-                    pass
+                except OSError as e:
+                    print(f"[mcp] set umask failed: {e}",
+                          file=sys.stderr, flush=True)
                 if self.run_as_gid is not None:
                     os.setgid(self.run_as_gid)
                     os.setgroups([self.run_as_gid])
@@ -262,11 +264,14 @@ class MCPStdioClient:
                     except (OSError, ProcessLookupError):
                         p.kill()
                     p.wait(timeout=2)
-        except Exception:
+        except Exception as e:
+            print(f"[mcp] process cleanup failed: {type(e).__name__}: {e}",
+                  file=sys.stderr, flush=True)
             try:
                 p.kill()
-            except Exception:
-                pass
+            except Exception as e2:
+                print(f"[mcp] kill after cleanup failure failed: {e2}",
+                      file=sys.stderr, flush=True)
         finally:
             for stream in (p.stdin, p.stdout, p.stderr):
                 try:

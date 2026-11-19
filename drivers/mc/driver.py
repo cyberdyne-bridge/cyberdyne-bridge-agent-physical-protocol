@@ -116,13 +116,16 @@ class McDriver:
         # This is driver-specific handshake, not a kernel concern.
         try:
             s.sendall(protocol.encode({"cmd": "watch_items", "list": ["*"]}))
-        except OSError:
-            pass
+        except OSError as e:
+            self._emit_event({"type": "event", "kind": "watch_items_failed",
+                              "why": str(e)[:160], "t": protocol.now_ms()})
         if self.on_connect:
             try:
                 self.on_connect()
-            except Exception:
-                pass
+            except Exception as e:
+                self._emit_event({"type": "event", "kind": "connect_callback_failed",
+                                  "why": f"{type(e).__name__}: {e}"[:160],
+                                  "t": protocol.now_ms()})
 
     def close(self) -> None:
         self._stop.set()
@@ -149,7 +152,10 @@ class McDriver:
                 time.sleep(0.5)
                 try:
                     self._open_socket()
-                except OSError:
+                except OSError as e:
+                    self._emit_event({"type": "event", "kind": "reconnect_failed",
+                                      "why": str(e)[:160], "t": protocol.now_ms()})
+                    time.sleep(0.5)
                     continue
             sock = self._sock
             if sock is None:
