@@ -1687,7 +1687,8 @@ class KernelServer:
             "safe_evidence": self._safe_evidence(
                 f.driver, not (self._safe or f.device_id in self._safe_devices)),
             "security": {"degraded": self._security_degraded,
-                         "role": session.role},
+                         "role": session.role,
+                         "audit_remote": self.audit.remote_status()},
             "pending": pending,
             "fd": f.fd,
         })

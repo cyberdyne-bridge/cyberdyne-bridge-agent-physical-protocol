@@ -327,6 +327,19 @@ class SecurityTest(unittest.TestCase):
         ok, why = a.verify()
         self.assertTrue(ok, why)
 
+    def test_remote_audit_failure_is_visible(self):
+        from kernel.legacy_runtime.security import AuditChain
+        path = os.path.join(self.tmp, "remote-fail-audit.jsonl")
+        a = AuditChain(path, remote_url="http://127.0.0.1:1/audit")
+        a.append("unit", value=1)
+        deadline = time.time() + 5
+        while a.remote_status()["failures"] == 0 and time.time() < deadline:
+            time.sleep(0.05)
+        st = a.remote_status()
+        self.assertTrue(st["degraded"], st)
+        self.assertGreaterEqual(st["failures"], 1, st)
+        self.assertTrue(st["last_error"], st)
+
     def test_require_independent_facts_rejects_self_report(self):
         k = KernelServer(
             SecurityDriver(), socket_path=os.path.join(self.tmp, "i.sock"),

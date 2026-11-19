@@ -20,6 +20,7 @@ import os
 import queue
 import secrets
 import struct
+import sys
 import threading
 import time
 import urllib.request
@@ -166,6 +167,10 @@ class AuditChain:
         self._seq = 0
         self._remote_q: queue.Queue | None = None
         self._remote_failures = 0
+        self._remote_last_error = ""
+        self._remote_last_failure_at = 0.0
+        self._remote_last_success_at = 0.0
+        self._remote_degraded = False
         self._load_tail()
         if self.remote_url:
             self._remote_q = queue.Queue(maxsize=1000)
@@ -357,6 +362,17 @@ class AuditChain:
             return False, str(e)
 
 
+    def remote_status(self) -> dict:
+        """Visible state for operations/health checks (never the token)."""
+        return {
+            "enabled": bool(self.remote_url),
+            "degraded": bool(self._remote_degraded),
+            "failures": int(self._remote_failures),
+            "last_error": self._remote_last_error[-500:],
+            "last_failure_at": self._remote_last_failure_at,
+            "last_success_at": self._remote_last_success_at,
+        }
+
     def _remote_worker(self) -> None:
         assert self.remote_url is not None
         while True:
@@ -384,8 +400,18 @@ class AuditChain:
                     os.fsync(fd)
                 finally:
                     os.close(fd)
-            except Exception:
+                self._remote_last_success_at = time.time()
+                self._remote_degraded = False
+            except Exception as e:
                 self._remote_failures += 1
+                self._remote_last_error = f"{type(e).__name__}: {e}"
+                self._remote_last_failure_at = time.time()
+                self._remote_degraded = True
+                try:
+                    print(f"[audit] remote sink failure: {self._remote_last_error}",
+                          file=sys.stderr, flush=True)
+                except Exception:
+                    pass
 
 
 # ── token file ───────────────────────────────────────────────
