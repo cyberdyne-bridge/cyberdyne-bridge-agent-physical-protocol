@@ -49,7 +49,7 @@ lease/fencing/estop 的语义改动
 | P1-C | 远端审计失败计数、状态、告警事件 | 中 | 已实现：`remote_status()`、stderr 告警、stat 暴露 | 主 Agent 已验收 |
 | P1-D | 482 处纯静默异常分类 | 低 | 已加扫描器基线（730/482），CI ratchet | 主 Agent 已验收基线 |
 | P1-E | JS 纯函数行为测试 + coverage | 中 | 已加 `tests/js/proto_sonar.test.js`，CI 跑 `node --test --experimental-test-coverage` | 主 Agent 已验收 |
-| P1-F | CI 加 ruff/bandit/npm audit/secret scan | 低 | 本地 uvx/pip 安装被环境限制，尚未落地 | 待做 |
+| P1-F | CI 加 ruff/bandit/npm audit/secret scan | 低 | 已加 CI 的 ruff fatal / bandit high / npm audit；secret scan 仍待补，本地工具安装被环境限制 | 部分验收 |
 | P1-G | `tests/body` 已进 CI | 已做 | 已确认 | 已验收 |
 
 ### 推荐顺序
