@@ -293,6 +293,9 @@ root/same-uid attacker can read tokens and ptrace processes
 malicious hardware can lie about its own safe state
 supply-chain compromise of Python/Node dependencies is outside CBAP
 physical emergency stop cannot be implemented in software
+manifest expiry trusts the local clock: an attacker with CAP_SYS_TIME
+can roll it back and revive an expired signature; use a TPM or an
+online time check when that matters
 ```
 
 These are not hidden. They are the boundary of this layer.
