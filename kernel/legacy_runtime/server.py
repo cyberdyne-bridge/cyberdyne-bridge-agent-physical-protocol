@@ -31,7 +31,7 @@ import ssl
 import threading
 import time
 import traceback
-from collections import deque
+from collections import OrderedDict, deque
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -160,6 +160,8 @@ class KernelServer:
                  kernel_id: str = "cyberdyne-legacy",
                  token: str | None = None,
                  lease_ttl_ms: int = 30000,
+                 idem_ttl_ms: int = 300000,
+                 idem_max: int = 1024,
                  audit_path: str | None = None,
                  drivers: list | None = None,
                  policy: str | dict | None = None,
@@ -239,7 +241,12 @@ class KernelServer:
         self._conn_lock = threading.Lock()
         self._fds: dict[str, Fd] = {}
         self._pending: dict[tuple, deque[Pending]] = {}
-        self._idem: dict[tuple, dict] = {}
+        # Bounded, expiring idempotency cache. Pending entries are not
+        # evicted by TTL; only completed results expire. Capacity pressure
+        # evicts the oldest completed result first.
+        self._idem: OrderedDict[tuple, dict] = OrderedDict()
+        self.idem_ttl_ms = max(1000, int(idem_ttl_ms))
+        self.idem_max = max(1, int(idem_max))
         self._leases: dict[str, dict] = {}
         self._approvals: dict[str, Approval] = {}
         self._lock = threading.RLock()
@@ -325,6 +332,47 @@ class KernelServer:
                     f"E_SAFETY: {dev}: input requires an isolated backend")
             contracts[dev] = contract
         self.device_contracts = contracts
+
+    def _idem_prune_locked(self, now: float | None = None) -> None:
+        """Drop expired completed results, then enforce the size cap.
+
+        Caller must hold self._lock. Pending entries are not evicted by time;
+        they are bounded by in-flight limits and removed on completion.
+        """
+        now = time.monotonic() if now is None else float(now)
+        ttl = self.idem_ttl_ms / 1000.0
+        for key in list(self._idem.keys()):
+            rec = self._idem.get(key) or {}
+            if rec.get("state") != "pending":
+                try:
+                    age = now - float(rec.get("_ts", now))
+                except (TypeError, ValueError):
+                    age = ttl + 1
+                if age > ttl:
+                    self._idem.pop(key, None)
+        while len(self._idem) > self.idem_max:
+            removed = False
+            for key in list(self._idem.keys()):
+                if (self._idem.get(key) or {}).get("state") != "pending":
+                    self._idem.pop(key, None)
+                    removed = True
+                    break
+            if not removed:
+                break
+
+    def _idem_get_locked(self, key: tuple) -> dict | None:
+        self._idem_prune_locked()
+        rec = self._idem.get(key)
+        if rec is not None:
+            self._idem.move_to_end(key)
+        return rec
+
+    def _idem_put_locked(self, key: tuple, rec: dict) -> None:
+        rec = dict(rec)
+        rec["_ts"] = time.monotonic()
+        self._idem[key] = rec
+        self._idem.move_to_end(key)
+        self._idem_prune_locked()
 
     def _device_view(self, d: Any) -> dict:
         desc = d.describe()
@@ -1192,7 +1240,7 @@ class KernelServer:
         key = (session.agent_id, f.device_id, idem_key) if idem_key else None
         if key:
             with self._lock:
-                cached = self._idem.get(key)
+                cached = self._idem_get_locked(key)
                 if cached:
                     if cached.get("state") == "pending":
                         raise _OpError("E_BUSY", "same idempotency_key in flight")
@@ -1250,7 +1298,7 @@ class KernelServer:
         with self._lock:
             self._pending.setdefault((f.device_id, cmd), deque()).append(p)
             if key:
-                self._idem[key] = {"state": "pending", "id": rid}
+                self._idem_put_locked(key, {"state": "pending", "id": rid})
         if ack:
             session.send({"v": protocol.PROTOCOL_VERSION, "type": "ack",
                           "id": rid, "ts": protocol.now_ms(),
@@ -1814,10 +1862,10 @@ class KernelServer:
                 if not q:
                     self._pending.pop(key, None)
             if p.idem_key:
-                self._idem[p.idem_key] = {
+                self._idem_put_locked(p.idem_key, {
                     "state": "done", "ok": ok, "payload": payload,
                     "facts": facts, "error": err,
-                }
+                })
         if p.timer:
             p.timer.cancel()
         p.session.send(protocol.result(p.request_id, ok, payload, facts, err))

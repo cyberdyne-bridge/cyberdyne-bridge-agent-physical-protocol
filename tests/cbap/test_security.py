@@ -243,6 +243,28 @@ class SecurityTest(unittest.TestCase):
         self.assertEqual(stale["error"]["code"], "E_BUSY")
         a.close(); b.close()
 
+    def test_idem_cache_expires_and_evicts_completed_results(self):
+        k = KernelServer(
+            self.driver,
+            socket_path=os.path.join(self.tmp, "idem.sock"),
+            audit_path=os.path.join(self.tmp, "idem-audit.jsonl"),
+            idem_ttl_ms=1000,
+            idem_max=2,
+        )
+        with k._lock:
+            for i in range(3):
+                k._idem_put_locked(("agent", "dev", str(i)),
+                                   {"state": "done", "ok": True})
+            self.assertEqual(len(k._idem), 2)
+            self.assertNotIn(("agent", "dev", "0"), k._idem)
+            k._idem_put_locked(("agent", "dev", "pending"),
+                               {"state": "pending", "id": "r"})
+            self.assertEqual(len(k._idem), 2)  # cap still applies
+            self.assertIn(("agent", "dev", "pending"), k._idem)
+            k._idem_prune_locked(now=time.monotonic() + 2)
+            self.assertIn(("agent", "dev", "pending"), k._idem)
+            self.assertEqual(len(k._idem), 1)
+
     def test_audit_remote_mirror_receives_signed_rows(self):
         received = []
 
