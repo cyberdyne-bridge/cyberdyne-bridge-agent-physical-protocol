@@ -94,32 +94,20 @@ op-permission-level=4
 
 ## 2. 发现清单
 
-### P0-01 · RCON 暴露且凭据弱
+### P0-01 · RCON 暴露且凭据弱（已关闭）
 
-- 证据：`runtime/server.properties:13,44,45`；`ss` 显示 `*:25575`。
-- CWE：CWE-306（关键功能缺少认证）、CWE-521（弱密码）。
-- 影响：校园网 `/16` 可达时，RCON 可被暴力/猜测；RCON 具备服务器控制能力。
-- 估算严重度：Critical（CVSS 9.0+，视网络可达性）。
-- 修复：
+- 证据：`runtime/server.properties:13,44,45`；`ss` 曾显示 `*:25575`。
+- 处理：2026-11-19 按方案 A 设置 `enable-rcon=false` 并重启
+  `mc-server.service`；`25575` 已无监听。
+- 残余：`rcon.password=cyberdyne` 仍留在配置文件中，但 RCON 关闭；建议下次维护时清掉。
 
-```text
-优先 enable-rcon=false
-如必须保留：rcon.password 改为随机 32+ 字符，且只绑定 loopback/受控网段
-UFW 永远不要放行 25575
-```
+### P0-02 · Minecraft 离线模式 + 关闭白名单 + 全部网卡（已限制为本机）
 
-### P0-02 · Minecraft 离线模式 + 关闭白名单 + 全部网卡
-
-- 证据：`runtime/server.properties:37,52,63`；`ss` 显示 `*:25565`。
-- CWE：CWE-287（认证不当）、CWE-1188（不安全默认）。
-- 影响：同网段任何人可用任意 ID 进入；白名单在 offline-mode 下也不能可靠防冒充。
-- 修复：
-
-```text
-只本机 bot：server-ip=127.0.0.1，或 UFW 不开 25565
-需要联机：online-mode=true
-无法正版验证：至少 whitelist + 受控网段/VPN，并明确接受冒充风险
-```
+- 证据：`runtime/server.properties:37,52,63`；`ss` 曾显示 `*:25565`。
+- 处理：2026-11-19 按方案 A 设置 `server-ip=127.0.0.1` 并重启
+  `mc-server.service`；当前仅监听 `127.0.0.1:25565`。
+- 说明：`online-mode=false` / `white-list=false` 在本机回环场景下接受；
+  如果将来需要局域网联机，必须重新评审并开启正版验证/白名单。
 
 ### P0-03 · 未登记服务监听全部网卡（已关闭）
 
@@ -239,9 +227,9 @@ lease 续租、命令去重、队列
 
 必须全部满足才可移除官网“代码审计中”：
 
-- [ ] RCON 关闭或只 loopback，密码不再是 `cyberdyne`
-- [ ] MC 不暴露给不可信网段，或 online-mode/whitelist 正确
-- [ ] `/tmp/honeypot` 服务确认/关闭/登记
+- [x] RCON 已关闭
+- [x] MC 仅监听 `127.0.0.1:25565`
+- [x] `/tmp/honeypot` 已确认测试用途并关闭
 - [ ] `ufw` 实际启用并复核监听面
 - [ ] JS 行为测试、coverage 进入 CI（tests/body 已完成）
 - [x] CI 的 ruff fatal / bandit high / npm audit / secret scan 已全部通过
