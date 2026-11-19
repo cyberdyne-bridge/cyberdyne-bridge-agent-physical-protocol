@@ -18,6 +18,8 @@ jobs:
           python-version: "3.12"
       - name: Compile Python
         run: python -m compileall -q kernel agents tools
+      - name: Silent-exception ratchet
+        run: python tools/扫吞异常.py --baseline=tools/吞异常基线.json >/dev/null
       - name: CPNC conformance and security tests
         env:
           PYTHONPATH: .

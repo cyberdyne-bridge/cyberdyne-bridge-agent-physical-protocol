@@ -33,6 +33,7 @@
 
 import ast
 import io
+import json
 import os
 import sys
 
@@ -133,7 +134,17 @@ def 扫一个文件(路):
 
 
 def 主():
-    根 = sys.argv[1:] or [ROOT]
+    根 = []
+    基线路 = None
+    for 参 in sys.argv[1:]:
+        if 参.startswith("--baseline="):
+            基线路 = 参.split("=", 1)[1]
+        elif 参 == "--baseline":
+            print("用法：--baseline=<json>", file=sys.stderr)
+            return 2
+        else:
+            根.append(参)
+    根 = 根 or [ROOT]
     文件们 = []
     for r in 根:
         if os.path.isfile(r):
@@ -186,6 +197,24 @@ def 主():
     print("  其中主链 %d 处（**红线：不许改**，列给主人看）"
           % sum(1 for x in 总 if os.path.basename(x["文"]) == "bridge.py"))
     print("─" * 78)
+    if 基线路:
+        try:
+            with open(基线路, encoding="utf-8") as f:
+                基线 = json.load(f)
+        except (OSError, ValueError) as e:
+            print(f"  ✗ 基线读不出来：{e}", file=sys.stderr)
+            return 2
+        当前总 = len(总)
+        当前纯 = sum(1 for x in 总 if x["纯"] == 1)
+        当前动 = 当前总 - 当前纯
+        基线总 = int(基线.get("total", 0))
+        基线纯 = int(基线.get("pure_silent", 0))
+        if 当前总 > 基线总 or 当前纯 > 基线纯:
+            print(f"  ✗ 吞异常基线上升：total {基线总}->{当前总}，"
+                  f"pure_silent {基线纯}->{当前纯}", file=sys.stderr)
+            return 1
+        print(f"  ✓ 吞异常基线通过：total {当前总}/{基线总}，"
+              f"pure_silent {当前纯}/{基线纯}，actionless {当前动}")
     return 0
 
 

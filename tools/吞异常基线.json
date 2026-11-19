@@ -1,0 +1,6 @@
+{
+  "total": 730,
+  "pure_silent": 482,
+  "actionless": 248,
+  "note": "CI ratchet: total and pure_silent must not increase. Lower values are allowed; update this file when intentionally reducing them."
+}
