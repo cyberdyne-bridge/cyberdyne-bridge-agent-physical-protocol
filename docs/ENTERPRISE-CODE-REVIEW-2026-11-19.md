@@ -249,7 +249,7 @@ lease 续租、命令去重、队列
 - [ ] `/tmp/honeypot` 服务确认/关闭/登记
 - [ ] `ufw` 实际启用并复核监听面
 - [ ] JS 行为测试、coverage 进入 CI（tests/body 已完成）
-- [x] CI 已加 ruff fatal / bandit high / npm audit + secret scan
+- [x] CI 的 ruff fatal / bandit high / npm audit / secret scan 已全部通过
 - [ ] `_idem` 有 TTL/上限
 - [ ] `E_INTERNAL` 有服务端 traceback 审计
 - [ ] 远端审计失败有告警
