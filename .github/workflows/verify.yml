@@ -55,6 +55,8 @@ jobs:
           find agents/cyberdyne/hand/node -type f -name '*.js' \
             -not -path '*/node_modules/*' -print0 \
             | xargs -0 -n1 node --check
+      - name: JS behavior tests with coverage
+        run: node --test --experimental-test-coverage tests/js/*.test.js
 
   audit-banner-gate:
     runs-on: ubuntu-latest
