@@ -2,7 +2,7 @@
 
 - 审查日期：2026-11-19
 - 仓库：`/home/bzys17mintstart/cyberdyne-bridge`
-- 审查基线：`9baa11f`（`feat(security): manifest 签名有效期（默认 15 天）`）
+- 审查基线：`289e8a9`（当前分支；含 2026-11-19 审查报告提交）
 - 审查范围：CBAP Kernel、安全/审计、MC driver、native Brain/Hand、Console、MCP、测试与部署配置
 - 审查方式：代码阅读、git 历史、单元/集成测试、异常扫描、运行时监听检查、配置审查
 - 结论：**代码质量中等偏上，但当前部署不可称为生产级。存在 3 个部署 P0、若干 P1 代码/工程缺口。**
@@ -31,7 +31,7 @@ allow-foot / watch / error-facts 映射
 2. **MC 以 `online-mode=false` + `white-list=false` 运行在全部网卡。**
 3. **`/tmp/honeypot/multi.py` 在 `0.0.0.0:2201-2209` 监听，来源不在本仓。**
 4. **729 处吞异常，其中 482 处纯静默；`logs/静默.jsonl` 仍有 5985 条历史。**
-5. **测试绿不代表覆盖完整：`tests/body` 5 个测试不在 CI，JS 运行逻辑没有单元测试。**
+5. **测试绿不代表覆盖完整：JS 运行逻辑没有行为测试；`tests/body` 已进 CI，但总体仍无 coverage 门槛。**
 6. **CI 没有 lint / type / SAST / SCA / coverage。**
 
 ### 判定
@@ -57,7 +57,7 @@ Native:     7/7   OK
 Body SDK:   5/5   OK
 ```
 
-注意：`tests/body` 是另外单独执行的；当前 `verify.yml` 没有跑它。
+注意：当前 `verify.yml` 已包含 `tests/body`；仍缺 JS 行为测试和 coverage 门槛。
 
 ### 1.2 运行时监听
 
@@ -170,8 +170,8 @@ UFW 永远不要放行 25575
 ### P1-05 · 测试绿灯但覆盖不完整
 
 - 证据：
-  - `tests/body` 有 5 个测试，但 `.github/workflows/verify.yml` 只跑 cbap/mcp/native。
-  - JS hand 只有 `node --check`，没有行为测试。
+  - `tests/body` 已纳入 CI；这是正确方向。
+  - JS hand 只有 `node --check`，没有行为测试；也没有 coverage 门槛。
   - 没有 coverage 门槛。
 - CWE：CWE-1059（测试覆盖不足）。
 - 修复：
@@ -248,7 +248,7 @@ lease 续租、命令去重、队列
 - [ ] MC 不暴露给不可信网段，或 online-mode/whitelist 正确
 - [ ] `/tmp/honeypot` 服务确认/关闭/登记
 - [ ] `ufw` 实际启用并复核监听面
-- [ ] `tests/body`、JS 行为测试、coverage 进入 CI
+- [ ] JS 行为测试、coverage 进入 CI（tests/body 已完成）
 - [ ] SAST/SCA/secret scan 进入 CI
 - [ ] `_idem` 有 TTL/上限
 - [ ] `E_INTERNAL` 有服务端 traceback 审计
@@ -269,7 +269,7 @@ lease 续租、命令去重、队列
 4. 开 ufw 并复测
 
 本周：
-5. tests/body + JS 行为测试进 CI
+5. JS 行为测试 + coverage 进 CI（tests/body 已完成）
 6. ruff/bandit/npm audit/secret scan
 7. _idem TTL + E_INTERNAL trace + remote audit alarm
 8. 纯静默异常预算
