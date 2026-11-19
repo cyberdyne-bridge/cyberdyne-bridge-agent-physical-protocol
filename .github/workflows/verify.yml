@@ -37,6 +37,21 @@ jobs:
           PYTHONPATH: .
         run: python -m unittest discover -s tests/body -p 'test_*.py'
 
+  python-static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install static tools
+        run: python -m pip install --quiet ruff bandit
+      - name: Ruff fatal rules
+        run: ruff check --select E9,F63,F7 --exclude runtime --exclude node_modules kernel agents tools drivers console
+      - name: Bandit high-severity gate
+        run: bandit -q -r kernel agents tools drivers console -x '*/runtime/*' -lll
+
   node-syntax:
     runs-on: ubuntu-latest
     timeout-minutes: 8
@@ -50,6 +65,9 @@ jobs:
       - name: Install hand dependencies
         working-directory: agents/cyberdyne/hand/node
         run: npm ci --ignore-scripts
+      - name: Dependency audit
+        working-directory: agents/cyberdyne/hand/node
+        run: npm audit --omit=dev --audit-level=high
       - name: Syntax-check native hand
         run: |
           find agents/cyberdyne/hand/node -type f -name '*.js' \
