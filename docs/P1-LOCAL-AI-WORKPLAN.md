@@ -44,13 +44,13 @@ lease/fencing/estop 的语义改动
 
 | ID | 任务 | 风险 | 本地模型可做 | 验收人 |
 |---|---|---|---|---|
-| P1-A | `_idem` TTL + 容量上限 + 重放测试 | 中 | 生成测试/初稿 | 主 Agent |
-| P1-B | `request_exception` 审计事件（含 traceback） | 中 | 生成测试/初稿 | 主 Agent |
-| P1-C | 远端审计失败计数、状态、告警事件 | 中 | 生成测试/初稿 | 主 Agent |
-| P1-D | 482 处纯静默异常分类 | 低 | 分类/建议 | 主 Agent 复核 |
-| P1-E | JS 纯函数行为测试 + coverage | 中 | 生成测试 | 主 Agent |
-| P1-F | CI 加 ruff/bandit/npm audit/secret scan | 低 | 配置草案 | 主 Agent |
-| P1-G | `tests/body` 已进 CI | 已做 | 不需要 | 已验收 |
+| P1-A | `_idem` TTL + 容量上限 + 重放测试 | 中 | 已实现：`OrderedDict`、TTL、容量、pending 保留 | 主 Agent 已验收 |
+| P1-B | `request_exception` 审计事件（含 traceback） | 中 | 已实现：客户端脱敏、服务端审计含 traceback | 主 Agent 已验收 |
+| P1-C | 远端审计失败计数、状态、告警事件 | 中 | 已实现：`remote_status()`、stderr 告警、stat 暴露 | 主 Agent 已验收 |
+| P1-D | 482 处纯静默异常分类 | 低 | 已加扫描器基线（730/482），CI ratchet | 主 Agent 已验收基线 |
+| P1-E | JS 纯函数行为测试 + coverage | 中 | 待做 | 主 Agent |
+| P1-F | CI 加 ruff/bandit/npm audit/secret scan | 低 | 待做 | 主 Agent |
+| P1-G | `tests/body` 已进 CI | 已做 | 已确认 | 已验收 |
 
 ### 推荐顺序
 
@@ -64,8 +64,12 @@ lease/fencing/estop 的语义改动
   P1-B E_INTERNAL trace
   P1-C 远端审计失败
 
+已完成第二批；当前测试：
+  CBAP 139 / MCP 27 / Native 7 / Body 17
+
 第三批（测试工程）
   P1-E JS 行为测试 + coverage
+  P1-F ruff/bandit/npm audit/secret scan
 ```
 
 ---
