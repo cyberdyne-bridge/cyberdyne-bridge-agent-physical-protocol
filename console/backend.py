@@ -163,6 +163,8 @@ class ConsoleBackend:
                                 item["facts_error"] = str(st.get("error") or "stat failed")
                         except Exception as e:
                             item["facts_error"] = str(e)
+                            print(f"[console] stat {dev_id} failed: {e}",
+                                  file=sys.stderr, flush=True)
                         try:
                             rd = self._client.read(fd, timeout_ms=0)
                             if rd.get("ok"):
@@ -176,8 +178,12 @@ class ConsoleBackend:
                             # connection failure.
                             if e.code not in ("E_AGAIN", "E_TIMEOUT"):
                                 item["facts_error"] = str(e)
+                                print(f"[console] read {dev_id} failed: {e}",
+                                      file=sys.stderr, flush=True)
                         except Exception as e:
                             item["facts_error"] = str(e)
+                            print(f"[console] read {dev_id} failed: {e}",
+                                  file=sys.stderr, flush=True)
                     out.append(item)
                 now_ms = int(time.time() * 1000)
                 with self._lock:

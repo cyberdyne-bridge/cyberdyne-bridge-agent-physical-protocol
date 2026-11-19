@@ -74,8 +74,9 @@ class ConsoleHTTPServer(ThreadingHTTPServer):
         except (ssl.SSLError, OSError):
             try:
                 conn.close()
-            except OSError:
-                pass
+            except OSError as e:
+                print(f"[console] TLS reject close failed: {e}",
+                      file=sys.stderr, flush=True)
             # Let the request thread fail closed instead of spinning the
             # accept loop on a client that cannot complete mTLS.
             return conn, addr

@@ -138,8 +138,8 @@ class McDriver:
         try:
             if sock:
                 sock.close()
-        except OSError:
-            pass
+        except OSError as e:
+            print(f"[mc] socket close failed: {e}", file=sys.stderr, flush=True)
         if self._reader and self._reader.is_alive():
             self._reader.join(timeout=1.0)
 
