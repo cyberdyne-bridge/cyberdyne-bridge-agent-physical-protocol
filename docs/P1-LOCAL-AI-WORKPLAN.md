@@ -47,7 +47,7 @@ lease/fencing/estop 的语义改动
 | P1-A | `_idem` TTL + 容量上限 + 重放测试 | 中 | 已实现：`OrderedDict`、TTL、容量、pending 保留 | 主 Agent 已验收 |
 | P1-B | `request_exception` 审计事件（含 traceback） | 中 | 已实现：客户端脱敏、服务端审计含 traceback | 主 Agent 已验收 |
 | P1-C | 远端审计失败计数、状态、告警事件 | 中 | 已实现：`remote_status()`、stderr 告警、stat 暴露 | 主 Agent 已验收 |
-| P1-D | 482 处纯静默异常分类 | 低 | 已两批修复 MC/console/MCP 回调、清理、状态错误；基线降至 714/463；CI 通过 | 进行中 |
+| P1-D | 482 处纯静默异常分类 | 低 | 已两批修复 MC/console/MCP 回调、清理、状态错误；基线降至 710/461；CI 通过 | 进行中 |
 | P1-E | JS 纯函数行为测试 + coverage | 中 | 已加 `tests/js/proto_sonar.test.js`，CI 跑 `node --test --experimental-test-coverage` | 主 Agent 已验收 |
 | P1-F | CI 加 ruff/bandit/npm audit/secret scan | 低 | 已全部落地；GitHub Actions run 44537735931 全绿 | 已验收 |
 | P1-G | `tests/body` 已进 CI | 已做 | 已确认 | 已验收 |
