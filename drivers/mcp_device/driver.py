@@ -54,6 +54,7 @@ from drivers.mcp_device.definition import (
     DIGEST_VERSION, definition_digest, definition_sha256,
     instructions_sha256,
 )
+from drivers.mcp_device import manifest_sig
 from drivers.mcp_device.sandbox import SandboxUnavailable, wrap_command
 from kernel.legacy_runtime.secrets import SecretError, get_secret
 
@@ -239,10 +240,14 @@ class MCPDeviceDriver:
             raise MCPDeviceError("E_AUTH", str(e))
         if not key:
             raise MCPDeviceError("E_AUTH", "manifest signature requires CBAP_MANIFEST_KEY")
-        body = _canonical(_manifest_payload(self.manifest)).encode("utf-8")
-        want = hmac.new(key.encode("utf-8"), body, hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(str(sig), want):
-            raise MCPDeviceError("E_AUTH", "manifest signature mismatch")
+        try:
+            manifest_sig.check(
+                self.manifest, key,
+                require_expiry=os.environ.get("CBAP_REQUIRE_SIGNED_MANIFEST") == "1",
+                expected_key_id=os.environ.get("CBAP_MANIFEST_KEY_ID") or None,
+            )
+        except manifest_sig.ManifestSigError as e:
+            raise MCPDeviceError("E_AUTH", str(e))
 
     # ── lifecycle ─────────────────────────────────────────────
 

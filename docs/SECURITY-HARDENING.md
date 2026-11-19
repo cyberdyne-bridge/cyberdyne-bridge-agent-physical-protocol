@@ -148,7 +148,28 @@ transport.env is explicit
 optional rlimits and start_new_session
 manifest HMAC-SHA256 via CBAP_MANIFEST_KEY
 CBAP_REQUIRE_SIGNED_MANIFEST=1 rejects unsigned manifests
+signed manifests carry issued_at / expires_at / key_id (15 days default)
+expired, future-issued and over-long windows are rejected
+CBAP_MANIFEST_KEY_ID pins the expected key id
 ```
+
+Signature window rules (`drivers/mcp_device/manifest_sig.py`):
+
+```text
+issued_at, expires_at, key_id are inside the signed payload
+default window 15 days, hard cap 90 days
+clock skew allowance 5 minutes for issued_at
+missing expires_at = legacy: allowed by default, rejected when
+CBAP_REQUIRE_SIGNED_MANIFEST=1
+```
+
+Sign and renew:
+
+```bash
+CBAP_MANIFEST_KEY=... python3 tools/sign_mcp_manifest.py manifest.json --write
+# --days N (1..90), --key-id ID
+```
+
 
 Residual:
 
