@@ -30,7 +30,7 @@ allow-foot / watch / error-facts 映射
 1. **Minecraft RCON 暴露在所有网卡，密码是 `cyberdyne`。**
 2. **MC 以 `online-mode=false` + `white-list=false` 运行在全部网卡。**
 3. **`/tmp/honeypot/multi.py` 在 `0.0.0.0:2201-2209` 监听，来源不在本仓。**
-4. **725 处吞异常，其纯静默 476 处；已修 MC/console/MCP 清理失败，CI 基线 725/476。**
+4. **714 处吞异常，其中纯静默 463 处；已修 MC/console/MCP 回调、清理、状态错误，CI 基线 714/463。**
 5. **测试绿不代表覆盖完整：JS 运行逻辑没有行为测试；`tests/body` 已进 CI，但总体仍无 coverage 门槛。**
 6. **CI 没有 lint / type / SAST / SCA / coverage。**
 
