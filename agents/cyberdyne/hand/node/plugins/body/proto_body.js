@@ -502,7 +502,7 @@ async function 放(bot, a) {
   if (!Array.isArray(a.p) || a.p.length < 3) {
     return { ok: false, why: '要给我一个坐标 p:[x,y,z]' };
   }
-  const 位 = bot.blockAt(取坐标(bot, a.p));
+  let 位 = bot.blockAt(取坐标(bot, a.p));
   if (!位) return { ok: false, why: '那个位置读不到方块' };
   // ★★★ 2026-10-09 主人点出来的通用法则：**手的交互距离都是 4.5 格** ✓
   //   放这一步原来**一行距离校验都没有** ✗ → 5 格外的落点，服务端六个面全拒 ✗
@@ -512,8 +512,35 @@ async function 放(bot, a) {
     const 量 = 够得着吗(bot, a.p);
     if (!量.好) return { ok: false, 够不着: true, 距: 量.距, why: 量.why, 取消: '够不着' };
   }
+  // ★ 2026-11-19：指定格被树叶/原木挡住时，先在 ±2 格找一块
+  //   “本格空气 + 下面有地”的空地再放；找不到才把挡路方块交给障碍自愈。
+  //   否则计划把台子排在树冠里时，手只会重复“那里不是空的”，整条任务卡死。
   if (位.name !== 'air' && 位.name !== 'cave_air') {
-    return { ok: false, why: `那里不是空的（是 ${位.name}）` };
+    let 替代 = null, 替代距 = Infinity;
+    for (let dx = -2; dx <= 2; dx++) {
+      for (let dz = -2; dz <= 2; dz++) {
+        if (!dx && !dz) continue;
+        const 试位 = [a.p[0] + dx, a.p[1], a.p[2] + dz];
+        const 本 = bot.blockAt(取坐标(bot, 试位));
+        if (!本 || (本.name !== 'air' && 本.name !== 'cave_air')) continue;
+        const 下 = bot.blockAt(取坐标(bot, [试位[0], 试位[1] - 1, 试位[2]]));
+        if (!下 || 下.name === 'air' || 下.name === 'cave_air' || 下.name === 'water') continue;
+        const 距 = Math.abs(dx) + Math.abs(dz);
+        if (距 < 替代距) { 替代距 = 距; 替代 = 试位; }
+      }
+    }
+    if (替代) {
+      console.log(`[放] ${JSON.stringify(a.p)} 被 ${位.name} 挡住`
+        + ` → 就近换到空地 ${JSON.stringify(替代)}（距离 ${替代距} 格）`);
+      a.p = 替代;
+      位 = bot.blockAt(取坐标(bot, a.p));
+    }
+  }
+  if (位 && 位.name !== 'air' && 位.name !== 'cave_air') {
+    const 挡位 = [Math.floor(位.position.x), Math.floor(位.position.y),
+                  Math.floor(位.position.z)];
+    return { ok: false, why: `那里不是空的（是 ${位.name}）`,
+             先挖: 挡位, 挡着: [{ p: 挡位, name: 位.name }] };
   }
   // ★ 「背包里有」≠「手上拿着」—— M2.1 攻击那次的同一个坑。
   //   /give 出来的东西多半落在主背包里，不换到手上，服务端会直接拒放。
