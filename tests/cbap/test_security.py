@@ -11,6 +11,7 @@ import threading
 import time
 import unittest
 from pathlib import Path
+from unittest import mock
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from kernel.legacy_runtime.client import CBAPClient
@@ -242,6 +243,27 @@ class SecurityTest(unittest.TestCase):
             "channel": "body", "op": "move", "args": {"fencing_token": 1}}})
         self.assertEqual(stale["error"]["code"], "E_BUSY")
         a.close(); b.close()
+
+    def test_internal_error_is_audited_without_traceback_leak(self):
+        c = self.client()
+        try:
+            with mock.patch.object(self.kernel, "_op_device_list",
+                                   side_effect=RuntimeError("raw secret")):
+                r = c.call("device_list", {})
+            self.assertFalse(r["ok"])
+            self.assertEqual(r["error"]["code"], "E_INTERNAL")
+            self.assertNotIn("raw secret", r["error"]["message"])
+            rows = []
+            with open(self.audit, encoding="utf-8") as f:
+                for line in f:
+                    if line.strip():
+                        rows.append(json.loads(line))
+            events = [x for x in rows if x.get("event") == "request_exception"]
+            self.assertTrue(events)
+            self.assertIn("traceback", events[-1])
+            self.assertIn("RuntimeError", events[-1].get("traceback", ""))
+        finally:
+            c.close()
 
     def test_idem_cache_expires_and_evicts_completed_results(self):
         k = KernelServer(

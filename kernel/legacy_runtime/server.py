@@ -952,10 +952,27 @@ class KernelServer:
             elif op == "registry_reload":
                 self._op_registry_reload(session, rid)
         except Exception as e:
+            # Keep the client contract generic, but make the server-side
+            # failure auditable with a bounded traceback.
+            try:
+                self._audit(
+                    "request_exception",
+                    agent=getattr(session, "agent_id", "unknown"),
+                    id=rid,
+                    op=str(op),
+                    error_type=type(e).__name__,
+                    error=str(e)[:500],
+                    traceback=traceback.format_exc()[-4000:],
+                )
+            except Exception:
+                # _audit already fails closed on write failure; never mask
+                # the original request failure with an audit exception.
+                pass
+            code = getattr(e, "code", "E_INTERNAL")
+            message = (getattr(e, "message", None) if code != "E_INTERNAL"
+                       else "internal error")
             self._result(session, rid, False,
-                         err=protocol.error(
-                             getattr(e, "code", "E_INTERNAL"),
-                             getattr(e, "message", str(e))))
+                         err=protocol.error(code, message or "internal error"))
 
     # ── helpers ───────────────────────────────────────────────
 
